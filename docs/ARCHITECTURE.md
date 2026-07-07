@@ -16,6 +16,7 @@ This document is the full system design for a no-code, multi-tenant data process
 8. [Error Handling and Retry](#8-error-handling-and-retry)
 9. [Connector SPI Interface](#9-connector-spi-interface)
 10. [Kubernetes Deployment Topology](#10-kubernetes-deployment-topology)
+11. [Event-Driven Ingress (Webhook / Event Listener)](#11-event-driven-ingress-webhook--event-listener)
 
 ---
 
@@ -127,6 +128,7 @@ flowchart TB
 | **Billing Service** | Hourly/daily/monthly rollups; invoice generation; credit balance management |
 | **Quota Enforcer** | Pre-execution quota check; soft-limit warnings; hard-limit blocking |
 | **Meter Agent** | Sidecar in pipelet pods; collects CPU/memory duration, record counts, connector call counts |
+| **Webhook Ingress** | Always-on Spring Boot endpoint that receives external webhooks/events, authenticates, and publishes to RabbitMQ (see [Section 11](#11-event-driven-ingress-webhook--event-listener)) |
 
 ### 1.4 Pipeline Execution Flow
 
@@ -638,6 +640,42 @@ The platform builds a Docker image from the binary, pushes to the internal regis
 | `PUT` | `/connectors/{id}` | Update config |
 | `DELETE` | `/connectors/{id}` | Deactivate connector |
 | `POST` | `/connectors/{id}/test` | Test connection |
+| `POST` | `/connectors/{id}/webhook-url` | Provision an ingress URL for an EventListener connector |
+
+#### Provision Webhook URL
+
+For `event_listener` connectors, the platform issues a stable ingress URL that external systems call. See [Section 11](#11-event-driven-ingress-webhook--event-listener) for the full pattern.
+
+```
+POST /api/v1/connectors/{id}/webhook-url
+```
+
+Response:
+
+```json
+{
+  "webhook_url": "https://ingress.platform.example.com/api/v1/webhooks/T001/conn-github-events",
+  "signing_secret": "encrypted:...",
+  "signature_header": "X-Hub-Signature-256",
+  "created_at": "2026-07-08T00:12:00Z"
+}
+```
+
+External callers post events to this URL; the platform authenticates and queues them.
+
+```
+POST /api/v1/webhooks/{tenantId}/{connectorId}
+```
+
+Response `202`:
+
+```json
+{
+  "accepted": true,
+  "event_id": "evt-uuid",
+  "queued_to": "tenant.T001.webhook.conn-github-events.in"
+}
+```
 
 #### Test Connection
 
@@ -915,6 +953,8 @@ flowchart TB
 | Connector API calls | $0.0005 / call | Connector SPI interceptor |
 | Storage GB-hours | $0.10 / GB-hour | S3/LocalStack + MySQL audit |
 | Pipeline runs | $0.01 / run | Pipeline Manager counter |
+| Webhook events | $0.000005 / event | Webhook Ingress counter (Section 11) |
+| Bytes ingested | $0.01 / GB | Webhook Ingress payload size |
 
 #### Quota Enforcement
 
@@ -1370,6 +1410,119 @@ Storage and MessageBus connectors point to `http://localstack.platform-infra.svc
 | K8s | Minikube / Kind | Managed K8s (EKS/GKE) | Managed K8s Multi-AZ |
 | Pipelet registry | Local registry | ECR/GCR | ECR/GCR with image scanning |
 | Secrets | K8s Secrets | AWS Secrets Manager | AWS Secrets Manager + rotation |
+
+---
+
+## 11. Event-Driven Ingress (Webhook / Event Listener)
+
+### 11.1 Problem
+
+The default execution model (Section 10.3) runs each pipelet as an ephemeral Kubernetes **Job** (`restartPolicy: Never`) that starts, processes, and exits. This fits batch, scheduled, and sync pipelines, but it does **not** fit push-based sources such as webhooks, SSE streams, or long-poll listeners: the external sender expects an endpoint that is reachable at any moment, whereas an ephemeral pipelet pod may not be running when the event arrives.
+
+Spinning up (hot-starting) a full pipelet container per inbound webhook is too slow for the sender's timeout and wasteful under bursty traffic. The adopted solution decouples **ingress** (always available) from **processing** (on demand).
+
+### 11.2 Solution: Platform Ingress + Queue
+
+An always-on **Webhook Ingress** service (part of the Spring Boot platform, deployed as a Deployment with `replicas >= 2`) receives external events, authenticates them, and publishes them to RabbitMQ. Ephemeral processor/destination pipelet Jobs consume from the queue on demand. The external sender never waits for a pipelet cold start.
+
+```mermaid
+sequenceDiagram
+    participant Sender as ExternalSystem
+    participant Ingress as WebhookIngress
+    participant SvcMgr as ServiceManager
+    participant RabbitMQ
+    participant PipelineMgr
+    participant ProcessorPod
+
+    Sender->>Ingress: POST /webhooks/{tenant}/{connector}
+    Ingress->>SvcMgr: Validate signature + auth
+    SvcMgr-->>Ingress: Authenticated
+    Ingress->>RabbitMQ: Publish event to webhook.in queue
+    Ingress-->>Sender: 202 Accepted
+    RabbitMQ->>PipelineMgr: Queue depth > 0 (KEDA / poll)
+    PipelineMgr->>ProcessorPod: Create processor Job if needed
+    ProcessorPod->>RabbitMQ: Consume + process event
+```
+
+### 11.3 Component Placement
+
+```mermaid
+flowchart TB
+    subgraph alwaysOn [AlwaysOnPlatform]
+        Ingress[WebhookIngress]
+        RabbitMQ[RabbitMQ]
+    end
+    subgraph onDemand [OnDemandPipelets]
+        ProcessorJob[ProcessorJob]
+        DestJob[DestinationJob]
+    end
+    External[ExternalWebhook] -->|HTTPS| Ingress
+    Ingress -->|publish| RabbitMQ
+    RabbitMQ -->|KEDA queue depth| ProcessorJob
+    ProcessorJob --> DestJob
+```
+
+- **Webhook Ingress** is platform infrastructure, deployed in the `platform` namespace, not a per-tenant pipelet.
+- Listener logic that is generic (auth, signature verification, rate limiting, dedup) lives in the ingress.
+- Event-specific processing logic stays in a **processor pipelet** that runs on demand.
+
+### 11.4 Ingress Responsibilities
+
+| Concern | Handling |
+|---------|----------|
+| **Endpoint** | `POST /api/v1/webhooks/{tenantId}/{connectorId}` provisioned via `POST /connectors/{id}/webhook-url` |
+| **Authentication** | Resolve tenant Auth service; verify HMAC signature header (e.g. `X-Hub-Signature-256`) against connector `signing_secret` |
+| **Fast acknowledgement** | Respond `202 Accepted` immediately after the event is durably queued (do not wait for processing) |
+| **Tenant routing** | Publish to `tenant.{tenantId}.webhook.{connectorId}.in` |
+| **Rate limiting** | Per-tenant token bucket; excess returns `429` |
+| **Idempotency** | Dedup on `X-Webhook-Id` header or payload hash to drop duplicate deliveries |
+| **Metering** | Emit `platform.webhook_events` and `data.bytes_in` usage events on ingest |
+| **Backpressure** | If queue depth exceeds a hard limit, return `503` so the sender retries later |
+
+### 11.5 RabbitMQ Topology for Ingress
+
+```
+Exchange: tenant.{tenantId}.webhook (topic)
+
+Queues:
+  tenant.{tenantId}.webhook.{connectorId}.in     ← ingress publishes here
+  tenant.{tenantId}.webhook.{connectorId}.dlq    ← poison / unprocessable events
+
+Bindings:
+  {connectorId}.in ← routing_key: {connectorId}
+```
+
+A processor pipelet's `input_queue` (Section 2.2 `pipeline_steps`) is bound to the webhook `.in` queue, connecting ingress to the rest of the pipeline stages.
+
+### 11.6 On-Demand Processing Trigger
+
+Two options for starting processor Jobs when events arrive:
+
+| Mechanism | Description | Trade-off |
+|-----------|-------------|-----------|
+| **KEDA `rabbitmq` scaler** | Scale processor Deployment/Job from 0 based on queue depth | Cleanest fit; small scale-up delay |
+| **Pipeline Manager poller** | Manager watches queue depth and creates Jobs | Reuses existing orchestration; slightly more custom code |
+
+Because the ingress already durably queued the event and returned `202`, the processing cold start does not affect the external sender.
+
+### 11.7 Metering and Multi-Tenancy
+
+- Ingress tags every event with `tenant_id` and `connector_id`; usage events feed the same Usage Collector pipeline (Section 6.2).
+- New billable dimensions:
+
+| Dimension | Unit | Source |
+|-----------|------|--------|
+| `platform.webhook_events` | events | Ingress counter |
+| `data.bytes_in` | GB | Ingress payload size |
+
+- Compute for processing is still metered per pipelet pod, so tenants only pay for pods when events are actually processed.
+- Signing secrets and connector configs remain encrypted at rest and resolved through the Connector/Service managers, preserving tenant isolation.
+
+### 11.8 Failure Handling
+
+- If publishing to RabbitMQ fails, the ingress returns `503` (never `2xx`) so the sender retries per its own policy.
+- Unprocessable events (schema errors, repeated processing failures) land in the webhook `.dlq` and follow the standard DLQ flow (Section 8.2), including Grafana alerts and admin replay.
+- Duplicate deliveries are dropped by the idempotency check; downstream processor pipelets remain idempotent via `execution_id` + `record_id` (Section 8.3).
 
 ---
 
