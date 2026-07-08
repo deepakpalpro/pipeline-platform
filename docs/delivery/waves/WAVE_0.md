@@ -279,7 +279,7 @@ Short note in W0-US02 KB or `W0-US03-flyway-baseline.md`: how to check migration
 | **Priority** | Should |
 | **Dependencies** | W0-US02 |
 | **Architecture refs** | §5, §7 (baseline only) |
-| **Status** | Todo |
+| **Status** | Done |
 
 **As a** platform operator  
 **I want** JSON-ish structured logs and a Prometheus scrape endpoint  
@@ -301,7 +301,7 @@ Short note in W0-US02 KB or `W0-US03-flyway-baseline.md`: how to check migration
 
 #### Support KB
 
-Document scrape URL for local debugging.
+See [`../kb/W0-US04-logging-prometheus.md`](../kb/W0-US04-logging-prometheus.md)
 
 ---
 
@@ -357,7 +357,7 @@ See [`../kb/W0-US05-mock-data-wiremock.md`](../kb/W0-US05-mock-data-wiremock.md)
 - [x] Parent `pom.xml` + `pipeline-api` module
 - [x] Actuator health + local profile datasource to Compose MySQL
 - [x] `V1__baseline.sql` (`tenants` stub)
-- [ ] logback + `/actuator/prometheus`
+- [x] logback + `/actuator/prometheus`
 - [x] Fixtures + WireMock test
 - [x] Update [`WAVE_TRACKER.md`](../WAVE_TRACKER.md) / [`TEST_MATRIX.md`](../TEST_MATRIX.md)
 - [ ] README “Wave 0 getting started” section

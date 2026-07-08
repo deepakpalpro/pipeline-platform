@@ -1,0 +1,60 @@
+# KB: Structured logging + Prometheus (Wave 0)
+
+| Field | Value |
+|-------|--------|
+| **Article / Story** | KB-W0-US04 / W0-US04 |
+| **Audience** | Platform operators / engineers |
+| **Product area** | Foundation / Observability |
+
+## Prerequisites
+
+- Compose MySQL running (`docker compose up -d mysql`)
+- `pipeline-api` with `local` profile
+
+## Feature overview
+
+Wave 0 exposes:
+
+1. **Prometheus scrape** at `/actuator/prometheus` (Micrometer JVM + process metrics)
+2. **Structured console logs** via Spring Boot Logstash JSON format (`logging.structured.format.console=logstash`)
+3. Explicit `logback-spring.xml` entry point for later ELK wiring (Wave 4)
+
+Do not log secrets (DB passwords, tokens) in message text or MDC.
+
+## How to verify
+
+### Prometheus scrape
+
+```bash
+./mvnw -pl pipeline-api spring-boot:run -Dspring-boot.run.profiles=local
+curl -s http://localhost:8080/actuator/prometheus | head
+```
+
+Expect text exposition format including `jvm_memory_used_bytes`.
+
+Local scrape URL: `http://localhost:8080/actuator/prometheus`
+
+### Logs
+
+Console lines should be JSON (Logstash) including fields such as `@timestamp`, `level`, `logger_name`, `message`, and often `spring.application.name` / service fields — not free-form noise with credentials.
+
+### Tests
+
+```bash
+./mvnw -pl pipeline-api test -Dtest=PrometheusEndpointIT,StructuredLoggingSmokeTest
+```
+
+`PrometheusEndpointIT` needs Compose MySQL (same as other `local` profile ITs).
+
+## Failure modes
+
+| Symptom | Check | Mitigation |
+|---------|-------|------------|
+| 404 on `/actuator/prometheus` | Exposure list | `management.endpoints.web.exposure.include` must contain `prometheus` |
+| Missing `jvm_memory_used_bytes` | Dependency | `micrometer-registry-prometheus` on classpath |
+| Plain text logs only | Profile / yaml | Confirm `logging.structured.format.console=logstash` |
+
+## Related
+
+- Health: [`W0-US02-health-endpoint.md`](W0-US02-health-endpoint.md)
+- Architecture §7 observability baseline
