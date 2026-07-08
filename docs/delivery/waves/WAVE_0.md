@@ -235,11 +235,7 @@ flowchart LR
 | **Priority** | Must |
 | **Dependencies** | W0-US02 |
 | **Architecture refs** | §2 Data Model (stub) |
-| **Status** | Todo |
-
-**As a** platform developer  
-**I want** Flyway to apply a baseline migration on startup  
-**so that** schema evolution is versioned from day one.
+| **Status** | Done |
 
 **In scope:** `V1__baseline.sql` with minimum `tenants` stub (id, name, slug, status, created_at) matching architecture naming; Flyway enabled; IT asserting table exists.  
 **Out of scope:** Full schema for pipelines/connectors (Wave 1+).
@@ -360,7 +356,7 @@ Engineer-facing: how to add a new fixture file (link from Wave 1 connector KB la
 - [x] `scripts/smoke-localstack.sh` (+ `smoke-compose-deps.sh`)
 - [x] Parent `pom.xml` + `pipeline-api` module
 - [x] Actuator health + local profile datasource to Compose MySQL
-- [ ] `V1__baseline.sql` (`tenants` stub)
+- [x] `V1__baseline.sql` (`tenants` stub)
 - [ ] logback + `/actuator/prometheus`
 - [ ] Fixtures + WireMock test
 - [ ] Update [`WAVE_TRACKER.md`](../WAVE_TRACKER.md) / [`TEST_MATRIX.md`](../TEST_MATRIX.md)
@@ -373,7 +369,9 @@ Engineer-facing: how to add a new fixture file (link from Wave 1 connector KB la
 - All **Must** stories W0-US01, US02, US03, US05 Done per story template checklists  
 - W0-US04 completed or explicitly deferred with tracker note  
 - Exit criteria table at top of this doc verified  
-- PR `wave-0` → `master` opened with test plan covering compose + `mvn test`
+- Each story followed **merge → tag (story id) → delete feature branch → next branch from `wave-0`** (see [`DELIVERY_PLAN.md`](../../DELIVERY_PLAN.md) Working agreements)  
+- PR `wave-0` → `master` opened when Wave 0 exit criteria are met (compose + `mvn test`)
+
 
 ---
 
