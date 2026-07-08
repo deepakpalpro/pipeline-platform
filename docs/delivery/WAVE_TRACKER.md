@@ -14,7 +14,7 @@ Abbreviations: **U** = Unit, **I** = Integration, **WM** = WireMock, **LS** = Lo
 
 **Wave goal:** `docker compose up` + health API; tests green.  
 **Plan:** [`waves/WAVE_0.md`](waves/WAVE_0.md) · **Branch:** `wave-0`  
-**KB:** [`kb/W0-US01-local-compose-stack.md`](kb/W0-US01-local-compose-stack.md) · [`kb/W0-US02-health-endpoint.md`](kb/W0-US02-health-endpoint.md)
+**KB:** [`kb/W0-US01-local-compose-stack.md`](kb/W0-US01-local-compose-stack.md) · [`kb/W0-US02-health-endpoint.md`](kb/W0-US02-health-endpoint.md) · [`kb/W0-US03-flyway-baseline.md`](kb/W0-US03-flyway-baseline.md) · [`kb/W0-US05-mock-data-wiremock.md`](kb/W0-US05-mock-data-wiremock.md)
 
 | Story ID | Feature / Epic | Title | Status | Owner | Test gate | Blockers |
 |----------|----------------|-------|--------|-------|-----------|----------|
@@ -22,7 +22,7 @@ Abbreviations: **U** = Unit, **I** = Integration, **WM** = WireMock, **LS** = Lo
 | W0-US02 | W0-F1 / W0-F1-E2 | Spring Boot health + Compose MySQL IT | Done | | U,I,M,KB | Rancher Desktop: Compose MySQL IT (Testcontainers blocked by docker-java API) |
 | W0-US03 | W0-F1 / W0-F1-E2 | Flyway baseline schema apply | Done | | U,I,M,KB | |
 | W0-US04 | W0-F1 / W0-F1-E3 | Structured logging + Micrometer smoke | Todo | | | Plan written |
-| W0-US05 | W0-F1 / W0-F1-E4 | Mock-data factories + WireMock harness | Todo | | | Plan written |
+| W0-US05 | W0-F1 / W0-F1-E4 | Mock-data factories + WireMock harness | Done | | U,WM,M,KB | |
 
 **Wave exit criteria:** All Must stories Done; TEST_MATRIX rows checked for Wave 0.
 

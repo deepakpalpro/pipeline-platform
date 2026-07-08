@@ -313,7 +313,7 @@ Document scrape URL for local debugging.
 | **Priority** | Must |
 | **Dependencies** | W0-US02 |
 | **Architecture refs** | §9 (prep for connectors) |
-| **Status** | Todo |
+| **Status** | Done |
 
 **As a** platform developer  
 **I want** reusable fixtures and a WireMock example stub  
@@ -346,7 +346,7 @@ Run `./mvnw -pl pipeline-api test` — WireMock + fixture tests green.
 
 #### Support KB
 
-Engineer-facing: how to add a new fixture file (link from Wave 1 connector KB later).
+See [`../kb/W0-US05-mock-data-wiremock.md`](../kb/W0-US05-mock-data-wiremock.md)
 
 ---
 
@@ -358,8 +358,8 @@ Engineer-facing: how to add a new fixture file (link from Wave 1 connector KB la
 - [x] Actuator health + local profile datasource to Compose MySQL
 - [x] `V1__baseline.sql` (`tenants` stub)
 - [ ] logback + `/actuator/prometheus`
-- [ ] Fixtures + WireMock test
-- [ ] Update [`WAVE_TRACKER.md`](../WAVE_TRACKER.md) / [`TEST_MATRIX.md`](../TEST_MATRIX.md)
+- [x] Fixtures + WireMock test
+- [x] Update [`WAVE_TRACKER.md`](../WAVE_TRACKER.md) / [`TEST_MATRIX.md`](../TEST_MATRIX.md)
 - [ ] README “Wave 0 getting started” section
 
 ---

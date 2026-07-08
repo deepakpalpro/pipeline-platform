@@ -25,6 +25,7 @@
   <properties>
     <java.version>21</java.version>
     <testcontainers.version>1.21.3</testcontainers.version>
+    <wiremock.version>3.13.2</wiremock.version>
   </properties>
 
   <dependencyManagement>
@@ -35,6 +36,11 @@
         <version>${testcontainers.version}</version>
         <type>pom</type>
         <scope>import</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.wiremock</groupId>
+        <artifactId>wiremock-jetty12</artifactId>
+        <version>${wiremock.version}</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
