@@ -9,7 +9,10 @@
 ## Prerequisites
 
 - Docker Desktop (or compatible engine)
-- Repo checkout on branch with `docker-compose.yml` (Wave 0)
+- Repo checkout with `docker-compose.yml` (W0-US01)
+- AWS CLI v2 **or** `awslocal` for LocalStack smoke
+
+**Default ports:** MySQL `3306`, RabbitMQ `5672` / mgmt `15672`, LocalStack **host `4567`** (maps to container `4566`). If `4566` is free on your machine, run `LOCALSTACK_HOST_PORT=4566 docker compose up -d` and set `LOCALSTACK_ENDPOINT=http://localhost:4566`.
 
 ## Feature overview
 
@@ -31,15 +34,16 @@ flowchart LR
 
 1. `docker compose up -d`
 2. `docker compose ps` — services healthy
-3. `./scripts/smoke-localstack.sh` — exit 0
-4. RabbitMQ management: http://localhost:15672 (default guest/guest)
+3. `./scripts/smoke-compose-deps.sh` — MySQL + RabbitMQ OK
+4. `./scripts/smoke-localstack.sh` — exit 0 (S3 + SQS)
+5. RabbitMQ management: http://localhost:15672 (`pipeline` / `pipeline`)
 
 ## Failure modes
 
 | Symptom | Check | Mitigation |
 |---------|-------|------------|
-| Port in use | `lsof -i :3306,:5672,:4566` | Stop conflicting services |
-| LocalStack not ready | Logs `docker compose logs localstack` | Wait for healthcheck; rerun smoke |
+| Port in use (e.g. 4566) | `lsof -iTCP:4566 -sTCP:LISTEN` | Default LocalStack host port is **4567**; or free the port / set `LOCALSTACK_HOST_PORT` |
+| LocalStack not ready | `docker compose logs localstack` | Wait for healthcheck; rerun smoke |
 | Permission errors | Docker daemon running | Restart Docker Desktop |
 
 ## Escalation

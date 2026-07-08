@@ -95,7 +95,7 @@ flowchart LR
 | **Priority** | Must |
 | **Dependencies** | — |
 | **Architecture refs** | §5, §10.6 LocalStack |
-| **Status** | Todo |
+| **Status** | Done |
 
 **As a** platform developer  
 **I want** a Docker Compose stack with MySQL, RabbitMQ, and LocalStack  
@@ -131,7 +131,7 @@ Compose smoke may be **script + Manual** with IT optional later.
 
 | Dependency | Tool | Notes |
 |------------|------|-------|
-| S3, SQS | LocalStack `:4566` | `SERVICES=s3,sqs` |
+| S3, SQS | LocalStack host `:4567` → container `:4566` | Default host port avoids clashes; override with `LOCALSTACK_HOST_PORT` / `LOCALSTACK_ENDPOINT` |
 | WireMock | n/a | |
 
 #### Manual test steps
@@ -356,8 +356,8 @@ Engineer-facing: how to add a new fixture file (link from Wave 1 connector KB la
 
 ## Implementation checklist (when executing code)
 
-- [ ] `docker-compose.yml` (mysql:8, rabbitmq:3-management, localstack)
-- [ ] `scripts/smoke-localstack.sh`
+- [x] `docker-compose.yml` (mysql:8, rabbitmq:3-management, localstack)
+- [x] `scripts/smoke-localstack.sh` (+ `smoke-compose-deps.sh`)
 - [ ] Parent `pom.xml` + `pipeline-api` module
 - [ ] Actuator health + local profile datasource to Compose MySQL
 - [ ] `V1__baseline.sql` (`tenants` stub)
