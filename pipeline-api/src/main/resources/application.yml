@@ -1,0 +1,29 @@
+spring:
+  application:
+    name: pipeline-api
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      show-details: always
+  health:
+    db:
+      enabled: true
+
+---
+spring:
+  config:
+    activate:
+      on-profile: local
+  datasource:
+    url: jdbc:mysql://localhost:3306/pipeline?allowPublicKeyRetrieval=true&useSSL=false
+    username: pipeline
+    password: pipeline
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+server:
+  port: 8080

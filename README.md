@@ -46,3 +46,16 @@ docker compose down -v            # teardown
 ```
 
 Spring Boot health / Flyway / WireMock follow later Wave 0 stories (W0-US02+).
+
+### Application API (W0-US02)
+
+Requires Java 21 and Docker (Testcontainers for CI tests). On Rancher Desktop:
+
+```bash
+export DOCKER_HOST=unix://$HOME/.rd/docker.sock
+./mvnw -pl pipeline-api test
+./mvnw -pl pipeline-api spring-boot:run -Dspring-boot.run.profiles=local
+curl -s http://localhost:8080/actuator/health
+```
+
+Compose MySQL must be up for the `local` profile (`docker compose up -d mysql`).

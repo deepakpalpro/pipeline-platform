@@ -37,10 +37,11 @@ Expect HTTP 200 and `"status":"UP"`.
 ### Tests
 
 ```bash
+docker compose up -d mysql
 ./mvnw -pl pipeline-api test
 ```
 
-`HealthControllerIT` should pass with Testcontainers MySQL.
+`HealthControllerIT` uses the Compose `local` profile (MySQL on `localhost:3306`). It skips if port 3306 is closed. Testcontainers MySQL is deferred on Rancher Desktop until docker-java supports Engine API ≥ 1.41.
 
 ## Failure modes
 
