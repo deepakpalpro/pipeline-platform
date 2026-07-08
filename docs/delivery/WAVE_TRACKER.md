@@ -151,6 +151,20 @@ Abbreviations: **U** = Unit, **I** = Integration, **WM** = WireMock, **LS** = Lo
 
 ---
 
+## Story branch lifecycle
+
+After each user story ships (example ids: `W0-US02`, wave branch `wave-0`):
+
+1. Merge feature branch into the wave branch (`git merge --no-ff W0-USnn`).
+2. Create annotated tag on the wave tip with the **story id** (`git tag -a W0-USnn -m "..."`).
+3. Push wave branch + tag (`git push origin wave-0` and `git push origin refs/tags/W0-USnn`).
+4. Delete feature branch local and remote (`git branch -d W0-USnn` · `git push origin --delete refs/heads/W0-USnn`).
+5. Create and push the next story branch from the wave branch (`git checkout -b W0-USnn+1` · `git push -u origin HEAD`).
+
+Canonical description: [`../DELIVERY_PLAN.md`](../DELIVERY_PLAN.md) → Working agreements §6.
+
+---
+
 ## Summary counts
 
 | Wave | Todo | In Progress | Blocked | Done |

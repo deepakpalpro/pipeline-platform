@@ -391,6 +391,21 @@ W4 can start after W2 once fixture executions exist; W3 can proceed in parallel 
 3. **Prefer Testcontainers** for MySQL/RabbitMQ in CI; Compose + LocalStack for manual and LS-marked matrix rows.
 4. **Every customer-visible story** updates or creates a KB article.
 5. **Trackers:** update WAVE_TRACKER and TEST_MATRIX in the same PR as the story.
+6. **Story branch lifecycle (mandatory for every user story):**
+
+```text
+feature branch (e.g. W0-US02)
+  → implement + push
+  → merge into wave branch (e.g. wave-0)
+  → annotate tag on wave branch with story id (e.g. W0-US02)
+  → delete feature branch (local + remote)
+  → create next story branch from wave branch
+```
+
+Tagging uses the **story id** (same as the finished branch name). Push tags with `git push origin refs/tags/<STORY_ID>` and delete remotes with `git push origin --delete refs/heads/<STORY_ID>` so tag/branch name collisions do not break `git push`.
+
+When a **wave** is complete, merge the wave branch to `master` and optionally tag `wave-N-complete` (or similar).
+
 
 ---
 

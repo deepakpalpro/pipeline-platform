@@ -373,7 +373,9 @@ Engineer-facing: how to add a new fixture file (link from Wave 1 connector KB la
 - All **Must** stories W0-US01, US02, US03, US05 Done per story template checklists  
 - W0-US04 completed or explicitly deferred with tracker note  
 - Exit criteria table at top of this doc verified  
-- PR `wave-0` → `master` opened with test plan covering compose + `mvn test`
+- Each story followed **merge → tag (story id) → delete feature branch → next branch from `wave-0`** (see [`DELIVERY_PLAN.md`](../../DELIVERY_PLAN.md) Working agreements)  
+- PR `wave-0` → `master` opened when Wave 0 exit criteria are met (compose + `mvn test`)
+
 
 ---
 
