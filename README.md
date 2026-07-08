@@ -25,4 +25,6 @@ Spring Boot · MySQL · RabbitMQ · ELK · Prometheus/Grafana · LocalStack · D
 
 ## Getting started
 
-Application scaffolding starts with **Wave 0** in the [delivery plan](docs/DELIVERY_PLAN.md). Until then, use the architecture and delivery docs to plan implementation.
+- **Delivery catalog:** [docs/DELIVERY_PLAN.md](docs/DELIVERY_PLAN.md)
+- **Wave 0 plan (current):** [docs/delivery/waves/WAVE_0.md](docs/delivery/waves/WAVE_0.md) on branch `wave-0`
+- Application scaffolding (Compose, Spring Boot health, Flyway, test harness) follows the Wave 0 checklist in that plan.

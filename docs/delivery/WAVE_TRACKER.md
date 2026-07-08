@@ -12,15 +12,17 @@ Abbreviations: **U** = Unit, **I** = Integration, **WM** = WireMock, **LS** = Lo
 
 ## Wave 0 — Foundation
 
-**Wave goal:** `docker compose up` + health API; tests green.
+**Wave goal:** `docker compose up` + health API; tests green.  
+**Plan:** [`waves/WAVE_0.md`](waves/WAVE_0.md) · **Branch:** `wave-0`  
+**KB:** [`kb/W0-US01-local-compose-stack.md`](kb/W0-US01-local-compose-stack.md) · [`kb/W0-US02-health-endpoint.md`](kb/W0-US02-health-endpoint.md)
 
 | Story ID | Feature / Epic | Title | Status | Owner | Test gate | Blockers |
 |----------|----------------|-------|--------|-------|-----------|----------|
-| W0-US01 | W0-F1 / W0-F1-E1 | Compose stack + LocalStack healthy | Todo | | | |
-| W0-US02 | W0-F1 / W0-F1-E2 | Spring Boot health + Testcontainers MySQL | Todo | | | |
-| W0-US03 | W0-F1 / W0-F1-E2 | Flyway baseline schema apply | Todo | | | |
-| W0-US04 | W0-F1 / W0-F1-E3 | Structured logging + Micrometer smoke | Todo | | | |
-| W0-US05 | W0-F1 / W0-F1-E4 | Mock-data factories + WireMock harness | Todo | | | |
+| W0-US01 | W0-F1 / W0-F1-E1 | Compose stack + LocalStack healthy | Todo | | | Plan written |
+| W0-US02 | W0-F1 / W0-F1-E2 | Spring Boot health + Testcontainers MySQL | Todo | | | Plan written (full AC) |
+| W0-US03 | W0-F1 / W0-F1-E2 | Flyway baseline schema apply | Todo | | | Plan written |
+| W0-US04 | W0-F1 / W0-F1-E3 | Structured logging + Micrometer smoke | Todo | | | Plan written |
+| W0-US05 | W0-F1 / W0-F1-E4 | Mock-data factories + WireMock harness | Todo | | | Plan written |
 
 **Wave exit criteria:** All Must stories Done; TEST_MATRIX rows checked for Wave 0.
 

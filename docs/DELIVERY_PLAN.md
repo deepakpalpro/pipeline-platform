@@ -101,6 +101,8 @@ Stories below list **title + intent**. Fill full AC from the story template when
 
 **Exit criteria:** Health green; IT suite runs against Testcontainers; LocalStack reachable on `4566`; WireMock fixture for a sample REST endpoint.
 
+**Wave 0 execution plan (full AC):** [`delivery/waves/WAVE_0.md`](delivery/waves/WAVE_0.md) · branch `wave-0`
+
 ---
 
 ### Wave 1 — Tenancy, Services, Connectors (SPI)
