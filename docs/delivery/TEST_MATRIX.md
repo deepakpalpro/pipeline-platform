@@ -3,7 +3,8 @@
 Map each user story to required test types. Mark cells with `x` when Done, leave blank when pending, use `n/a` when not applicable for that story.
 
 Parent plan: [`../DELIVERY_PLAN.md`](../DELIVERY_PLAN.md)  
-Story template: [`STORY_TEMPLATE.md`](STORY_TEMPLATE.md)
+Story template: [`STORY_TEMPLATE.md`](STORY_TEMPLATE.md)  
+Wave TDD (stakeholders): [`tdd/README.md`](tdd/README.md)
 
 | Columns | Meaning |
 |---------|---------|
@@ -20,11 +21,11 @@ Story template: [`STORY_TEMPLATE.md`](STORY_TEMPLATE.md)
 
 | Story ID | Unit | Integration | WireMock | LocalStack | Manual | KB |
 |----------|------|-------------|----------|------------|--------|-----|
-| W0-US01 | | | n/a | | | |
-| W0-US02 | | | n/a | n/a | | |
-| W0-US03 | | | n/a | n/a | | n/a |
-| W0-US04 | | | n/a | n/a | | n/a |
-| W0-US05 | | | | n/a | | n/a |
+| W0-US01 | n/a | n/a | n/a | x | x | x |
+| W0-US02 | x | x | n/a | n/a | x | x |
+| W0-US03 | x | x | n/a | n/a | x | x |
+| W0-US04 | x | x | n/a | n/a | x | x |
+| W0-US05 | x | n/a | x | n/a | x | x |
 
 ---
 

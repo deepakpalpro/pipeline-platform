@@ -25,4 +25,37 @@ Spring Boot · MySQL · RabbitMQ · ELK · Prometheus/Grafana · LocalStack · D
 
 ## Getting started
 
-Application scaffolding starts with **Wave 0** in the [delivery plan](docs/DELIVERY_PLAN.md). Until then, use the architecture and delivery docs to plan implementation.
+- **Delivery catalog:** [docs/DELIVERY_PLAN.md](docs/DELIVERY_PLAN.md)
+- **Wave 0 plan:** [docs/delivery/waves/WAVE_0.md](docs/delivery/waves/WAVE_0.md)
+
+### Local deps (W0-US01)
+
+Requires Docker. AWS CLI v2 (or `awslocal`) is used by the LocalStack smoke script.
+
+| Service | Ports | Credentials |
+|---------|-------|-------------|
+| MySQL 8 | `3306` | user/pass/db: `pipeline` / `pipeline` / `pipeline` (root: `root`) |
+| RabbitMQ | `5672`, management `15672` | `pipeline` / `pipeline` |
+| LocalStack | host `4567` → container `4566` | dummy keys `test` / `test`; region `us-east-1` (override host port via `LOCALSTACK_HOST_PORT`) |
+
+```bash
+docker compose up -d
+./scripts/smoke-compose-deps.sh   # MySQL + RabbitMQ
+./scripts/smoke-localstack.sh     # S3 + SQS via LocalStack
+docker compose down -v            # teardown
+```
+
+Spring Boot health / Flyway / WireMock follow later Wave 0 stories (W0-US02+).
+
+### Application API (W0-US02)
+
+Requires Java 21 and Docker (Testcontainers for CI tests). On Rancher Desktop:
+
+```bash
+export DOCKER_HOST=unix://$HOME/.rd/docker.sock
+./mvnw -pl pipeline-api test
+./mvnw -pl pipeline-api spring-boot:run -Dspring-boot.run.profiles=local
+curl -s http://localhost:8080/actuator/health
+```
+
+Compose MySQL must be up for the `local` profile (`docker compose up -d mysql`).

@@ -8,6 +8,8 @@ Ship the multi-tenant, pay-as-you-go, no-code pipeline platform in incremental *
 | Doc | Purpose |
 |-----|---------|
 | [`delivery/STORY_TEMPLATE.md`](delivery/STORY_TEMPLATE.md) | Mandatory AC: TDD, unit, integration, mocks/LocalStack, manual, support KB |
+| [`delivery/TDD_WAVE_TEMPLATE.md`](delivery/TDD_WAVE_TEMPLATE.md) | Template for per-wave TDD docs (technical stakeholders) |
+| [`delivery/tdd/`](delivery/tdd/README.md) | Wave TDD docs W0–W7 (strategy, red/green backlog, exit gates) |
 | [`delivery/WAVE_TRACKER.md`](delivery/WAVE_TRACKER.md) | Status per story |
 | [`delivery/TEST_MATRIX.md`](delivery/TEST_MATRIX.md) | Story × test-type coverage |
 | [`delivery/SUPPORT_KB_TEMPLATE.md`](delivery/SUPPORT_KB_TEMPLATE.md) | Customer-support feature + dataflow articles |
@@ -101,6 +103,9 @@ Stories below list **title + intent**. Fill full AC from the story template when
 
 **Exit criteria:** Health green; IT suite runs against Testcontainers; LocalStack reachable on `4566`; WireMock fixture for a sample REST endpoint.
 
+**Wave 0 execution plan (full AC):** [`delivery/waves/WAVE_0.md`](delivery/waves/WAVE_0.md) · branch `wave-0`  
+**Wave 0 TDD (stakeholders):** [`delivery/tdd/WAVE_0_TDD.md`](delivery/tdd/WAVE_0_TDD.md)
+
 ---
 
 ### Wave 1 — Tenancy, Services, Connectors (SPI)
@@ -128,6 +133,8 @@ Stories below list **title + intent**. Fill full AC from the story template when
 
 **Exit criteria:** Tenant A cannot read Tenant B connectors; Rest test and S3 round-trip succeed; KB for “how to add a connector” drafted.
 
+**Wave 1 TDD (stakeholders):** [`delivery/tdd/WAVE_1_TDD.md`](delivery/tdd/WAVE_1_TDD.md)
+
 ---
 
 ### Wave 2 — Pipelines & Ephemeral Execution
@@ -154,6 +161,8 @@ Stories below list **title + intent**. Fill full AC from the story template when
 
 **Exit criteria:** Fixture 3-stage pipeline reaches `completed`; one forced failure reaches DLQ; KB for “pipeline run failed” with dataflow.
 
+**Wave 2 TDD (stakeholders):** [`delivery/tdd/WAVE_2_TDD.md`](delivery/tdd/WAVE_2_TDD.md)
+
 ---
 
 ### Wave 3 — Webhook Ingress + Queue
@@ -179,6 +188,8 @@ Stories below list **title + intent**. Fill full AC from the story template when
 | **W3-US07** | Must | W3-US01 | Emit `platform.webhook_events` + `data.bytes_in` usage events |
 
 **Exit criteria:** External POST `202` without waiting for pipelets; event on `tenant.*.webhook.*.in`; support KB for webhook troubleshooting live.
+
+**Wave 3 TDD (stakeholders):** [`delivery/tdd/WAVE_3_TDD.md`](delivery/tdd/WAVE_3_TDD.md)
 
 #### Fully worked example: W3-US01
 
@@ -289,6 +300,8 @@ Stories below list **title + intent**. Fill full AC from the story template when
 
 **Exit criteria:** Support locates completeness and logs for known `execution_id`; KB “how to read completeness”.
 
+**Wave 4 TDD (stakeholders):** [`delivery/tdd/WAVE_4_TDD.md`](delivery/tdd/WAVE_4_TDD.md)
+
 ---
 
 ### Wave 5 — Metering & Pay-as-you-go
@@ -312,6 +325,8 @@ Stories below list **title + intent**. Fill full AC from the story template when
 | **W5-US06** | Must | W5-US04 | Hard limit / zero credit returns `402` on run |
 
 **Exit criteria:** Usage summary matches fixture within defined tolerance; billing-dispute KB drafted.
+
+**Wave 5 TDD (stakeholders):** [`delivery/tdd/WAVE_5_TDD.md`](delivery/tdd/WAVE_5_TDD.md)
 
 ---
 
@@ -337,6 +352,8 @@ Stories below list **title + intent**. Fill full AC from the story template when
 
 **Exit criteria:** Manual E2E script builds+runs pipeline without Postman; UI KB with screenshots placeholders.
 
+**Wave 6 TDD (stakeholders):** [`delivery/tdd/WAVE_6_TDD.md`](delivery/tdd/WAVE_6_TDD.md)
+
 ---
 
 ### Wave 7 — Hardening & Ops
@@ -360,6 +377,8 @@ Stories below list **title + intent**. Fill full AC from the story template when
 | **W7-US06** | Must | W7-US05 | Production readiness checklist sign-off |
 
 **Exit criteria:** Go/No-Go signed; TEST_MATRIX complete for Must stories in shipped waves.
+
+**Wave 7 TDD (stakeholders):** [`delivery/tdd/WAVE_7_TDD.md`](delivery/tdd/WAVE_7_TDD.md)
 
 ---
 
@@ -389,6 +408,22 @@ W4 can start after W2 once fixture executions exist; W3 can proceed in parallel 
 3. **Prefer Testcontainers** for MySQL/RabbitMQ in CI; Compose + LocalStack for manual and LS-marked matrix rows.
 4. **Every customer-visible story** updates or creates a KB article.
 5. **Trackers:** update WAVE_TRACKER and TEST_MATRIX in the same PR as the story.
+6. **Wave TDD docs:** keep [`delivery/tdd/WAVE_N_TDD.md`](delivery/tdd/README.md) current for technical stakeholders (red/green evidence, deferrals, exit gates) when stories ship or strategy changes.
+7. **Story branch lifecycle (mandatory for every user story):**
+
+```text
+feature branch (e.g. W0-US02)
+  → implement + push
+  → merge into wave branch (e.g. wave-0)
+  → annotate tag on wave branch with story id (e.g. W0-US02)
+  → delete feature branch (local + remote)
+  → create next story branch from wave branch
+```
+
+Tagging uses the **story id** (same as the finished branch name). Push tags with `git push origin refs/tags/<STORY_ID>` and delete remotes with `git push origin --delete refs/heads/<STORY_ID>` so tag/branch name collisions do not break `git push`.
+
+When a **wave** is complete, merge the wave branch to `master` and optionally tag `wave-N-complete` (or similar).
+
 
 ---
 

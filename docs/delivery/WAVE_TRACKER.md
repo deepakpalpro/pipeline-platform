@@ -2,6 +2,8 @@
 
 Track delivery progress across waves. Update status as stories move. Parent plan: [`../DELIVERY_PLAN.md`](../DELIVERY_PLAN.md).
 
+**TDD (technical stakeholders):** [`tdd/README.md`](tdd/README.md) · template [`TDD_WAVE_TEMPLATE.md`](TDD_WAVE_TEMPLATE.md)
+
 **Status values:** `Todo` | `In Progress` | `Blocked` | `Done`
 
 **Test gate:** leave blank until WIP; when Done, list completed gates (e.g. `U,I,WM,LS,M,KB`).
@@ -12,15 +14,17 @@ Abbreviations: **U** = Unit, **I** = Integration, **WM** = WireMock, **LS** = Lo
 
 ## Wave 0 — Foundation
 
-**Wave goal:** `docker compose up` + health API; tests green.
+**Wave goal:** `docker compose up` + health API; tests green.  
+**Plan:** [`waves/WAVE_0.md`](waves/WAVE_0.md) · **TDD:** [`tdd/WAVE_0_TDD.md`](tdd/WAVE_0_TDD.md) · **Branch:** `wave-0`  
+**KB:** [`kb/W0-US01-local-compose-stack.md`](kb/W0-US01-local-compose-stack.md) · [`kb/W0-US02-health-endpoint.md`](kb/W0-US02-health-endpoint.md) · [`kb/W0-US03-flyway-baseline.md`](kb/W0-US03-flyway-baseline.md) · [`kb/W0-US04-logging-prometheus.md`](kb/W0-US04-logging-prometheus.md) · [`kb/W0-US05-mock-data-wiremock.md`](kb/W0-US05-mock-data-wiremock.md)
 
 | Story ID | Feature / Epic | Title | Status | Owner | Test gate | Blockers |
 |----------|----------------|-------|--------|-------|-----------|----------|
-| W0-US01 | W0-F1 / W0-F1-E1 | Compose stack + LocalStack healthy | Todo | | | |
-| W0-US02 | W0-F1 / W0-F1-E2 | Spring Boot health + Testcontainers MySQL | Todo | | | |
-| W0-US03 | W0-F1 / W0-F1-E2 | Flyway baseline schema apply | Todo | | | |
-| W0-US04 | W0-F1 / W0-F1-E3 | Structured logging + Micrometer smoke | Todo | | | |
-| W0-US05 | W0-F1 / W0-F1-E4 | Mock-data factories + WireMock harness | Todo | | | |
+| W0-US01 | W0-F1 / W0-F1-E1 | Compose stack + LocalStack healthy | Done | | LS,M,KB | Verified on host port 4567 |
+| W0-US02 | W0-F1 / W0-F1-E2 | Spring Boot health + Compose MySQL IT | Done | | U,I,M,KB | Rancher Desktop: Compose MySQL IT (Testcontainers blocked by docker-java API) |
+| W0-US03 | W0-F1 / W0-F1-E2 | Flyway baseline schema apply | Done | | U,I,M,KB | |
+| W0-US04 | W0-F1 / W0-F1-E3 | Structured logging + Micrometer smoke | Done | | U,I,M,KB | |
+| W0-US05 | W0-F1 / W0-F1-E4 | Mock-data factories + WireMock harness | Done | | U,WM,M,KB | |
 
 **Wave exit criteria:** All Must stories Done; TEST_MATRIX rows checked for Wave 0.
 
@@ -146,6 +150,20 @@ Abbreviations: **U** = Unit, **I** = Integration, **WM** = WireMock, **LS** = Lo
 | W7-US06 | W7-F2 / W7-F2-E2 | Production readiness checklist sign-off | Todo | | | |
 
 **Wave exit criteria:** All Must stories Done; TEST_MATRIX complete for shipped waves; Go/No-Go signed.
+
+---
+
+## Story branch lifecycle
+
+After each user story ships (example ids: `W0-US02`, wave branch `wave-0`):
+
+1. Merge feature branch into the wave branch (`git merge --no-ff W0-USnn`).
+2. Create annotated tag on the wave tip with the **story id** (`git tag -a W0-USnn -m "..."`).
+3. Push wave branch + tag (`git push origin wave-0` and `git push origin refs/tags/W0-USnn`).
+4. Delete feature branch local and remote (`git branch -d W0-USnn` · `git push origin --delete refs/heads/W0-USnn`).
+5. Create and push the next story branch from the wave branch (`git checkout -b W0-USnn+1` · `git push -u origin HEAD`).
+
+Canonical description: [`../DELIVERY_PLAN.md`](../DELIVERY_PLAN.md) → Working agreements §6.
 
 ---
 
