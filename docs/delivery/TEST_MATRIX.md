@@ -20,7 +20,7 @@ Story template: [`STORY_TEMPLATE.md`](STORY_TEMPLATE.md)
 
 | Story ID | Unit | Integration | WireMock | LocalStack | Manual | KB |
 |----------|------|-------------|----------|------------|--------|-----|
-| W0-US01 | | | n/a | | | |
+| W0-US01 | n/a | n/a | n/a | x | x | x |
 | W0-US02 | | | n/a | n/a | | |
 | W0-US03 | | | n/a | n/a | | n/a |
 | W0-US04 | | | n/a | n/a | | n/a |
