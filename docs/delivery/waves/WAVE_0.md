@@ -2,6 +2,7 @@
 
 **Branch:** `wave-0`  
 **Parent catalog:** [`../../DELIVERY_PLAN.md`](../../DELIVERY_PLAN.md)  
+**TDD (stakeholders):** [`../tdd/WAVE_0_TDD.md`](../tdd/WAVE_0_TDD.md)  
 **Trackers:** [`../WAVE_TRACKER.md`](../WAVE_TRACKER.md) · [`../TEST_MATRIX.md`](../TEST_MATRIX.md)  
 **Story AC template:** [`../STORY_TEMPLATE.md`](../STORY_TEMPLATE.md)  
 **Architecture:** [`../../ARCHITECTURE.md`](../../ARCHITECTURE.md) §5, §10.6

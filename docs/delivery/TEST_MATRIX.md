@@ -3,7 +3,8 @@
 Map each user story to required test types. Mark cells with `x` when Done, leave blank when pending, use `n/a` when not applicable for that story.
 
 Parent plan: [`../DELIVERY_PLAN.md`](../DELIVERY_PLAN.md)  
-Story template: [`STORY_TEMPLATE.md`](STORY_TEMPLATE.md)
+Story template: [`STORY_TEMPLATE.md`](STORY_TEMPLATE.md)  
+Wave TDD (stakeholders): [`tdd/README.md`](tdd/README.md)
 
 | Columns | Meaning |
 |---------|---------|

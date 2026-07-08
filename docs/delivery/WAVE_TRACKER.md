@@ -2,6 +2,8 @@
 
 Track delivery progress across waves. Update status as stories move. Parent plan: [`../DELIVERY_PLAN.md`](../DELIVERY_PLAN.md).
 
+**TDD (technical stakeholders):** [`tdd/README.md`](tdd/README.md) · template [`TDD_WAVE_TEMPLATE.md`](TDD_WAVE_TEMPLATE.md)
+
 **Status values:** `Todo` | `In Progress` | `Blocked` | `Done`
 
 **Test gate:** leave blank until WIP; when Done, list completed gates (e.g. `U,I,WM,LS,M,KB`).
@@ -13,7 +15,7 @@ Abbreviations: **U** = Unit, **I** = Integration, **WM** = WireMock, **LS** = Lo
 ## Wave 0 — Foundation
 
 **Wave goal:** `docker compose up` + health API; tests green.  
-**Plan:** [`waves/WAVE_0.md`](waves/WAVE_0.md) · **Branch:** `wave-0`  
+**Plan:** [`waves/WAVE_0.md`](waves/WAVE_0.md) · **TDD:** [`tdd/WAVE_0_TDD.md`](tdd/WAVE_0_TDD.md) · **Branch:** `wave-0`  
 **KB:** [`kb/W0-US01-local-compose-stack.md`](kb/W0-US01-local-compose-stack.md) · [`kb/W0-US02-health-endpoint.md`](kb/W0-US02-health-endpoint.md) · [`kb/W0-US03-flyway-baseline.md`](kb/W0-US03-flyway-baseline.md) · [`kb/W0-US04-logging-prometheus.md`](kb/W0-US04-logging-prometheus.md) · [`kb/W0-US05-mock-data-wiremock.md`](kb/W0-US05-mock-data-wiremock.md)
 
 | Story ID | Feature / Epic | Title | Status | Owner | Test gate | Blockers |
