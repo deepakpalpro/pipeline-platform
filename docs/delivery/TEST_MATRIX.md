@@ -24,7 +24,7 @@ Story template: [`STORY_TEMPLATE.md`](STORY_TEMPLATE.md)
 | W0-US02 | x | x | n/a | n/a | x | x |
 | W0-US03 | x | x | n/a | n/a | x | x |
 | W0-US04 | | | n/a | n/a | | n/a |
-| W0-US05 | | | | n/a | | n/a |
+| W0-US05 | x | n/a | x | n/a | x | x |
 
 ---
 
