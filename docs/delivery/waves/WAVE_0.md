@@ -158,7 +158,7 @@ See [`../kb/W0-US01-local-compose-stack.md`](../kb/W0-US01-local-compose-stack.m
 | **Priority** | Must |
 | **Dependencies** | W0-US01 (Compose for manual; Testcontainers for CI) |
 | **Architecture refs** | §5 Spring Boot |
-| **Status** | Todo |
+| **Status** | Done (Compose MySQL IT locally; Testcontainers deferred for Rancher Desktop docker-java API) |
 
 **As a** platform developer  
 **I want** a Spring Boot API with a health endpoint tested against MySQL  
@@ -358,8 +358,8 @@ Engineer-facing: how to add a new fixture file (link from Wave 1 connector KB la
 
 - [x] `docker-compose.yml` (mysql:8, rabbitmq:3-management, localstack)
 - [x] `scripts/smoke-localstack.sh` (+ `smoke-compose-deps.sh`)
-- [ ] Parent `pom.xml` + `pipeline-api` module
-- [ ] Actuator health + local profile datasource to Compose MySQL
+- [x] Parent `pom.xml` + `pipeline-api` module
+- [x] Actuator health + local profile datasource to Compose MySQL
 - [ ] `V1__baseline.sql` (`tenants` stub)
 - [ ] logback + `/actuator/prometheus`
 - [ ] Fixtures + WireMock test

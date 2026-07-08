@@ -19,7 +19,7 @@ Abbreviations: **U** = Unit, **I** = Integration, **WM** = WireMock, **LS** = Lo
 | Story ID | Feature / Epic | Title | Status | Owner | Test gate | Blockers |
 |----------|----------------|-------|--------|-------|-----------|----------|
 | W0-US01 | W0-F1 / W0-F1-E1 | Compose stack + LocalStack healthy | Done | | LS,M,KB | Verified on host port 4567 |
-| W0-US02 | W0-F1 / W0-F1-E2 | Spring Boot health + Testcontainers MySQL | Todo | | | Plan written (full AC) |
+| W0-US02 | W0-F1 / W0-F1-E2 | Spring Boot health + Compose MySQL IT | Done | | U,I,M,KB | Rancher Desktop: Compose MySQL IT (Testcontainers blocked by docker-java API) |
 | W0-US03 | W0-F1 / W0-F1-E2 | Flyway baseline schema apply | Todo | | | Plan written |
 | W0-US04 | W0-F1 / W0-F1-E3 | Structured logging + Micrometer smoke | Todo | | | Plan written |
 | W0-US05 | W0-F1 / W0-F1-E4 | Mock-data factories + WireMock harness | Todo | | | Plan written |
