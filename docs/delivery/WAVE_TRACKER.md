@@ -1,0 +1,163 @@
+# Wave Tracker
+
+Track delivery progress across waves. Update status as stories move. Parent plan: [`../DELIVERY_PLAN.md`](../DELIVERY_PLAN.md).
+
+**Status values:** `Todo` | `In Progress` | `Blocked` | `Done`
+
+**Test gate:** leave blank until WIP; when Done, list completed gates (e.g. `U,I,WM,LS,M,KB`).
+
+Abbreviations: **U** = Unit, **I** = Integration, **WM** = WireMock, **LS** = LocalStack, **M** = Manual, **KB** = Support article
+
+---
+
+## Wave 0 — Foundation
+
+**Wave goal:** `docker compose up` + health API; tests green.
+
+| Story ID | Feature / Epic | Title | Status | Owner | Test gate | Blockers |
+|----------|----------------|-------|--------|-------|-----------|----------|
+| W0-US01 | W0-F1 / W0-F1-E1 | Compose stack + LocalStack healthy | Todo | | | |
+| W0-US02 | W0-F1 / W0-F1-E2 | Spring Boot health + Testcontainers MySQL | Todo | | | |
+| W0-US03 | W0-F1 / W0-F1-E2 | Flyway baseline schema apply | Todo | | | |
+| W0-US04 | W0-F1 / W0-F1-E3 | Structured logging + Micrometer smoke | Todo | | | |
+| W0-US05 | W0-F1 / W0-F1-E4 | Mock-data factories + WireMock harness | Todo | | | |
+
+**Wave exit criteria:** All Must stories Done; TEST_MATRIX rows checked for Wave 0.
+
+---
+
+## Wave 1 — Tenancy, Services, Connectors
+
+**Wave goal:** Tenant + service config + Rest connector test against WireMock/LocalStack.
+
+| Story ID | Feature / Epic | Title | Status | Owner | Test gate | Blockers |
+|----------|----------------|-------|--------|-------|-----------|----------|
+| W1-US01 | W1-F1 / W1-F1-E1 | Tenant CRUD + JWT tenant context | Todo | | | |
+| W1-US02 | W1-F1 / W1-F1-E1 | Tenant isolation filters (JPA) | Todo | | | |
+| W1-US03 | W1-F2 / W1-F2-E1 | Service types + defaults | Todo | | | |
+| W1-US04 | W1-F2 / W1-F2-E1 | Tenant service config (Auth pattern) | Todo | | | |
+| W1-US05 | W1-F3 / W1-F3-E1 | Connector SPI load + Rest plugin | Todo | | | |
+| W1-US06 | W1-F3 / W1-F3-E1 | Connector test vs WireMock | Todo | | | |
+| W1-US07 | W1-F3 / W1-F3-E2 | Storage connector vs LocalStack S3 | Todo | | | |
+| W1-US08 | W1-F3 / W1-F3-E2 | MessageBus connector vs LocalStack SQS | Todo | | | |
+
+**Wave exit criteria:** Rest + Storage + MessageBus paths proven with mocks; no cross-tenant connector read.
+
+---
+
+## Wave 2 — Pipelines & Ephemeral Execution
+
+**Wave goal:** Source → Processor → Destination via RabbitMQ; execution status in MySQL.
+
+| Story ID | Feature / Epic | Title | Status | Owner | Test gate | Blockers |
+|----------|----------------|-------|--------|-------|-----------|----------|
+| W2-US01 | W2-F1 / W2-F1-E1 | Pipeline CRUD + visibility/mode | Todo | | | |
+| W2-US02 | W2-F1 / W2-F1-E1 | Pipeline steps config API | Todo | | | |
+| W2-US03 | W2-F2 / W2-F2-E1 | Inter-stage RabbitMQ topology | Todo | | | |
+| W2-US04 | W2-F2 / W2-F2-E2 | Async run orchestration | Todo | | | |
+| W2-US05 | W2-F2 / W2-F2-E2 | Pipelet Job spawn (Kind/stub) | Todo | | | |
+| W2-US06 | W2-F3 / W2-F3-E1 | Retries + per-stage DLQ | Todo | | | |
+| W2-US07 | W2-F1 / W2-F1-E2 | Execution status query API | Todo | | | |
+
+**Wave exit criteria:** Fixture 3-stage pipeline completes; DLQ path exercised once.
+
+---
+
+## Wave 3 — Webhook Ingress + Queue
+
+**Wave goal:** External POST `202`; event on tenant webhook queue; processing without ingress cold-start.
+
+| Story ID | Feature / Epic | Title | Status | Owner | Test gate | Blockers |
+|----------|----------------|-------|--------|-------|-----------|----------|
+| W3-US01 | W3-F1 / W3-F1-E1 | Ingress accept + queue publish | Todo | | | |
+| W3-US02 | W3-F1 / W3-F1-E1 | Signature verification + auth service | Todo | | | |
+| W3-US03 | W3-F1 / W3-F1-E2 | Idempotency (X-Webhook-Id / hash) | Todo | | | |
+| W3-US04 | W3-F1 / W3-F1-E2 | Rate limit + backpressure 429/503 | Todo | | | |
+| W3-US05 | W3-F2 / W3-F2-E1 | Provision webhook URL API | Todo | | | |
+| W3-US06 | W3-F2 / W3-F2-E1 | On-demand processor trigger (queue depth) | Todo | | | |
+| W3-US07 | W3-F3 / W3-F3-E1 | Meter webhook_events + bytes_in | Todo | | | |
+
+**Wave exit criteria:** Support KB for webhook troubleshooting published; architecture §11 behaviors covered.
+
+---
+
+## Wave 4 — Observability
+
+**Wave goal:** Completeness % and logs visible for a known fixture execution.
+
+| Story ID | Feature / Epic | Title | Status | Owner | Test gate | Blockers |
+|----------|----------------|-------|--------|-------|-----------|----------|
+| W4-US01 | W4-F1 / W4-F1-E1 | Emit pipelet counters + histograms | Todo | | | |
+| W4-US02 | W4-F1 / W4-F1-E1 | Completeness metric on fixture run | Todo | | | |
+| W4-US03 | W4-F1 / W4-F1-E2 | Heartbeat + critical error metrics | Todo | | | |
+| W4-US04 | W4-F2 / W4-F2-E1 | Logstash → ES → Kibana index pattern | Todo | | | |
+| W4-US05 | W4-F2 / W4-F2-E2 | Observability REST APIs | Todo | | | |
+| W4-US06 | W4-F2 / W4-F2-E1 | Grafana dashboard provisioning (tenant) | Todo | | | |
+
+**Wave exit criteria:** Support can locate completeness and error logs for fixture `exec-*`.
+
+---
+
+## Wave 5 — Metering & Pay-as-you-go
+
+**Wave goal:** Fixture run yields billable events across compute, records, connector calls, webhooks.
+
+| Story ID | Feature / Epic | Title | Status | Owner | Test gate | Blockers |
+|----------|----------------|-------|--------|-------|-----------|----------|
+| W5-US01 | W5-F1 / W5-F1-E1 | UsageEvent ingest + persist | Todo | | | |
+| W5-US02 | W5-F1 / W5-F1-E1 | MeterAgent emit from pipelet sidecar/lib | Todo | | | |
+| W5-US03 | W5-F1 / W5-F1-E2 | Hourly aggregates job | Todo | | | |
+| W5-US04 | W5-F2 / W5-F2-E1 | Quota soft/hard + credit balance | Todo | | | |
+| W5-US05 | W5-F2 / W5-F2-E1 | Usage and billing query APIs | Todo | | | |
+| W5-US06 | W5-F2 / W5-F2-E2 | Block run on hard limit / zero credit (402) | Todo | | | |
+
+**Wave exit criteria:** Usage summary matches fixture meters within tolerance; KB for billing disputes drafted.
+
+---
+
+## Wave 6 — No-code UI
+
+**Wave goal:** Build and run a 3-step pipeline in UI without code.
+
+| Story ID | Feature / Epic | Title | Status | Owner | Test gate | Blockers |
+|----------|----------------|-------|--------|-------|-----------|----------|
+| W6-US01 | W6-F1 / W6-F1-E1 | Level-1 nav shell + auth context | Todo | | | |
+| W6-US02 | W6-F1 / W6-F1-E2 | Connectors / Services list+forms | Todo | | | |
+| W6-US03 | W6-F1 / W6-F1-E2 | Global Pipelets catalog + admin register | Todo | | | |
+| W6-US04 | W6-F2 / W6-F2-E1 | Drag-drop pipeline builder save | Todo | | | |
+| W6-US05 | W6-F2 / W6-F2-E1 | Run / dry-run / execution overlay | Todo | | | |
+| W6-US06 | W6-F2 / W6-F2-E2 | Observability panels in UI | Todo | | | |
+
+**Wave exit criteria:** Manual E2E script passes without Postman for happy path.
+
+---
+
+## Wave 7 — Hardening & Ops
+
+**Wave goal:** Production-readiness checklist + support playbooks for major features.
+
+| Story ID | Feature / Epic | Title | Status | Owner | Test gate | Blockers |
+|----------|----------------|-------|--------|-------|-----------|----------|
+| W7-US01 | W7-F1 / W7-F1-E1 | Sync execution mode | Todo | | | |
+| W7-US02 | W7-F1 / W7-F1-E2 | Cross-tenant access denied suite | Todo | | | |
+| W7-US03 | W7-F1 / W7-F1-E2 | Pipeline version rollback | Todo | | | |
+| W7-US04 | W7-F2 / W7-F2-E1 | ResourceQuota / NetworkPolicy verified | Todo | | | |
+| W7-US05 | W7-F2 / W7-F2-E2 | Support KB final suite (waves 1–6) | Todo | | | |
+| W7-US06 | W7-F2 / W7-F2-E2 | Production readiness checklist sign-off | Todo | | | |
+
+**Wave exit criteria:** All Must stories Done; TEST_MATRIX complete for shipped waves; Go/No-Go signed.
+
+---
+
+## Summary counts
+
+| Wave | Todo | In Progress | Blocked | Done |
+|------|------|-------------|---------|------|
+| 0 | | | | |
+| 1 | | | | |
+| 2 | | | | |
+| 3 | | | | |
+| 4 | | | | |
+| 5 | | | | |
+| 6 | | | | |
+| 7 | | | | |
