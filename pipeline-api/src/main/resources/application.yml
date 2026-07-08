@@ -5,17 +5,31 @@ spring:
     enabled: true
     locations: classpath:db/migration
 
+logging:
+  structured:
+    format:
+      console: logstash
+
 management:
   endpoints:
     web:
       exposure:
-        include: health,info
+        include: health,info,prometheus
   endpoint:
     health:
       show-details: always
+    prometheus:
+      enabled: true
   health:
     db:
       enabled: true
+  metrics:
+    tags:
+      application: ${spring.application.name}
+  prometheus:
+    metrics:
+      export:
+        enabled: true
 
 ---
 spring:
