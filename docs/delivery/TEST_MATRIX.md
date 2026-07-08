@@ -1,0 +1,130 @@
+# Test Coverage Matrix
+
+Map each user story to required test types. Mark cells with `x` when Done, leave blank when pending, use `n/a` when not applicable for that story.
+
+Parent plan: [`../DELIVERY_PLAN.md`](../DELIVERY_PLAN.md)  
+Story template: [`STORY_TEMPLATE.md`](STORY_TEMPLATE.md)
+
+| Columns | Meaning |
+|---------|---------|
+| **Unit** | Unit tests (TDD red/green) |
+| **Integration** | Spring Boot IT / Testcontainers |
+| **WireMock** | HTTP/API stubs |
+| **LocalStack** | S3/SQS (or other LocalStack services) |
+| **Manual** | Manual test steps executed |
+| **KB** | Support KB article drafted/linked |
+
+---
+
+## Wave 0 — Foundation
+
+| Story ID | Unit | Integration | WireMock | LocalStack | Manual | KB |
+|----------|------|-------------|----------|------------|--------|-----|
+| W0-US01 | | | n/a | | | |
+| W0-US02 | | | n/a | n/a | | |
+| W0-US03 | | | n/a | n/a | | n/a |
+| W0-US04 | | | n/a | n/a | | n/a |
+| W0-US05 | | | | n/a | | n/a |
+
+---
+
+## Wave 1 — Tenancy, Services, Connectors
+
+| Story ID | Unit | Integration | WireMock | LocalStack | Manual | KB |
+|----------|------|-------------|----------|------------|--------|-----|
+| W1-US01 | | | n/a | n/a | | |
+| W1-US02 | | | n/a | n/a | | |
+| W1-US03 | | | n/a | n/a | | |
+| W1-US04 | | | | n/a | | |
+| W1-US05 | | | | n/a | | |
+| W1-US06 | | | | n/a | | |
+| W1-US07 | | | n/a | | | |
+| W1-US08 | | | n/a | | | |
+
+---
+
+## Wave 2 — Pipelines & Ephemeral Execution
+
+| Story ID | Unit | Integration | WireMock | LocalStack | Manual | KB |
+|----------|------|-------------|----------|------------|--------|-----|
+| W2-US01 | | | n/a | n/a | | |
+| W2-US02 | | | n/a | n/a | | |
+| W2-US03 | | | n/a | n/a | | |
+| W2-US04 | | | | n/a | | |
+| W2-US05 | | | n/a | n/a | | |
+| W2-US06 | | | n/a | n/a | | |
+| W2-US07 | | | n/a | n/a | | |
+
+---
+
+## Wave 3 — Webhook Ingress + Queue
+
+| Story ID | Unit | Integration | WireMock | LocalStack | Manual | KB |
+|----------|------|-------------|----------|------------|--------|-----|
+| W3-US01 | | | | n/a | | |
+| W3-US02 | | | | n/a | | |
+| W3-US03 | | | n/a | n/a | | |
+| W3-US04 | | | n/a | n/a | | |
+| W3-US05 | | | n/a | n/a | | |
+| W3-US06 | | | n/a | n/a | | |
+| W3-US07 | | | n/a | n/a | | |
+
+---
+
+## Wave 4 — Observability
+
+| Story ID | Unit | Integration | WireMock | LocalStack | Manual | KB |
+|----------|------|-------------|----------|------------|--------|-----|
+| W4-US01 | | | n/a | n/a | | |
+| W4-US02 | | | n/a | n/a | | |
+| W4-US03 | | | n/a | n/a | | |
+| W4-US04 | | | n/a | n/a | | |
+| W4-US05 | | | n/a | n/a | | |
+| W4-US06 | | | n/a | n/a | | |
+
+---
+
+## Wave 5 — Metering & Pay-as-you-go
+
+| Story ID | Unit | Integration | WireMock | LocalStack | Manual | KB |
+|----------|------|-------------|----------|------------|--------|-----|
+| W5-US01 | | | n/a | n/a | | |
+| W5-US02 | | | n/a | n/a | | |
+| W5-US03 | | | n/a | n/a | | |
+| W5-US04 | | | n/a | n/a | | |
+| W5-US05 | | | n/a | n/a | | |
+| W5-US06 | | | n/a | n/a | | |
+
+---
+
+## Wave 6 — No-code UI
+
+| Story ID | Unit | Integration | WireMock | LocalStack | Manual | KB |
+|----------|------|-------------|----------|------------|--------|-----|
+| W6-US01 | | | | n/a | | |
+| W6-US02 | | | | | | |
+| W6-US03 | | | | n/a | | |
+| W6-US04 | | | | n/a | | |
+| W6-US05 | | | | n/a | | |
+| W6-US06 | | | n/a | n/a | | |
+
+---
+
+## Wave 7 — Hardening & Ops
+
+| Story ID | Unit | Integration | WireMock | LocalStack | Manual | KB |
+|----------|------|-------------|----------|------------|--------|-----|
+| W7-US01 | | | n/a | n/a | | |
+| W7-US02 | | | n/a | n/a | | |
+| W7-US03 | | | n/a | n/a | | |
+| W7-US04 | | | n/a | n/a | | |
+| W7-US05 | n/a | n/a | n/a | n/a | | |
+| W7-US06 | n/a | n/a | n/a | n/a | | |
+
+---
+
+## CI gate notes
+
+- Prefer running Unit + Integration on every PR once Wave 0 harness exists.
+- LocalStack and WireMock suites may run as a labeled job (`integration-external`) to keep PRs fast.
+- Manual and KB remain human gates tracked here and in [`WAVE_TRACKER.md`](WAVE_TRACKER.md).

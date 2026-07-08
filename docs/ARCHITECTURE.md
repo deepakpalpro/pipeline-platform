@@ -2,6 +2,8 @@
 
 This document is the full system design for a no-code, multi-tenant data processing platform. It was produced by applying the requirements defined in [SYSTEM_DESIGN_PROMPT.md](../SYSTEM_DESIGN_PROMPT.md).
 
+**Incremental delivery** (waves → features → epics → user stories, with test and support-KB acceptance criteria): [DELIVERY_PLAN.md](DELIVERY_PLAN.md) · trackers under [delivery/](delivery/).
+
 ---
 
 ## Table of Contents
