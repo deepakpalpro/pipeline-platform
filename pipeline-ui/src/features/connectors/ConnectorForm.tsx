@@ -1,5 +1,6 @@
 import { useState, type FormEvent } from 'react'
 import type { ConnectorType, CreateConnectorRequest } from '../../api/types'
+import { KeyValueEditor } from '../forms/KeyValueEditor'
 import { validateConnectorForm, type FieldErrors } from '../forms/validation'
 
 type Props = {
@@ -15,6 +16,7 @@ export function ConnectorForm({ connectorTypes, onSubmit, onCancel }: Props) {
   const [name, setName] = useState('')
   const [baseUrl, setBaseUrl] = useState('')
   const [apiKey, setApiKey] = useState('')
+  const [extraConfig, setExtraConfig] = useState<Record<string, unknown>>({})
   const [errors, setErrors] = useState<FieldErrors>({})
   const [submitting, setSubmitting] = useState(false)
 
@@ -27,7 +29,10 @@ export function ConnectorForm({ connectorTypes, onSubmit, onCancel }: Props) {
     }
     setSubmitting(true)
     try {
-      const config: Record<string, unknown> = { baseUrl: baseUrl.trim() }
+      const config: Record<string, unknown> = {
+        ...extraConfig,
+        baseUrl: baseUrl.trim(),
+      }
       if (apiKey.trim()) {
         config.api_key = apiKey.trim()
       }
@@ -104,6 +109,12 @@ export function ConnectorForm({ connectorTypes, onSubmit, onCancel }: Props) {
           onChange={(e) => setApiKey(e.target.value)}
         />
       </label>
+
+      <KeyValueEditor
+        title="Additional config"
+        entries={extraConfig}
+        onChange={setExtraConfig}
+      />
 
       <div className="form-actions">
         <button type="submit" disabled={submitting}>

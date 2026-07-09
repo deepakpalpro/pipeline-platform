@@ -1,5 +1,6 @@
 import { useState, type FormEvent } from 'react'
 import type { CreateTenantServiceRequest, ServiceType } from '../../api/types'
+import { KeyValueEditor } from '../forms/KeyValueEditor'
 import { validateServiceForm, type FieldErrors } from '../forms/validation'
 
 type Props = {
@@ -14,6 +15,7 @@ export function ServiceForm({ serviceTypes, onSubmit, onCancel }: Props) {
   const [name, setName] = useState('')
   const [clientId, setClientId] = useState('')
   const [clientSecret, setClientSecret] = useState('')
+  const [extraConfig, setExtraConfig] = useState<Record<string, unknown>>({})
   const [errors, setErrors] = useState<FieldErrors>({})
   const [submitting, setSubmitting] = useState(false)
 
@@ -26,7 +28,7 @@ export function ServiceForm({ serviceTypes, onSubmit, onCancel }: Props) {
     }
     setSubmitting(true)
     try {
-      const tenantConfig: Record<string, unknown> = {}
+      const tenantConfig: Record<string, unknown> = { ...extraConfig }
       if (clientId.trim()) {
         tenantConfig.client_id = clientId.trim()
       }
@@ -117,6 +119,12 @@ export function ServiceForm({ serviceTypes, onSubmit, onCancel }: Props) {
           onChange={(e) => setClientSecret(e.target.value)}
         />
       </label>
+
+      <KeyValueEditor
+        title="Additional config"
+        entries={extraConfig}
+        onChange={setExtraConfig}
+      />
 
       <div className="form-actions">
         <button type="submit" disabled={submitting}>

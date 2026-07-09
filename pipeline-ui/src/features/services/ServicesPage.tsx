@@ -5,8 +5,12 @@ import {
   getService,
   listServiceTypes,
   listServices,
+  updateService,
 } from '../../api/resources'
-import type { CreateTenantServiceRequest } from '../../api/types'
+import type {
+  CreateTenantServiceRequest,
+  UpdateTenantServiceRequest,
+} from '../../api/types'
 import { useTenant } from '../../contexts/TenantContext'
 import { ServiceDetail } from './ServiceDetail'
 import { ServiceForm } from './ServiceForm'
@@ -40,6 +44,23 @@ export function ServicesPage() {
       void queryClient.invalidateQueries({ queryKey: ['services', tenantId] })
       setCreating(false)
       setDetailId(created.id)
+    },
+  })
+
+  const updateMutation = useMutation({
+    mutationFn: ({
+      id,
+      body,
+    }: {
+      id: string
+      body: UpdateTenantServiceRequest
+    }) => updateService(tenantId, id, body),
+    onSuccess: (updated) => {
+      void queryClient.invalidateQueries({ queryKey: ['services', tenantId] })
+      void queryClient.invalidateQueries({
+        queryKey: ['services', tenantId, updated.id],
+      })
+      setDetailId(updated.id)
     },
   })
 
@@ -100,8 +121,18 @@ export function ServicesPage() {
 
       {detailId && detailQuery.data ? (
         <div className="detail-panel">
-          <ServiceDetail service={detailQuery.data} />
-          <button type="button" className="secondary" onClick={() => setDetailId(null)}>
+          <ServiceDetail
+            service={detailQuery.data}
+            saving={updateMutation.isPending}
+            onSave={async (id, body) => {
+              await updateMutation.mutateAsync({ id, body })
+            }}
+          />
+          <button
+            type="button"
+            className="secondary"
+            onClick={() => setDetailId(null)}
+          >
             Close
           </button>
         </div>

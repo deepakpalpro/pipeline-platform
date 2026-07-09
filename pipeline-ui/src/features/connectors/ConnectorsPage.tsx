@@ -4,8 +4,13 @@ import {
   createConnector,
   listConnectorTypes,
   listConnectors,
+  updateConnector,
 } from '../../api/resources'
-import type { CreateConnectorRequest, TenantConnector } from '../../api/types'
+import type {
+  CreateConnectorRequest,
+  TenantConnector,
+  UpdateConnectorRequest,
+} from '../../api/types'
 import { useTenant } from '../../contexts/TenantContext'
 import { ConnectorDetail } from './ConnectorDetail'
 import { ConnectorForm } from './ConnectorForm'
@@ -33,6 +38,20 @@ export function ConnectorsPage() {
       void queryClient.invalidateQueries({ queryKey: ['connectors', tenantId] })
       setCreating(false)
       setSelectedId(created.id)
+    },
+  })
+
+  const updateMutation = useMutation({
+    mutationFn: ({
+      id,
+      body,
+    }: {
+      id: string
+      body: UpdateConnectorRequest
+    }) => updateConnector(tenantId, id, body),
+    onSuccess: (updated) => {
+      void queryClient.invalidateQueries({ queryKey: ['connectors', tenantId] })
+      setSelectedId(updated.id)
     },
   })
 
@@ -83,7 +102,13 @@ export function ConnectorsPage() {
             }}
           />
         ) : (
-          <ConnectorDetail connector={selected} />
+          <ConnectorDetail
+            connector={selected}
+            saving={updateMutation.isPending}
+            onSave={async (id, body) => {
+              await updateMutation.mutateAsync({ id, body })
+            }}
+          />
         )}
       </div>
     </section>

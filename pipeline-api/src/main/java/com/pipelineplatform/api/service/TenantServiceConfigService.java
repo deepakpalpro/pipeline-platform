@@ -108,7 +108,9 @@ public class TenantServiceConfigService {
 
     entity.setName(request.name().trim());
     if (request.tenantConfig() != null) {
-      entity.setTenantConfig(writeJson(secretEncryptor.encryptSecrets(request.tenantConfig())));
+      JsonNode existing = readJson(entity.getTenantConfig());
+      JsonNode merged = mergePreservingSecrets(existing, request.tenantConfig());
+      entity.setTenantConfig(writeJson(secretEncryptor.encryptSecrets(merged)));
     }
     if (request.inheritsDefault() != null) {
       entity.setInheritsDefault(request.inheritsDefault());
@@ -155,6 +157,39 @@ public class TenantServiceConfigService {
                     .findFirst()
                     .map(d -> readJson(d.getDefaultConfig())))
         .orElseGet(objectMapper::createObjectNode);
+  }
+
+  /**
+   * When the UI sends redacted placeholders ({@code ***}) for secret fields, keep the stored value.
+   */
+  private JsonNode mergePreservingSecrets(JsonNode existing, JsonNode incoming) {
+    if (incoming == null || incoming.isNull() || !incoming.isObject()) {
+      return existing == null ? objectMapper.createObjectNode() : existing;
+    }
+    var out = objectMapper.createObjectNode();
+    if (existing != null && existing.isObject()) {
+      existing.fields().forEachRemaining(e -> out.set(e.getKey(), e.getValue().deepCopy()));
+    }
+    incoming
+        .fields()
+        .forEachRemaining(
+            e -> {
+              String key = e.getKey();
+              JsonNode value = e.getValue();
+              if (SecretRedactor.isSecretKey(key) && isRedactedPlaceholder(value) && out.has(key)) {
+                return;
+              }
+              out.set(key, value.deepCopy());
+            });
+    return out;
+  }
+
+  private static boolean isRedactedPlaceholder(JsonNode value) {
+    if (value == null || !value.isTextual()) {
+      return false;
+    }
+    String text = value.asText();
+    return "***".equals(text) || "••••••".equals(text);
   }
 
   private JsonNode readJson(String json) {

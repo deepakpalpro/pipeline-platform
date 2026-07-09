@@ -3,7 +3,6 @@ import { screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { ServicesPage } from './ServicesPage'
 import { renderWithProviders } from '../../test/renderWithProviders'
-import { MASK_DISPLAY } from '../../api/secrets'
 
 describe('ServiceDetail', () => {
   it('does not show raw secret from GET response', async () => {
@@ -17,9 +16,7 @@ describe('ServiceDetail', () => {
     await user.click(screen.getByRole('button', { name: 'Primary Auth' }))
 
     await waitFor(() => {
-      expect(screen.getByTestId('config-client_secret')).toHaveTextContent(
-        MASK_DISPLAY,
-      )
+      expect(screen.getByLabelText('Client secret')).toBeInTheDocument()
     })
 
     expect(screen.queryByText('raw-secret-must-not-leak')).not.toBeInTheDocument()

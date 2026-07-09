@@ -91,6 +91,29 @@ public class TenantConnectorService {
   }
 
   @Transactional
+  public TenantConnectorResponse update(String id, UpdateConnectorRequest request) {
+    String tenantId = requireTenantId();
+    enableTenantFilter(tenantId);
+
+    TenantConnector entity =
+        repository.findFilteredById(id).orElseThrow(() -> new TenantConnectorNotFoundException(id));
+
+    String name = request.name().trim();
+    if (!name.equals(entity.getName()) && repository.existsByTenantIdAndName(tenantId, name)) {
+      throw new TenantConnectorConflictException("Connector name already exists: " + name);
+    }
+    entity.setName(name);
+    if (request.config() != null) {
+      JsonNode merged = mergePreservingSecrets(readJson(entity.getConfig()), request.config());
+      entity.setConfig(writeJson(merged));
+    }
+    if (request.status() != null) {
+      entity.setStatus(request.status());
+    }
+    return toResponse(repository.save(entity));
+  }
+
+  @Transactional
   public ConnectionTestResponse test(String id) {
     String tenantId = requireTenantId();
     enableTenantFilter(tenantId);
@@ -164,6 +187,53 @@ public class TenantConnectorService {
       }
     }
     return new ConnectorConfig(properties, secrets);
+  }
+
+  /**
+   * When the UI sends redacted placeholders ({@code ***}) for secret fields, keep the stored value.
+   * Non-secret fields and new keys from {@code incoming} win.
+   */
+  private JsonNode mergePreservingSecrets(JsonNode existing, JsonNode incoming) {
+    if (incoming == null || incoming.isNull() || !incoming.isObject()) {
+      return existing == null ? objectMapper.createObjectNode() : existing;
+    }
+    var out = objectMapper.createObjectNode();
+    if (existing != null && existing.isObject()) {
+      existing
+          .fields()
+          .forEachRemaining(e -> out.set(e.getKey(), e.getValue().deepCopy()));
+    }
+    incoming
+        .fields()
+        .forEachRemaining(
+            e -> {
+              String key = e.getKey();
+              JsonNode value = e.getValue();
+              if (isSecretish(key) && isRedactedPlaceholder(value) && out.has(key)) {
+                return;
+              }
+              out.set(key, value.deepCopy());
+            });
+    return out;
+  }
+
+  private static boolean isSecretish(String key) {
+    if (key == null) {
+      return false;
+    }
+    String k = key.toLowerCase();
+    return k.contains("secret")
+        || k.contains("password")
+        || k.equals("api_key")
+        || k.endsWith("_key");
+  }
+
+  private static boolean isRedactedPlaceholder(JsonNode value) {
+    if (value == null || !value.isTextual()) {
+      return false;
+    }
+    String text = value.asText();
+    return "***".equals(text) || "••••••".equals(text);
   }
 
   private TenantConnectorResponse toResponse(TenantConnector entity) {

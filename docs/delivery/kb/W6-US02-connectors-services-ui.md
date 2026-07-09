@@ -44,7 +44,17 @@ Without the flag, the UI expects a live API (or will fail to load lists).
 | Connector | `conn-1` / Orders API | `api_key` redacted on GET |
 | Service | `svc-1` / Primary Auth | `client_secret` redacted; raw value never in DOM |
 
+## Additional config (connectors & services)
+
+Create and edit forms include an **Additional config** key/value editor (same pattern as pipeline step config). Values are stored in free-form JSON:
+
+- Connectors: `config` on create (`POST`) and update (`PUT /api/v1/connectors/{id}`)
+- Services: `tenantConfig` on create and update (`PUT /api/v1/services/{id}`)
+
+Secret fields sent as `***` on update are preserved server-side (not overwritten).
+
 ## How to verify
+
 
 ```bash
 cd pipeline-ui

@@ -323,9 +323,21 @@ button.linkish {
   text-decoration: underline;
 }
 
-.entity-detail h2 {
-  margin: 0 0 0.75rem;
-  font-size: 1.2rem;
+.entity-detail.entity-form label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  margin-top: 0.75rem;
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+
+.entity-detail.entity-form input {
+  background: var(--bg);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 0.4rem 0.5rem;
 }
 
 .entity-detail h3 {

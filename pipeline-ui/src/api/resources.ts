@@ -15,6 +15,7 @@ import type {
   ServiceType,
   TenantConnector,
   TenantService,
+  UpdateConnectorRequest,
   UpdateTenantServiceRequest,
 } from './types'
 import { ApiError } from './types'
@@ -52,6 +53,17 @@ export function getConnector(tenantId: string, id: string) {
 export function createConnector(tenantId: string, body: CreateConnectorRequest) {
   return apiFetch('/api/v1/connectors', tenantId, {
     method: 'POST',
+    body: JSON.stringify(body),
+  }).then((r) => readJson<TenantConnector>(r))
+}
+
+export function updateConnector(
+  tenantId: string,
+  id: string,
+  body: UpdateConnectorRequest,
+) {
+  return apiFetch(`/api/v1/connectors/${id}`, tenantId, {
+    method: 'PUT',
     body: JSON.stringify(body),
   }).then((r) => readJson<TenantConnector>(r))
 }

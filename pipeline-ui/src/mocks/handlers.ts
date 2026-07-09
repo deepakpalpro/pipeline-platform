@@ -1,5 +1,5 @@
 import { http, HttpResponse } from 'msw'
-import { redactConfig } from '../api/secrets'
+import { isSecretKey, REDACTED, redactConfig } from '../api/secrets'
 import type {
   ConnectorType,
   CreateConnectorRequest,
@@ -11,6 +11,7 @@ import type {
   ServiceType,
   TenantConnector,
   TenantService,
+  UpdateConnectorRequest,
   UpdateTenantServiceRequest,
 } from '../api/types'
 
@@ -24,6 +25,32 @@ function nowIso() {
 
 function id(prefix: string) {
   return `${prefix}-${crypto.randomUUID().slice(0, 8)}`
+}
+
+function mergePreservingSecrets(
+  existing: Record<string, unknown>,
+  incoming: Record<string, unknown>,
+): Record<string, unknown> {
+  const out = { ...existing }
+  for (const [key, value] of Object.entries(incoming)) {
+    if (
+      isSecretKey(key) &&
+      (value === REDACTED || value === '***' || value === '••••••') &&
+      key in existing
+    ) {
+      continue
+    }
+    out[key] = value
+  }
+  return out
+}
+
+function asConnectorResponse(row: TenantConnector): TenantConnector {
+  return { ...row, config: redactConfig(row.config) }
+}
+
+function asServiceResponse(row: TenantService): TenantService {
+  return { ...row, config: redactConfig(row.config) }
 }
 
 export const CONNECTOR_TYPES: ConnectorType[] = [
@@ -88,10 +115,10 @@ export function resetMockDb() {
       tenantId: 'T001',
       connectorTypeId: 'ctype-rest',
       name: 'Orders API',
-      config: redactConfig({
+      config: {
         baseUrl: 'https://orders.example.com',
         api_key: 'super-secret-key',
-      }),
+      },
       status: 'ACTIVE',
       lastTestedAt: null,
       createdAt: '2026-07-01T00:00:00Z',
@@ -104,10 +131,10 @@ export function resetMockDb() {
       serviceTypeId: 'stype-auth',
       vendor: 'StubAuth',
       name: 'Primary Auth',
-      config: redactConfig({
+      config: {
         client_id: 'public-client',
         client_secret: 'raw-secret-must-not-leak',
-      }),
+      },
       inheritsDefault: false,
       status: 'ACTIVE',
       createdAt: '2026-07-01T00:00:00Z',
@@ -125,7 +152,9 @@ export const connectorHandlers = [
   http.get('/api/v1/connectors', ({ request }) => {
     const tid = tenantId(request)
     return HttpResponse.json(
-      mockDb.connectors.filter((c) => c.tenantId === tid),
+      mockDb.connectors
+        .filter((c) => c.tenantId === tid)
+        .map(asConnectorResponse),
     )
   }),
 
@@ -137,10 +166,7 @@ export const connectorHandlers = [
     if (!row) {
       return HttpResponse.json({ message: 'Not found' }, { status: 404 })
     }
-    return HttpResponse.json({
-      ...row,
-      config: redactConfig(row.config),
-    })
+    return HttpResponse.json(asConnectorResponse(row))
   }),
 
   http.post('/api/v1/connectors', async ({ request }) => {
@@ -154,13 +180,35 @@ export const connectorHandlers = [
       tenantId: tid,
       connectorTypeId: body.connectorTypeId,
       name: body.name.trim(),
-      config: redactConfig(body.config ?? {}),
+      config: { ...(body.config ?? {}) },
       status: 'ACTIVE',
       lastTestedAt: null,
       createdAt: nowIso(),
     }
     mockDb.connectors.push(created)
-    return HttpResponse.json(created, { status: 201 })
+    return HttpResponse.json(asConnectorResponse(created), { status: 201 })
+  }),
+
+  http.put('/api/v1/connectors/:id', async ({ params, request }) => {
+    const tid = tenantId(request)
+    const idx = mockDb.connectors.findIndex(
+      (c) => c.id === params.id && c.tenantId === tid,
+    )
+    if (idx < 0) {
+      return HttpResponse.json({ message: 'Not found' }, { status: 404 })
+    }
+    const body = (await request.json()) as UpdateConnectorRequest
+    const prev = mockDb.connectors[idx]
+    const updated: TenantConnector = {
+      ...prev,
+      name: body.name,
+      config: body.config
+        ? mergePreservingSecrets(prev.config, body.config)
+        : prev.config,
+      status: body.status ?? prev.status,
+    }
+    mockDb.connectors[idx] = updated
+    return HttpResponse.json(asConnectorResponse(updated))
   }),
 ]
 
@@ -172,7 +220,7 @@ export const serviceHandlers = [
     return HttpResponse.json(
       mockDb.services
         .filter((s) => s.tenantId === tid)
-        .map((s) => ({ ...s, config: redactConfig(s.config) })),
+        .map(asServiceResponse),
     )
   }),
 
@@ -184,10 +232,7 @@ export const serviceHandlers = [
     if (!row) {
       return HttpResponse.json({ message: 'Not found' }, { status: 404 })
     }
-    return HttpResponse.json({
-      ...row,
-      config: redactConfig(row.config),
-    })
+    return HttpResponse.json(asServiceResponse(row))
   }),
 
   http.post('/api/v1/services', async ({ request }) => {
@@ -202,13 +247,13 @@ export const serviceHandlers = [
       serviceTypeId: body.serviceTypeId,
       vendor: body.vendor.trim(),
       name: body.name.trim(),
-      config: redactConfig(body.tenantConfig ?? {}),
+      config: { ...(body.tenantConfig ?? {}) },
       inheritsDefault: body.inheritsDefault ?? false,
       status: 'ACTIVE',
       createdAt: nowIso(),
     }
     mockDb.services.push(created)
-    return HttpResponse.json(created, { status: 201 })
+    return HttpResponse.json(asServiceResponse(created), { status: 201 })
   }),
 
   http.put('/api/v1/services/:id', async ({ params, request }) => {
@@ -225,16 +270,13 @@ export const serviceHandlers = [
       ...prev,
       name: body.name,
       config: body.tenantConfig
-        ? redactConfig(body.tenantConfig)
+        ? mergePreservingSecrets(prev.config, body.tenantConfig)
         : prev.config,
       inheritsDefault: body.inheritsDefault ?? prev.inheritsDefault,
       status: body.status ?? prev.status,
     }
     mockDb.services[idx] = updated
-    return HttpResponse.json({
-      ...updated,
-      config: redactConfig(updated.config),
-    })
+    return HttpResponse.json(asServiceResponse(updated))
   }),
 ]
 

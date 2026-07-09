@@ -61,6 +61,12 @@ export type ServiceType = {
   displayName: string
 }
 
+export type UpdateConnectorRequest = {
+  name: string
+  config?: Record<string, unknown>
+  status?: ConnectorInstanceStatus
+}
+
 export type CreatePipelineRequest = {
   name: string
   description?: string
