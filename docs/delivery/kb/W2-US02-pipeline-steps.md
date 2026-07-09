@@ -73,7 +73,7 @@ curl -s -X PUT "localhost:8080/api/v1/pipelines/$PIPE_ID/steps" \
 
 ## Related
 
-- Developer TDD: [`../tdd/stories/W2-US02-tdd.md`](../tdd/stories/W2-US02-tdd.md)
+- Developer TDD: [`../tdd/stories/w2/W2-US02-tdd.md`](../tdd/stories/w2/W2-US02-tdd.md)
 - Execution plan: [`../waves/WAVE_2.md`](../waves/WAVE_2.md) § Core model
 - Job spawn from steps: [`W2-US05-pipelet-job.md`](W2-US05-pipelet-job.md)
 - Architecture: [`../../../ARCHITECTURE.md`](../../../ARCHITECTURE.md) §2 `pipeline_steps`, §5.1 pluggable broker, §10.3

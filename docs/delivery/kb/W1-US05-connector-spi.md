@@ -56,6 +56,6 @@ curl -s localhost:8080/api/v1/connector-types
 
 ## Related
 
-- Developer TDD: [`../tdd/stories/W1-US05-tdd.md`](../tdd/stories/W1-US05-tdd.md)
-- Next: [`../tdd/stories/W1-US06-tdd.md`](../tdd/stories/W1-US06-tdd.md) (WireMock HTTP test)
+- Developer TDD: [`../tdd/stories/w1/W1-US05-tdd.md`](../tdd/stories/w1/W1-US05-tdd.md)
+- Next: [`../tdd/stories/w1/W1-US06-tdd.md`](../tdd/stories/w1/W1-US06-tdd.md) (WireMock HTTP test)
 - Architecture §9

@@ -69,5 +69,5 @@ docker compose up -d mysql rabbitmq
 ## Related
 
 - Architecture §5.1 pluggable broker
-- Developer TDD: [`../tdd/stories/W2-US03-tdd.md`](../tdd/stories/W2-US03-tdd.md)
+- Developer TDD: [`../tdd/stories/w2/W2-US03-tdd.md`](../tdd/stories/w2/W2-US03-tdd.md)
 - Next: async run (W2-US04)

@@ -152,7 +152,7 @@ See [`../kb/W0-US01-local-compose-stack.md`](../kb/W0-US01-local-compose-stack.m
 
 #### Developer TDD guide
 
-See [`../tdd/stories/W0-US01-tdd.md`](../tdd/stories/W0-US01-tdd.md)
+See [`../tdd/stories/w0/W0-US01-tdd.md`](../tdd/stories/w0/W0-US01-tdd.md)
 
 ---
 
@@ -224,7 +224,7 @@ See [`../kb/W0-US02-health-endpoint.md`](../kb/W0-US02-health-endpoint.md)
 
 #### Developer TDD guide
 
-See [`../tdd/stories/W0-US02-tdd.md`](../tdd/stories/W0-US02-tdd.md)
+See [`../tdd/stories/w0/W0-US02-tdd.md`](../tdd/stories/w0/W0-US02-tdd.md)
 
 ##### Dataflow (support)
 
@@ -281,7 +281,7 @@ See [`../kb/W0-US03-flyway-baseline.md`](../kb/W0-US03-flyway-baseline.md)
 
 #### Developer TDD guide
 
-See [`../tdd/stories/W0-US03-tdd.md`](../tdd/stories/W0-US03-tdd.md)
+See [`../tdd/stories/w0/W0-US03-tdd.md`](../tdd/stories/w0/W0-US03-tdd.md)
 
 ---
 
@@ -319,7 +319,7 @@ See [`../kb/W0-US04-logging-prometheus.md`](../kb/W0-US04-logging-prometheus.md)
 
 #### Developer TDD guide
 
-See [`../tdd/stories/W0-US04-tdd.md`](../tdd/stories/W0-US04-tdd.md)
+See [`../tdd/stories/w0/W0-US04-tdd.md`](../tdd/stories/w0/W0-US04-tdd.md)
 
 ---
 
@@ -368,7 +368,7 @@ See [`../kb/W0-US05-mock-data-wiremock.md`](../kb/W0-US05-mock-data-wiremock.md)
 
 #### Developer TDD guide
 
-See [`../tdd/stories/W0-US05-tdd.md`](../tdd/stories/W0-US05-tdd.md)
+See [`../tdd/stories/w0/W0-US05-tdd.md`](../tdd/stories/w0/W0-US05-tdd.md)
 
 ---
 

@@ -73,6 +73,6 @@ docker compose up -d mysql
 
 ## Related
 
-- Developer TDD: [`../tdd/stories/W1-US01-tdd.md`](../tdd/stories/W1-US01-tdd.md)
-- Next: isolation filters [`../tdd/stories/W1-US02-tdd.md`](../tdd/stories/W1-US02-tdd.md)
+- Developer TDD: [`../tdd/stories/w1/W1-US01-tdd.md`](../tdd/stories/w1/W1-US01-tdd.md)
+- Next: isolation filters [`../tdd/stories/w1/W1-US02-tdd.md`](../tdd/stories/w1/W1-US02-tdd.md)
 - Flyway baseline: [`W0-US03-flyway-baseline.md`](W0-US03-flyway-baseline.md)

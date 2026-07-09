@@ -63,5 +63,5 @@ curl -s -o /dev/null -w '%{http_code}\n' \
 
 ## Related
 
-- Developer TDD: [`../tdd/stories/W1-US02-tdd.md`](../tdd/stories/W1-US02-tdd.md)
+- Developer TDD: [`../tdd/stories/w1/W1-US02-tdd.md`](../tdd/stories/w1/W1-US02-tdd.md)
 - Tenant CRUD: [`W1-US01-tenant-crud-context.md`](W1-US01-tenant-crud-context.md)

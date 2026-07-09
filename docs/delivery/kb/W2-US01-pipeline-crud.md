@@ -52,6 +52,6 @@ curl -s -X POST localhost:8080/api/v1/pipelines \
 
 ## Related
 
-- Developer TDD: [`../tdd/stories/W2-US01-tdd.md`](../tdd/stories/W2-US01-tdd.md)
+- Developer TDD: [`../tdd/stories/w2/W2-US01-tdd.md`](../tdd/stories/w2/W2-US01-tdd.md)
 - Execution plan: [`../waves/WAVE_2.md`](../waves/WAVE_2.md)
 - Steps API: [`W2-US02-pipeline-steps.md`](W2-US02-pipeline-steps.md)

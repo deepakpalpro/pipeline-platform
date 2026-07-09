@@ -66,6 +66,6 @@ docker compose up -d localstack
 
 ## Related
 
-- Developer TDD: [`../tdd/stories/W1-US07-tdd.md`](../tdd/stories/W1-US07-tdd.md)
+- Developer TDD: [`../tdd/stories/w1/W1-US07-tdd.md`](../tdd/stories/w1/W1-US07-tdd.md)
 - LocalStack compose: [`W0-US01-local-compose-stack.md`](W0-US01-local-compose-stack.md)
 - SPI: [`W1-US05-connector-spi.md`](W1-US05-connector-spi.md)

@@ -86,7 +86,7 @@ Junior step-by-step guides: [`stories/README.md`](stories/README.md) § Wave 2.
 
 ### W2-US01 — Pipeline CRUD (+ visibility/mode)
 
-**Developer guide:** [`stories/W2-US01-tdd.md`](stories/W2-US01-tdd.md)
+**Developer guide:** [`stories/w2/W2-US01-tdd.md`](stories/w2/W2-US01-tdd.md)
 
 | Step | Evidence |
 |------|----------|
@@ -96,7 +96,7 @@ Junior step-by-step guides: [`stories/README.md`](stories/README.md) § Wave 2.
 
 ### W2-US02 — Pipeline steps config API
 
-**Developer guide:** [`stories/W2-US02-tdd.md`](stories/W2-US02-tdd.md)
+**Developer guide:** [`stories/w2/W2-US02-tdd.md`](stories/w2/W2-US02-tdd.md)
 
 | Step | Evidence |
 |------|----------|
@@ -108,7 +108,7 @@ Junior step-by-step guides: [`stories/README.md`](stories/README.md) § Wave 2.
 
 ### W2-US03 — Inter-stage RabbitMQ topology
 
-**Developer guide:** [`stories/W2-US03-tdd.md`](stories/W2-US03-tdd.md)
+**Developer guide:** [`stories/w2/W2-US03-tdd.md`](stories/w2/W2-US03-tdd.md)
 
 | Step | Evidence |
 |------|----------|
@@ -120,7 +120,7 @@ Junior step-by-step guides: [`stories/README.md`](stories/README.md) § Wave 2.
 
 ### W2-US04 — Async run orchestration
 
-**Developer guide:** [`stories/W2-US04-tdd.md`](stories/W2-US04-tdd.md)
+**Developer guide:** [`stories/w2/W2-US04-tdd.md`](stories/w2/W2-US04-tdd.md)
 
 | Step | Evidence |
 |------|----------|
@@ -132,7 +132,7 @@ Junior step-by-step guides: [`stories/README.md`](stories/README.md) § Wave 2.
 
 ### W2-US05 — Pipelet Job spawn (Kind/stub)
 
-**Developer guide:** [`stories/W2-US05-tdd.md`](stories/W2-US05-tdd.md)
+**Developer guide:** [`stories/w2/W2-US05-tdd.md`](stories/w2/W2-US05-tdd.md)
 
 | Step | Evidence |
 |------|----------|
@@ -144,7 +144,7 @@ Junior step-by-step guides: [`stories/README.md`](stories/README.md) § Wave 2.
 
 ### W2-US06 — Retries + per-stage DLQ
 
-**Developer guide:** [`stories/W2-US06-tdd.md`](stories/W2-US06-tdd.md)
+**Developer guide:** [`stories/w2/W2-US06-tdd.md`](stories/w2/W2-US06-tdd.md)
 
 | Step | Evidence |
 |------|----------|
@@ -156,7 +156,7 @@ Junior step-by-step guides: [`stories/README.md`](stories/README.md) § Wave 2.
 
 ### W2-US07 — Execution status query API
 
-**Developer guide:** [`stories/W2-US07-tdd.md`](stories/W2-US07-tdd.md)
+**Developer guide:** [`stories/w2/W2-US07-tdd.md`](stories/w2/W2-US07-tdd.md)
 
 | Step | Evidence |
 |------|----------|

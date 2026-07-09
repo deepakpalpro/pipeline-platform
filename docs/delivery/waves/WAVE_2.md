@@ -78,7 +78,7 @@ pipeline-api/
 docs/delivery/
   waves/WAVE_2.md                 # this file
   kb/W2-*.md
-  tdd/stories/W2-US01-…tdd.md
+  tdd/stories/w2/W2-US01-…tdd.md
 ```
 
 ---
@@ -136,7 +136,7 @@ flowchart LR
 
 #### Developer TDD guide
 
-[`../tdd/stories/W2-US01-tdd.md`](../tdd/stories/W2-US01-tdd.md)
+[`../tdd/stories/w2/W2-US01-tdd.md`](../tdd/stories/w2/W2-US01-tdd.md)
 
 #### Support KB (create)
 
@@ -165,7 +165,7 @@ flowchart LR
 
 #### Developer TDD guide
 
-[`../tdd/stories/W2-US02-tdd.md`](../tdd/stories/W2-US02-tdd.md)
+[`../tdd/stories/w2/W2-US02-tdd.md`](../tdd/stories/w2/W2-US02-tdd.md)
 
 #### Support KB (create)
 
@@ -192,7 +192,7 @@ flowchart LR
 
 #### Developer TDD guide
 
-[`../tdd/stories/W2-US03-tdd.md`](../tdd/stories/W2-US03-tdd.md)
+[`../tdd/stories/w2/W2-US03-tdd.md`](../tdd/stories/w2/W2-US03-tdd.md)
 
 #### Support KB (create)
 
@@ -219,7 +219,7 @@ flowchart LR
 
 #### Developer TDD guide
 
-[`../tdd/stories/W2-US04-tdd.md`](../tdd/stories/W2-US04-tdd.md)
+[`../tdd/stories/w2/W2-US04-tdd.md`](../tdd/stories/w2/W2-US04-tdd.md)
 
 #### Support KB (create)
 
@@ -246,7 +246,7 @@ flowchart LR
 
 #### Developer TDD guide
 
-[`../tdd/stories/W2-US05-tdd.md`](../tdd/stories/W2-US05-tdd.md)
+[`../tdd/stories/w2/W2-US05-tdd.md`](../tdd/stories/w2/W2-US05-tdd.md)
 
 #### Support KB (create)
 
@@ -273,7 +273,7 @@ flowchart LR
 
 #### Developer TDD guide
 
-[`../tdd/stories/W2-US06-tdd.md`](../tdd/stories/W2-US06-tdd.md)
+[`../tdd/stories/w2/W2-US06-tdd.md`](../tdd/stories/w2/W2-US06-tdd.md)
 
 #### Support KB (create)
 
@@ -300,7 +300,7 @@ flowchart LR
 
 #### Developer TDD guide
 
-[`../tdd/stories/W2-US07-tdd.md`](../tdd/stories/W2-US07-tdd.md)
+[`../tdd/stories/w2/W2-US07-tdd.md`](../tdd/stories/w2/W2-US07-tdd.md)
 
 #### Support KB (create)
 

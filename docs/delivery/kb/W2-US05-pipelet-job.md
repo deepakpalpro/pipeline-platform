@@ -52,5 +52,5 @@ docker compose up -d mysql rabbitmq
 
 ## Related
 
-- Developer TDD: [`../tdd/stories/W2-US05-tdd.md`](../tdd/stories/W2-US05-tdd.md)
+- Developer TDD: [`../tdd/stories/w2/W2-US05-tdd.md`](../tdd/stories/w2/W2-US05-tdd.md)
 - Next: DLQ (W2-US06) or execution status API (W2-US07)

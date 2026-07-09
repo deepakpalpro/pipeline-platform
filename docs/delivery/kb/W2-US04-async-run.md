@@ -55,5 +55,5 @@ curl -s -X POST "localhost:8080/api/v1/pipelines/$PIPE_ID/run" \
 
 ## Related
 
-- Developer TDD: [`../tdd/stories/W2-US04-tdd.md`](../tdd/stories/W2-US04-tdd.md)
+- Developer TDD: [`../tdd/stories/w2/W2-US04-tdd.md`](../tdd/stories/w2/W2-US04-tdd.md)
 - Next: pipelet Job client (W2-US05)
