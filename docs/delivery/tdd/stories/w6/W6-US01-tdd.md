@@ -147,11 +147,11 @@ npm test -- AuthContext.test Shell.test
 
 ### Checklist
 
-- [ ] `pipeline-ui` scaffold committed on branch
-- [ ] `AuthContext` + `TenantContext` providers
-- [ ] Level-1 nav + route table
-- [ ] `AuthContext.test` green
-- [ ] `Shell.test` green
+- [x] `pipeline-ui` scaffold committed on branch
+- [x] `AuthContext` + `TenantContext` providers
+- [x] Level-1 nav + route table
+- [x] `AuthContext.test` green
+- [x] `Shell.test` green
 
 ---
 
@@ -165,8 +165,8 @@ npm test -- AuthContext.test Shell.test
 
 ## 11. Docs & trackers
 
-- [ ] KB: nav map, tenant picker behaviour, screenshot placeholder
-- [ ] Tracker · TEST_MATRIX · `WAVE_6.md` Done
+- [x] KB: nav map, tenant picker behaviour, screenshot placeholder
+- [x] Tracker · TEST_MATRIX · `WAVE_6.md` Done
 
 ```text
 merge → tag W6-US01 → W6-US02

@@ -7,3 +7,6 @@ target/
 .DS_Store
 *.log
 .mvn/wrapper/maven-wrapper.jar
+node_modules/
+pipeline-ui/dist/
+pipeline-ui/node_modules/

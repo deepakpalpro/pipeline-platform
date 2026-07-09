@@ -102,7 +102,7 @@ Wave TDD (stakeholders): [`tdd/README.md`](tdd/README.md)
 
 | Story ID | Unit | Integration | WireMock | LocalStack | Manual | KB |
 |----------|------|-------------|----------|------------|--------|-----|
-| W6-US01 | | | | n/a | | |
+| W6-US01 | AuthContext.test, Shell.test | n/a | n/a | n/a | npm run dev shell smoke | [W6-US01-nav-shell](kb/W6-US01-nav-shell.md) |
 | W6-US02 | | | | | | |
 | W6-US03 | | | | n/a | | |
 | W6-US04 | | | | n/a | | |
