@@ -130,11 +130,11 @@ npm test -- catalogFilter PipeletsCatalog
 
 ### Checklist
 
-- [ ] Pipelet card grid with category sub-nav
-- [ ] `catalogFilter` unit tests green
-- [ ] Catalog component filter tests green
-- [ ] Admin register modal (stub backend OK)
-- [ ] KB documents fixture → live API swap
+- [x] Pipelet card grid with category sub-nav
+- [x] `catalogFilter` unit tests green
+- [x] Catalog component filter tests green
+- [x] Admin register modal (stub backend OK)
+- [x] KB documents fixture → live API swap
 
 ---
 
@@ -148,8 +148,8 @@ npm test -- catalogFilter PipeletsCatalog
 
 ## 11. Docs & trackers
 
-- [ ] KB: catalog filters, admin tabs, screenshot placeholders
-- [ ] Tracker · TEST_MATRIX · `WAVE_6.md` Done
+- [x] KB: catalog filters, admin tabs, screenshot placeholders
+- [x] Tracker · TEST_MATRIX · `WAVE_6.md` Done
 
 ```text
 merge → tag W6-US03 → W6-US04

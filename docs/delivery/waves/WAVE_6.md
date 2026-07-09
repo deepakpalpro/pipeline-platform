@@ -149,7 +149,7 @@ flowchart LR
 | **Priority** | Must |
 | **Dependencies** | W6-US01; W2 pipelet ids (registry stub OK) |
 | **Architecture refs** | §4.2 Pipelets catalog |
-| **Status** | Todo |
+| **Status** | Done |
 
 **In scope:** Browse/filter pipelet cards; admin entry to register/upload (may stub backend if registry incomplete).  
 **Out of scope:** Full binary build pipeline UI.
@@ -158,9 +158,9 @@ flowchart LR
 
 [`../tdd/stories/w6/W6-US03-tdd.md`](../tdd/stories/w6/W6-US03-tdd.md)
 
-#### Support KB (create)
+#### Support KB
 
-`docs/delivery/kb/W6-US03-pipelets-catalog.md`
+[`../kb/W6-US03-pipelets-catalog.md`](../kb/W6-US03-pipelets-catalog.md)
 
 ---
 
