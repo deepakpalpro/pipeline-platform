@@ -38,6 +38,7 @@ class WebhookIdempotencyTest {
   @Mock private WebhookSignatureVerifier signatureVerifier;
   @Mock private WebhookIdempotencyService idempotencyService;
   @Mock private WebhookQueueWatchRegistry queueWatchRegistry;
+  @Mock private com.pipelineplatform.api.usage.UsageEventEmitter usageEventEmitter;
 
   private WebhookIngressService service;
   private final ObjectMapper objectMapper = new ObjectMapper();
@@ -54,6 +55,7 @@ class WebhookIdempotencyTest {
             signatureVerifier,
             idempotencyService,
             queueWatchRegistry,
+            usageEventEmitter,
             objectMapper);
   }
 

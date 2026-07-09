@@ -243,7 +243,7 @@ flowchart LR
 | **Priority** | Must |
 | **Dependencies** | W3-US01 |
 | **Architecture refs** | §11 metering; §6 PAYG dimensions |
-| **Status** | Todo |
+| **Status** | Done |
 
 **In scope:** Emit `platform.webhook_events` and `data.bytes_in` on accept.  
 **Out of scope:** Billing enforcement (Wave 5).
@@ -252,9 +252,9 @@ flowchart LR
 
 [`../tdd/stories/w3/W3-US07-tdd.md`](../tdd/stories/w3/W3-US07-tdd.md)
 
-#### Support KB (create)
+#### Support KB
 
-`docs/delivery/kb/W3-US07-webhook-metering.md`
+[`../kb/W3-US07-webhook-metering.md`](../kb/W3-US07-webhook-metering.md)
 
 ---
 
@@ -268,7 +268,9 @@ flowchart LR
 - [x] W3-US03 Idempotency (`V13__webhook_idempotency.sql`)
 - [x] W3-US05 Provision webhook URL (`pipeline.ingress.base-url`)
 - [x] W3-US06 On-demand queue depth trigger (poller + stub Job)
-- [ ] WAVE_TRACKER / TEST_MATRIX / WAVE_3_TDD updated as stories complete
+- [x] W3-US07 Meter `platform.webhook_events` + `data.bytes_in`
+- [x] WAVE_TRACKER / TEST_MATRIX / WAVE_3_TDD updated as Must stories complete
+- [ ] W3-US04 Should (rate limit / 503) — optional before wave exit
 - [ ] Each story: merge → tag `W3-US##` → delete → next from `wave-3`
 
 ---

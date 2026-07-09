@@ -78,8 +78,8 @@ Guides: [`w3/`](w3/)
 | W3-US03 Idempotency | [`w3/W3-US03-tdd.md`](w3/W3-US03-tdd.md) | Done |
 | W3-US04 Rate limit / 503 | [`w3/W3-US04-tdd.md`](w3/W3-US04-tdd.md) | Draft (planning) |
 | W3-US05 Provision webhook URL | [`w3/W3-US05-tdd.md`](w3/W3-US05-tdd.md) | Done |
-| W3-US06 On-demand processor | [`w3/W3-US06-tdd.md`](w3/W3-US06-tdd.md) | Draft (planning) |
-| W3-US07 Meter webhook events | [`w3/W3-US07-tdd.md`](w3/W3-US07-tdd.md) | Draft (planning) |
+| W3-US06 On-demand processor | [`w3/W3-US06-tdd.md`](w3/W3-US06-tdd.md) | Done |
+| W3-US07 Meter webhook events | [`w3/W3-US07-tdd.md`](w3/W3-US07-tdd.md) | Done |
 
 **Suggested order:** US01 → US02 → US03 → US05 → US06 → US07 (US04 Should can parallel after US01).
 

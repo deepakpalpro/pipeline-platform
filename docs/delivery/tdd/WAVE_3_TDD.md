@@ -191,3 +191,4 @@ Reference AC: DELIVERY_PLAN fully worked **W3-US01** (`WebhookIngressServiceTest
 | 2026-07-09 | W3-US03 implemented: idempotency keys + single publish |
 | 2026-07-09 | W3-US05 implemented: provision stable webhook URL |
 | 2026-07-09 | W3-US06 implemented: queue depth poller + stub Job trigger |
+| 2026-07-09 | W3-US07 implemented: webhook usage metering (stub collector) |
