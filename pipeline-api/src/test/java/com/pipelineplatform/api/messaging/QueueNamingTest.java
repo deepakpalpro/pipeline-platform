@@ -21,6 +21,9 @@ class QueueNamingTest {
     assertThat(QueueNaming.stageRoutingKey(3)).isEqualTo("stage.3");
     assertThat(QueueNaming.stageOutputQueue("T001", "pipe-abc", 1))
         .isEqualTo(QueueNaming.stageInputQueue("T001", "pipe-abc", 2));
+    assertThat(QueueNaming.deadLetterExchange("T001", "pipe-abc"))
+        .isEqualTo("tenant.T001.pipeline.pipe-abc.dlx");
+    assertThat(QueueNaming.stageDlqRoutingKey(1)).isEqualTo("stage.1.dlq");
   }
 
   @Test
