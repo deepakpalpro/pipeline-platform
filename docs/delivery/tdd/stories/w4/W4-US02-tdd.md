@@ -118,9 +118,9 @@ flowchart LR
 
 ### Checklist
 
-- [ ] Formula matches §7.4
-- [ ] Fixture expected value documented
-- [ ] Tests green
+- [x] Formula matches §7.4
+- [x] Fixture expected value documented
+- [x] Tests green
 
 ---
 
@@ -133,8 +133,8 @@ flowchart LR
 
 ## 11. Docs & trackers
 
-- [ ] KB: how to read completeness for fixture
-- [ ] Tracker · TEST_MATRIX · `WAVE_4.md` Done
+- [x] KB: how to read completeness for fixture
+- [x] Tracker · TEST_MATRIX · `WAVE_4.md` Done
 
 ```text
 merge → tag W4-US02 → W4-US03 / US05

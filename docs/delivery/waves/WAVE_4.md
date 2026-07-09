@@ -112,7 +112,7 @@ flowchart LR
 | **Priority** | Must |
 | **Dependencies** | W4-US01 |
 | **Architecture refs** | §7.4 Completeness |
-| **Status** | Todo |
+| **Status** | Done |
 
 **In scope:** Compute `(records_out / records_in) * 100` for fixture execution; expose `pipeline_completeness_ratio` (or equivalent).  
 **Out of scope:** Grafana alert wiring (US06).
@@ -121,9 +121,9 @@ flowchart LR
 
 [`../tdd/stories/w4/W4-US02-tdd.md`](../tdd/stories/w4/W4-US02-tdd.md)
 
-#### Support KB (create)
+#### Support KB
 
-`docs/delivery/kb/W4-US02-completeness.md`
+[`../kb/W4-US02-completeness.md`](../kb/W4-US02-completeness.md)
 
 ---
 
@@ -225,6 +225,7 @@ flowchart LR
 - [x] This execution plan + junior TDD guides committed
 - [x] `W4-US01` feature branch created
 - [x] W4-US01 Pipelet metrics emit (`PipeletMetricsEmitter` + stub worker)
+- [x] W4-US02 Completeness calculator + gauge + `completeness_pct` on execution
 - [ ] WAVE_TRACKER / TEST_MATRIX / WAVE_4_TDD updated as stories complete
 - [ ] Each story: merge → tag `W4-US##` → delete → next from `wave-4`
 
