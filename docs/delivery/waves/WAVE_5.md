@@ -237,7 +237,7 @@ flowchart LR
 - [x] WAVE_TRACKER / TEST_MATRIX / WAVE_5_TDD updated as stories complete
 - [x] Each story: merge → tag `W5-US##` → delete → next from `wave-5`
 - [x] Exit verified: usage summary ± tolerance; `402` on hard/zero credit; KBs
-- [ ] PR `wave-5` → `master`
+- [x] PR `wave-5` → `master` ([#10](https://github.com/deepakpalpro/pipeline-platform/pull/10))
 - [x] Tag `wave-5-complete`
 
 ---
@@ -247,7 +247,7 @@ flowchart LR
 - [x] All **Must** stories W5-US01–US06 Done  
 - [x] Exit criteria verified (usage summary ± tolerance; `402` on hard/zero credit)  
 - [x] Billing-dispute KB drafted (`W5-US05` + `W5-US06`)  
-- [ ] PR `wave-5` → `master` when exit criteria met  
+- [x] PR `wave-5` → `master` ([#10](https://github.com/deepakpalpro/pipeline-platform/pull/10)) — merge pending  
 - [x] Tag `wave-5-complete`
 
 ---

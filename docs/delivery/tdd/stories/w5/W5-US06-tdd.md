@@ -8,7 +8,7 @@
 | **Timebox hint** | 0.5–1 day |
 | **You will touch** | Pipeline run path, QuotaEvaluator gate, error body |
 | **Architecture refs** | §6.2 Quota Enforcement |
-| **KB (create)** | `docs/delivery/kb/W5-US06-run-blocked-402.md` |
+| **KB** | [`../../../kb/W5-US06-run-blocked-402.md`](../../../kb/W5-US06-run-blocked-402.md) |
 | **Stakeholder TDD** | [`../../WAVE_5_TDD.md`](../../WAVE_5_TDD.md) |
 | **AC source** | [`../../../waves/WAVE_5.md`](../../../waves/WAVE_5.md) § W5-US06 |
 

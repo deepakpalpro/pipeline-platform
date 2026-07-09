@@ -117,7 +117,7 @@ Abbreviations: **U** = Unit, **I** = Integration, **WM** = WireMock, **LS** = Lo
 
 **Wave goal:** Fixture run yields billable events across compute, records, connector calls, webhooks.  
 **Plan:** [`waves/WAVE_5.md`](waves/WAVE_5.md) · **TDD:** [`tdd/WAVE_5_TDD.md`](tdd/WAVE_5_TDD.md) · **Developer guides:** [`tdd/stories/README.md`](tdd/stories/README.md) § Wave 5  
-**Branch:** `wave-5` · **Tags:** `W5-US01`–`W5-US06`, `wave-5-complete` · **PR:** (open → `master`)
+**Branch:** `wave-5` · **Tags:** `W5-US01`–`W5-US06`, `wave-5-complete` · **PR:** [#10](https://github.com/deepakpalpro/pipeline-platform/pull/10) → `master` (**open**)
 
 | Story ID | Feature / Epic | Title | Status | Owner | Test gate | Blockers |
 |----------|----------------|-------|--------|-------|-----------|----------|

@@ -8,7 +8,7 @@
 | **Timebox hint** | 1–1.5 days |
 | **You will touch** | Billing/usage controllers, DTOs, tenant isolation |
 | **Architecture refs** | §3.5 Usage and Billing Endpoints |
-| **KB (create)** | `docs/delivery/kb/W5-US05-usage-billing-api.md` |
+| **KB** | [`../../../kb/W5-US05-usage-billing-api.md`](../../../kb/W5-US05-usage-billing-api.md) |
 | **Stakeholder TDD** | [`../../WAVE_5_TDD.md`](../../WAVE_5_TDD.md) |
 | **AC source** | [`../../../waves/WAVE_5.md`](../../../waves/WAVE_5.md) § W5-US05 |
 

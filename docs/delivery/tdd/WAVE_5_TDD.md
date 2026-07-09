@@ -4,7 +4,7 @@
 |-------|--------|
 | **Wave** | W5 — Metering & Pay-as-you-go |
 | **Audience** | Technical stakeholders |
-| **Status** | Complete (W5-US01–US06 Done; `wave-5-complete`) |
+| **Status** | Complete (W5-US01–US06 Done; `wave-5-complete`; PR #10 → master open) |
 | **Architecture refs** | §6.2, §3.5 |
 | **Branch / tags** | `wave-5` · `W5-US##` · `wave-5-complete` |
 | **Last updated** | 2026-07-09 |

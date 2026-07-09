@@ -8,7 +8,7 @@
 | **Timebox hint** | 1 day |
 | **You will touch** | `usage_aggregates` migration, scheduled job, clock |
 | **Architecture refs** | §6.2 Aggregation Schedule |
-| **KB (create)** | `docs/delivery/kb/W5-US03-hourly-aggregates.md` |
+| **KB** | [`../../../kb/W5-US03-hourly-aggregates.md`](../../../kb/W5-US03-hourly-aggregates.md) |
 | **Stakeholder TDD** | [`../../WAVE_5_TDD.md`](../../WAVE_5_TDD.md) |
 | **AC source** | [`../../../waves/WAVE_5.md`](../../../waves/WAVE_5.md) § W5-US03 |
 
