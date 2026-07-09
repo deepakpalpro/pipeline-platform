@@ -23,7 +23,7 @@ Not the same as wave-level stakeholder TDD ([`../README.md`](../README.md)) or s
 | Story | Guide | Status |
 |-------|-------|--------|
 | W1-US01 Tenant CRUD + context | [`W1-US01-tdd.md`](W1-US01-tdd.md) | Done (first impl on `W1-US01`) |
-| W1-US02 Tenant isolation filters | [`W1-US02-tdd.md`](W1-US02-tdd.md) | Draft (planning) |
+| W1-US02 Tenant isolation filters | [`W1-US02-tdd.md`](W1-US02-tdd.md) | Done (impl on `W1-US02`) |
 | W1-US03 Service types + defaults | [`W1-US03-tdd.md`](W1-US03-tdd.md) | Draft (planning) |
 | W1-US04 Tenant service config | [`W1-US04-tdd.md`](W1-US04-tdd.md) | Draft (planning) |
 | W1-US05 Connector SPI + Rest | [`W1-US05-tdd.md`](W1-US05-tdd.md) | Draft (planning) |
