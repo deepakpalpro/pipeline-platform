@@ -6,8 +6,8 @@ Vite + React + TypeScript frontend for the Pipeline Platform (Wave 6+).
 
 ```bash
 npm install
-npm run dev                    # needs live API, or:
-VITE_ENABLE_MSW=true npm run dev
+npm run dev          # MSW on by default in DEV
+npm run dev:api      # hit live API (VITE_ENABLE_MSW=false)
 npm test
 npm run build
 ```

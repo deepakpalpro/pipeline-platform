@@ -551,6 +551,57 @@ button.linkish {
   font-size: 0.95rem;
 }
 
+.builder-props h3 {
+  margin: 1rem 0 0.5rem;
+  font-size: 0.85rem;
+  color: var(--muted);
+  font-weight: 600;
+}
+
+.config-editor {
+  margin-top: 0.5rem;
+}
+
+.config-rows {
+  list-style: none;
+  margin: 0 0 0.5rem;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.config-row {
+  display: grid;
+  grid-template-columns: minmax(4rem, 1fr) 1.4fr auto;
+  gap: 0.35rem;
+  align-items: center;
+}
+
+.config-key {
+  font-size: 0.8rem;
+  color: var(--muted);
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.config-row input,
+.config-add input {
+  background: var(--bg);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 0.35rem 0.45rem;
+  font-size: 0.85rem;
+  width: 100%;
+}
+
+.config-add {
+  display: grid;
+  grid-template-columns: 1fr 1fr auto;
+  gap: 0.35rem;
+}
+
 .palette-list {
   list-style: none;
   margin: 0;

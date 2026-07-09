@@ -20,8 +20,21 @@
 | `pipelineGraphReducer` | Pure ADD_NODE / CONNECT / UPDATE_STEP / REMOVE |
 | `graphToStepsPayload` | Topological order → W2 `PUT .../steps` body |
 | `PipeletPalette` | Click-to-add from US03 catalog (auto-connects to previous) |
-| `StepPropertiesPanel` | Bind connector/service ids from US02 lists |
-| Save | `POST /api/v1/pipelines` then `PUT /api/v1/pipelines/{id}/steps` |
+| `StepPropertiesPanel` | Bind connector/service ids; edit step `config` key/values; remove step |
+| Save | `POST /api/v1/pipelines` then `PUT /api/v1/pipelines/{id}/steps` (re-save updates steps only) |
+
+### Step config (key/value)
+
+1. Select a step on the canvas.
+2. Under **Config**, enter a key + value and click **Add**.
+3. Edit values inline; remove a key with **×**.
+4. Values are stored on `node.data.config` and included in the save payload `steps[].config`.
+
+### Local save without backend
+
+`npm run dev` enables MSW by default in development. Use `npm run dev:api` (or `VITE_ENABLE_MSW=false`) to call a live API.
+
+If Save fails with a network/404 error, you are likely running without MSW and without `pipeline-api` on the same origin.
 
 ### `threeStage` fixture shape
 
@@ -61,6 +74,7 @@ npm test -- pipelineGraphReducer PipelineBuilder.save
 |---------|-------|------------|
 | Save 404 on steps | Pipeline create failed | Ensure `X-Tenant-Id`; MSW pipeline handlers present |
 | Wrong step order | Edges missing | Palette auto-connect; or connect on canvas |
+| Save 404 / failed | MSW off + no API | `npm run dev` (MSW default); or run `pipeline-api` with `npm run dev:api` |
 | React Flow blank in jsdom | ResizeObserver | Polyfill in `test/setup.ts`; mock canvas in save test |
 
 ## Related

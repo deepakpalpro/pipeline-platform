@@ -105,6 +105,10 @@ export function PipelineBuilderPage({ catalog = PIPELET_FIXTURE }: Props) {
 
   const saveMutation = useMutation({
     mutationFn: async () => {
+      if (pipelineId) {
+        const stepsBody = graphToStepsPayload(state)
+        return replacePipelineSteps(tenantId, pipelineId, stepsBody)
+      }
       const created = await createPipeline(tenantId, {
         name: state.pipelineName,
         executionMode: 'ASYNC',

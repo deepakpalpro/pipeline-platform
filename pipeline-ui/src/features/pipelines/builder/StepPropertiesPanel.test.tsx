@@ -35,4 +35,25 @@ describe('StepPropertiesPanel', () => {
     await user.click(screen.getByRole('button', { name: 'Remove step' }))
     expect(onRemove).toHaveBeenCalledWith('n2')
   })
+
+  it('adds a config key/value via the config editor', async () => {
+    const user = userEvent.setup()
+    const onChange = vi.fn()
+    renderWithProviders(
+      <StepPropertiesPanel
+        node={node}
+        connectors={[]}
+        services={[]}
+        onChange={onChange}
+      />,
+    )
+
+    await user.type(screen.getByLabelText('Config key'), 'mapping')
+    await user.type(screen.getByLabelText('Config value'), 'a=1')
+    await user.click(screen.getByRole('button', { name: 'Add' }))
+
+    expect(onChange).toHaveBeenCalledWith('n2', {
+      config: { mapping: 'a=1' },
+    })
+  })
 })
