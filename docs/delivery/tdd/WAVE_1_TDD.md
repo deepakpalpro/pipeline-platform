@@ -4,7 +4,7 @@
 |-------|--------|
 | **Wave** | W1 — Tenancy, Services, Connectors |
 | **Audience** | Technical stakeholders |
-| **Status** | In Progress (W1-US01–US02 Done) |
+| **Status** | In Progress (W1-US01–US03 Done) |
 | **Architecture refs** | §2, §3.3–3.4, §6.1, §9 SPI |
 | **Branch / tags** | `wave-1` · `W1-US##` |
 | **Last updated** | 2026-07-09 |
@@ -214,3 +214,4 @@ Junior step-by-step guides: [`stories/README.md`](stories/README.md) § Wave 1.
 | 2026-07-09 | Linked junior developer story TDD playbooks W1-US01–US08 |
 | 2026-07-09 | W1-US01 implemented: tenant CRUD + stub X-Tenant-Id context |
 | 2026-07-09 | W1-US02 implemented: Hibernate tenant filter + TenantIsolationIT |
+| 2026-07-09 | W1-US03 implemented: service_types catalog + StubAuth defaults |
