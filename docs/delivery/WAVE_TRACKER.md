@@ -98,7 +98,7 @@ Abbreviations: **U** = Unit, **I** = Integration, **WM** = WireMock, **LS** = Lo
 
 **Wave goal:** Completeness % and logs visible for a known fixture execution.  
 **Plan:** [`waves/WAVE_4.md`](waves/WAVE_4.md) · **TDD:** [`tdd/WAVE_4_TDD.md`](tdd/WAVE_4_TDD.md) · **Developer guides:** [`tdd/stories/README.md`](tdd/stories/README.md) § Wave 4  
-**Branch:** `wave-4` · **Tags:** `W4-US01`–`W4-US06`, `wave-4-complete` · **PR:** [#9](https://github.com/deepakpalpro/pipeline-platform/pull/9) → `master` (open)
+**Branch:** `wave-4` · **Tags:** `W4-US01`–`W4-US06`, `wave-4-complete` · **PR:** [#9](https://github.com/deepakpalpro/pipeline-platform/pull/9) → `master` (**merged**)
 
 | Story ID | Feature / Epic | Title | Status | Owner | Test gate | Blockers |
 |----------|----------------|-------|--------|-------|-----------|----------|
@@ -109,24 +109,26 @@ Abbreviations: **U** = Unit, **I** = Integration, **WM** = WireMock, **LS** = Lo
 | W4-US05 | W4-F2 / W4-F2-E2 | Observability REST APIs | Done | | U,I,M,KB | /api/v1/observability; cross-tenant 404 |
 | W4-US06 | W4-F2 / W4-F2-E1 | Grafana dashboard provisioning (tenant) | Done | | U,M,KB | Should; StubGrafanaClient + provisioner |
 
-**Wave exit criteria:** Support can locate completeness and error logs for fixture `exec-*`. **Met** (US02 completeness + US04/US05 logs; tag `wave-4-complete`).
+**Wave exit criteria:** Support can locate completeness and error logs for fixture `exec-*`. **Met** (US02 completeness + US04/US05 logs; tag `wave-4-complete`; PR #9 merged).
 
 ---
 
 ## Wave 5 — Metering & Pay-as-you-go
 
-**Wave goal:** Fixture run yields billable events across compute, records, connector calls, webhooks.
+**Wave goal:** Fixture run yields billable events across compute, records, connector calls, webhooks.  
+**Plan:** [`waves/WAVE_5.md`](waves/WAVE_5.md) · **TDD:** [`tdd/WAVE_5_TDD.md`](tdd/WAVE_5_TDD.md) · **Developer guides:** [`tdd/stories/README.md`](tdd/stories/README.md) § Wave 5  
+**Branch:** `wave-5` · **Tags:** `W5-US01`–`W5-US06`, `wave-5-complete` · **PR:** [#10](https://github.com/deepakpalpro/pipeline-platform/pull/10) → `master` (**open**)
 
 | Story ID | Feature / Epic | Title | Status | Owner | Test gate | Blockers |
 |----------|----------------|-------|--------|-------|-----------|----------|
-| W5-US01 | W5-F1 / W5-F1-E1 | UsageEvent ingest + persist | Todo | | | |
-| W5-US02 | W5-F1 / W5-F1-E1 | MeterAgent emit from pipelet sidecar/lib | Todo | | | |
-| W5-US03 | W5-F1 / W5-F1-E2 | Hourly aggregates job | Todo | | | |
-| W5-US04 | W5-F2 / W5-F2-E1 | Quota soft/hard + credit balance | Todo | | | |
-| W5-US05 | W5-F2 / W5-F2-E1 | Usage and billing query APIs | Todo | | | |
-| W5-US06 | W5-F2 / W5-F2-E2 | Block run on hard limit / zero credit (402) | Todo | | | |
+| W5-US01 | W5-F1 / W5-F1-E1 | UsageEvent ingest + persist | Done | | U,I,M,KB | V14 usage_events; PersistingUsageEventCollector |
+| W5-US02 | W5-F1 / W5-F1-E1 | MeterAgent emit from pipelet sidecar/lib | Done | | U,I,M,KB | Stub records+vcpu; pipeline_runs on last stage |
+| W5-US03 | W5-F1 / W5-F1-E2 | Hourly aggregates job | Done | | U,I,M,KB | V15 usage_aggregates; UTC hourly upsert + stub cost |
+| W5-US04 | W5-F2 / W5-F2-E1 | Quota soft/hard + credit balance | Done | | U,I,M,KB | QuotaEvaluator; credit deduct on aggregate delta |
+| W5-US05 | W5-F2 / W5-F2-E1 | Usage and billing query APIs | Done | | U,I,M,KB | §3.5 usage/events/quota/periods; cross-tenant 404 |
+| W5-US06 | W5-F2 / W5-F2-E2 | Block run on hard limit / zero credit (402) | Done | | U,I,M,KB | Pre-run QuotaService gate; HTTP 402; no execution row |
 
-**Wave exit criteria:** Usage summary matches fixture meters within tolerance; KB for billing disputes drafted.
+**Wave exit criteria:** Usage summary matches fixture meters within tolerance; hard/zero credit returns `402`; billing-dispute KB drafted. **Met** (US05 tolerance + US06 `RunBlockedIT`; tag `wave-5-complete`).
 
 ---
 

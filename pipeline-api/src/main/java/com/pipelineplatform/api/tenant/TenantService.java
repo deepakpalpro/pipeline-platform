@@ -1,5 +1,6 @@
 package com.pipelineplatform.api.tenant;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.UUID;
 import org.springframework.stereotype.Service;
@@ -7,6 +8,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class TenantService {
+
+  /** Default prepaid credit so new tenants can run until W5 quota/credit is exhausted. */
+  public static final BigDecimal DEFAULT_CREDIT_BALANCE = new BigDecimal("100.0000");
 
   private final TenantRepository tenantRepository;
 
@@ -29,6 +33,7 @@ public class TenantService {
     tenant.setName(request.name().trim());
     tenant.setSlug(slug);
     tenant.setStatus(request.status() == null ? TenantStatus.trial : request.status());
+    tenant.setCreditBalance(DEFAULT_CREDIT_BALANCE);
 
     return TenantResponse.from(tenantRepository.save(tenant));
   }

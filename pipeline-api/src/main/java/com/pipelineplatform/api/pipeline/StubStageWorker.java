@@ -6,6 +6,7 @@ import com.pipelineplatform.api.messaging.QueueNaming;
 import com.pipelineplatform.api.messaging.RabbitMessagingConfig;
 import com.pipelineplatform.api.observability.PipelineLogEmitter;
 import com.pipelineplatform.api.observability.PipeletMetricsEmitter;
+import com.pipelineplatform.api.usage.MeterAgent;
 import java.time.Duration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,8 +16,8 @@ import org.springframework.stereotype.Component;
 
 /**
  * Stub stage worker for Wave 2: advances stages over RabbitMQ. Spawns subsequent stage Jobs via
- * {@link PipeletJobClient} (stage 1 is spawned by the orchestrator). Emits pipelet metrics (W4-US01)
- * and structured pipeline logs (W4-US04).
+ * {@link PipeletJobClient} (stage 1 is spawned by the orchestrator). Emits pipelet metrics (W4-US01),
+ * structured pipeline logs (W4-US04), and billable usage via {@link MeterAgent} (W5-US02).
  */
 @Component
 public class StubStageWorker {
@@ -32,6 +33,7 @@ public class StubStageWorker {
   private final PipelineStepRepository pipelineStepRepository;
   private final PipeletMetricsEmitter pipeletMetricsEmitter;
   private final PipelineLogEmitter pipelineLogEmitter;
+  private final MeterAgent meterAgent;
 
   public StubStageWorker(
       RabbitTemplate rabbitTemplate,
@@ -39,13 +41,15 @@ public class StubStageWorker {
       PipeletJobClient pipeletJobClient,
       PipelineStepRepository pipelineStepRepository,
       PipeletMetricsEmitter pipeletMetricsEmitter,
-      PipelineLogEmitter pipelineLogEmitter) {
+      PipelineLogEmitter pipelineLogEmitter,
+      MeterAgent meterAgent) {
     this.rabbitTemplate = rabbitTemplate;
     this.orchestrator = orchestrator;
     this.pipeletJobClient = pipeletJobClient;
     this.pipelineStepRepository = pipelineStepRepository;
     this.pipeletMetricsEmitter = pipeletMetricsEmitter;
     this.pipelineLogEmitter = pipelineLogEmitter;
+    this.meterAgent = meterAgent;
   }
 
   @RabbitListener(queues = RabbitMessagingConfig.STUB_STAGE_WORKER_QUEUE)
@@ -78,6 +82,15 @@ public class StubStageWorker {
         STUB_RECORDS_PER_STAGE,
         STUB_RECORDS_PER_STAGE,
         Math.max(1L, processing.toMillis()));
+    meterAgent.recordStageProcessed(
+        message.tenantId(),
+        message.pipelineId(),
+        message.executionId(),
+        message.pipeletId(),
+        message.stageOrder(),
+        message.stageCount(),
+        STUB_RECORDS_PER_STAGE,
+        processing);
 
     String exchange = QueueNaming.pipelineExchange(message.tenantId(), message.pipelineId());
 

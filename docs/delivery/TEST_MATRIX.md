@@ -89,12 +89,12 @@ Wave TDD (stakeholders): [`tdd/README.md`](tdd/README.md)
 
 | Story ID | Unit | Integration | WireMock | LocalStack | Manual | KB |
 |----------|------|-------------|----------|------------|--------|-----|
-| W5-US01 | | | n/a | n/a | | |
-| W5-US02 | | | n/a | n/a | | |
-| W5-US03 | | | n/a | n/a | | |
-| W5-US04 | | | n/a | n/a | | |
-| W5-US05 | | | n/a | n/a | | |
-| W5-US06 | | | n/a | n/a | | |
+| W5-US01 | x | x | n/a | n/a | x | x |
+| W5-US02 | x | x | n/a | n/a | x | x |
+| W5-US03 | x | x | n/a | n/a | x | x |
+| W5-US04 | x | x | n/a | n/a | x | x |
+| W5-US05 | x | x | n/a | n/a | x | x |
+| W5-US06 | x | x | n/a | n/a | x | x |
 
 ---
 

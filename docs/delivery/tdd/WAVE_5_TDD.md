@@ -4,13 +4,15 @@
 |-------|--------|
 | **Wave** | W5 — Metering & Pay-as-you-go |
 | **Audience** | Technical stakeholders |
-| **Status** | Draft (planning) |
+| **Status** | Complete (W5-US01–US06 Done; `wave-5-complete`; PR #10 → master open) |
 | **Architecture refs** | §6.2, §3.5 |
-| **Branch / tags** | `wave-5` (planned) · `W5-US##` |
-| **Last updated** | 2026-07-08 |
+| **Branch / tags** | `wave-5` · `W5-US##` · `wave-5-complete` |
+| **Last updated** | 2026-07-09 |
 | **Template** | [`../TDD_WAVE_TEMPLATE.md`](../TDD_WAVE_TEMPLATE.md) |
 | **Catalog** | [`../../DELIVERY_PLAN.md`](../../DELIVERY_PLAN.md) § Wave 5 |
-| **Depends on** | W2 fixture runs; W3 webhook meters; W0 MySQL |
+| **Execution plan** | [`../waves/WAVE_5.md`](../waves/WAVE_5.md) |
+| **Developer guides** | [`stories/README.md`](stories/README.md) § Wave 5 |
+| **Depends on** | W2 fixture runs; W3 webhook meters; W4 complete (`wave-4-complete`); W0 MySQL |
 
 ---
 
@@ -75,13 +77,19 @@ flowchart TB
 
 ### W5-US01 — UsageEvent ingest + persist
 
+**Developer guide:** [`stories/w5/W5-US01-tdd.md`](stories/w5/W5-US01-tdd.md)
+
 | Step | Evidence |
 |------|----------|
 | **Red** | `UsageEventServiceTest` / IT fail |
 | **Green** | Ingest API/queue → MySQL |
 | **Refactor** | Idempotent ingest keys |
 
+**Status:** Done — `V14__usage_events`, `PersistingUsageEventCollector`, idempotent keys.
+
 ### W5-US02 — MeterAgent emit from pipelet
+
+**Developer guide:** [`stories/w5/W5-US02-tdd.md`](stories/w5/W5-US02-tdd.md)
 
 | Step | Evidence |
 |------|----------|
@@ -89,7 +97,11 @@ flowchart TB
 | **Green** | Emit from fixture pipelet run |
 | **Refactor** | Shared dimension schema |
 
+**Status:** Done — `MeterAgent` + stub worker; records + stub vcpu; `pipeline_runs` on last stage.
+
 ### W5-US03 — Hourly aggregates job
+
+**Developer guide:** [`stories/w5/W5-US03-tdd.md`](stories/w5/W5-US03-tdd.md)
 
 | Step | Evidence |
 |------|----------|
@@ -97,7 +109,11 @@ flowchart TB
 | **Green** | Rollups for fixture hour |
 | **Refactor** | Re-run safe |
 
+**Status:** Done — `V15__usage_aggregates`, UTC hourly upsert, stub costs, fixed-clock tests.
+
 ### W5-US04 — Soft/hard quota + credit balance
+
+**Developer guide:** [`stories/w5/W5-US04-tdd.md`](stories/w5/W5-US04-tdd.md)
 
 | Step | Evidence |
 |------|----------|
@@ -105,7 +121,11 @@ flowchart TB
 | **Green** | Soft warn / hard block thresholds |
 | **Refactor** | Clear error codes |
 
+**Status:** Done — `QuotaEvaluator` + credit deduct on aggregate cost delta; soft log-only.
+
 ### W5-US05 — Usage and billing query APIs
+
+**Developer guide:** [`stories/w5/W5-US05-tdd.md`](stories/w5/W5-US05-tdd.md)
 
 | Step | Evidence |
 |------|----------|
@@ -113,13 +133,19 @@ flowchart TB
 | **Green** | Summary matches fixture ± tolerance |
 | **Refactor** | Pagination |
 
+**Status:** Done — §3.5 usage/events/quota/periods; cross-tenant 404; tolerance in KB.
+
 ### W5-US06 — Block run on hard limit / zero credit
+
+**Developer guide:** [`stories/w5/W5-US06-tdd.md`](stories/w5/W5-US06-tdd.md)
 
 | Step | Evidence |
 |------|----------|
 | **Red** | `RunBlockedIT.returns402` fail |
 | **Green** | Orchestrator checks quota before run |
 | **Refactor** | Align with W2 run API |
+
+**Status:** Done — pre-run `QuotaService` gate; HTTP 402 body; no execution on block; default trial credit 100.
 
 ---
 
@@ -130,7 +156,7 @@ flowchart TB
 | Tolerance | Document numeric tolerance for exit | US05 |
 | Tenant isolation | Usage never mixes tenants | all |
 | Deterministic time | Fixed clocks in aggregate tests | US03 |
-| Contract with W3 | webhook_events/bytes_in dimensions | US02 |
+| Contract with W3 | webhook_events/bytes_in dimensions | US01–US02 |
 
 ---
 
@@ -140,7 +166,7 @@ flowchart TB
 |----------------|--------------|
 | Usage summary matches fixture | US05 IT |
 | Hard limit / zero credit `402` | US06 IT |
-| Billing-dispute KB | `kb/W5-*-billing-dispute.md` |
+| Billing-dispute KB | `kb/W5-*-billing-dispute.md` / US05–US06 KBs |
 
 ---
 
@@ -159,3 +185,10 @@ flowchart TB
 | Date | Change |
 |------|--------|
 | 2026-07-08 | Initial Draft for technical stakeholders |
+| 2026-07-09 | Linked execution plan + junior story TDD guides; wave-5 started |
+| 2026-07-09 | W5-US01 implemented: usage_events persist + idempotent collector |
+| 2026-07-09 | W5-US02 implemented: MeterAgent stub stage emit |
+| 2026-07-09 | W5-US03 implemented: hourly usage_aggregates job |
+| 2026-07-09 | W5-US04 implemented: QuotaEvaluator + credit deduct |
+| 2026-07-09 | W5-US05 implemented: usage/billing/quota query APIs |
+| 2026-07-09 | W5-US06 implemented: run blocked 402; wave exit (`wave-5-complete`) |

@@ -68,3 +68,4 @@ curl -s localhost:8080/api/v1/services/<SERVICE_ID> -H "X-Tenant-Id: $TENANT_ID"
 - Developer TDD: [`../tdd/stories/w1/W1-US04-tdd.md`](../tdd/stories/w1/W1-US04-tdd.md)
 - Service types: [`W1-US03-service-types.md`](W1-US03-service-types.md)
 - Isolation: [`W1-US02-tenant-isolation.md`](W1-US02-tenant-isolation.md)
+- Modeling (service vs connector vs step): [`../../SERVICE_CONNECTOR_PIPELET_MODEL.md`](../../SERVICE_CONNECTOR_PIPELET_MODEL.md)

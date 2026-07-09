@@ -59,3 +59,4 @@ curl -s localhost:8080/api/v1/connector-types
 - Developer TDD: [`../tdd/stories/w1/W1-US05-tdd.md`](../tdd/stories/w1/W1-US05-tdd.md)
 - Next: [`../tdd/stories/w1/W1-US06-tdd.md`](../tdd/stories/w1/W1-US06-tdd.md) (WireMock HTTP test)
 - Architecture §9
+- Modeling (connector vs step; ADLS example): [`../../SERVICE_CONNECTOR_PIPELET_MODEL.md`](../../SERVICE_CONNECTOR_PIPELET_MODEL.md)

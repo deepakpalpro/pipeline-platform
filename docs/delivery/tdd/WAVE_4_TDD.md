@@ -4,7 +4,7 @@
 |-------|--------|
 | **Wave** | W4 — Observability |
 | **Audience** | Technical stakeholders |
-| **Status** | Complete (W4-US01–US06 Done; `wave-4-complete`; PR #9 → master open) |
+| **Status** | Complete (W4-US01–US06 Done; `wave-4-complete`; PR #9 → master) |
 | **Architecture refs** | §7, §3.6 |
 | **Branch / tags** | `wave-4` · `W4-US##` · `wave-4-complete` |
 | **Last updated** | 2026-07-09 |
@@ -195,3 +195,4 @@ flowchart TB
 | 2026-07-09 | W4-US05 implemented: observability REST APIs + tenant isolation |
 | 2026-07-09 | W4-US06 implemented: Grafana provision stub; wave Must+Should complete |
 | 2026-07-09 | Wave exit: tags `W4-US01`–`W4-US06` + `wave-4-complete`; PR #9 opened |
+| 2026-07-09 | PR #9 merged to master |

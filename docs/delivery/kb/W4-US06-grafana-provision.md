@@ -82,3 +82,4 @@ Expect a provision result with `orgId` / `orgName` / `dashboardUid` — that is 
 - Developer TDD: [`../tdd/stories/w4/W4-US06-tdd.md`](../tdd/stories/w4/W4-US06-tdd.md)
 - Completeness: [`W4-US02-completeness.md`](W4-US02-completeness.md)
 - Architecture §7.2
+- Modeling (completeness + pipelet telemetry in Grafana): [`../../SERVICE_CONNECTOR_PIPELET_MODEL.md`](../../SERVICE_CONNECTOR_PIPELET_MODEL.md) §5
