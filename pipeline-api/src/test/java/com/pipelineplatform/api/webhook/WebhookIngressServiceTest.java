@@ -41,6 +41,7 @@ class WebhookIngressServiceTest {
   @Mock private WebhookSignatureVerifier signatureVerifier;
   @Mock private WebhookIdempotencyService idempotencyService;
   @Mock private WebhookQueueWatchRegistry queueWatchRegistry;
+  @Mock private com.pipelineplatform.api.usage.UsageEventEmitter usageEventEmitter;
 
   private WebhookIngressService service;
   private final ObjectMapper objectMapper = new ObjectMapper();
@@ -57,6 +58,7 @@ class WebhookIngressServiceTest {
             signatureVerifier,
             idempotencyService,
             queueWatchRegistry,
+            usageEventEmitter,
             objectMapper);
   }
 
@@ -114,6 +116,7 @@ class WebhookIngressServiceTest {
     verify(queueWatchRegistry)
         .register(
             tenantId, connectorId, QueueNaming.webhookInputQueue(tenantId, connectorId));
+    verify(usageEventEmitter).emitWebhookAccepted(tenantId, connectorId, body.length);
   }
 
   @Test

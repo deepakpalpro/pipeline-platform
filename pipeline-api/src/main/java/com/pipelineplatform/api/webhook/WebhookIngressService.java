@@ -9,6 +9,7 @@ import com.pipelineplatform.api.messaging.QueueNaming;
 import com.pipelineplatform.api.messaging.WebhookTopology;
 import com.pipelineplatform.api.messaging.WebhookTopologyService;
 import com.pipelineplatform.api.tenant.TenantRepository;
+import com.pipelineplatform.api.usage.UsageEventEmitter;
 import java.nio.charset.StandardCharsets;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -29,6 +30,7 @@ public class WebhookIngressService {
   private final WebhookSignatureVerifier signatureVerifier;
   private final WebhookIdempotencyService idempotencyService;
   private final WebhookQueueWatchRegistry queueWatchRegistry;
+  private final UsageEventEmitter usageEventEmitter;
   private final ObjectMapper objectMapper;
 
   public WebhookIngressService(
@@ -40,6 +42,7 @@ public class WebhookIngressService {
       WebhookSignatureVerifier signatureVerifier,
       WebhookIdempotencyService idempotencyService,
       WebhookQueueWatchRegistry queueWatchRegistry,
+      UsageEventEmitter usageEventEmitter,
       ObjectMapper objectMapper) {
     this.tenantRepository = tenantRepository;
     this.connectorRepository = connectorRepository;
@@ -49,6 +52,7 @@ public class WebhookIngressService {
     this.signatureVerifier = signatureVerifier;
     this.idempotencyService = idempotencyService;
     this.queueWatchRegistry = queueWatchRegistry;
+    this.usageEventEmitter = usageEventEmitter;
     this.objectMapper = objectMapper;
   }
 
@@ -110,6 +114,9 @@ public class WebhookIngressService {
 
     // Register for on-demand processor poller (W3-US06). Do not create Jobs here (US01).
     queueWatchRegistry.register(tenantId, connectorId, queuedTo);
+
+    // Meter once per logical event (idempotent replays skip this path) — W3-US07.
+    usageEventEmitter.emitWebhookAccepted(tenantId, connectorId, bodyBytes.length);
 
     if (pipeletJobClient == null) {
       throw new IllegalStateException("PipeletJobClient bean required");

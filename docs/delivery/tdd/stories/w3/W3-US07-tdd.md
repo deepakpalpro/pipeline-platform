@@ -130,26 +130,26 @@ Auth stub: public ingress — tenant from URL; tags use path `tenantId` + `conne
 
 ### Checklist
 
-- [ ] Both dimensions emitted on accept
-- [ ] Tags include tenant + connector
-- [ ] Dimension names match architecture
-- [ ] Tests green (MySQL + RabbitMQ if IT wired)
+- [x] Both dimensions emitted on accept
+- [x] Tags include tenant + connector
+- [x] Dimension names match architecture
+- [x] Tests green (MySQL + RabbitMQ if IT wired)
 
 ---
 
 ## 10. REFACTOR
 
 - Align event shape with Wave 5 usage collector
-- Document idempotent-dup metering policy with US03
+- Document idempotent-dup metering policy with US03 (count once)
 - Keep emitter free of RabbitMQ details
 
 ---
 
 ## 11. Docs & trackers
 
-- [ ] KB: which dimensions fire on webhook accept
-- [ ] Tracker · TEST_MATRIX · `WAVE_3.md` Done
-- [ ] Wave exit prep when all Must Done
+- [x] KB: which dimensions fire on webhook accept
+- [x] Tracker · TEST_MATRIX · `WAVE_3.md` Done
+- [ ] Wave exit prep when all Must Done (US04 Should optional)
 
 | # | Action | Expected |
 |---|--------|----------|
