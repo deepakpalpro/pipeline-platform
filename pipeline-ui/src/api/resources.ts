@@ -2,7 +2,10 @@ import { apiFetch } from './apiClient'
 import type {
   ConnectorType,
   CreateConnectorRequest,
+  CreatePipelineRequest,
   CreateTenantServiceRequest,
+  PipelineResponse,
+  ReplacePipelineStepsRequest,
   ServiceType,
   TenantConnector,
   TenantService,
@@ -75,5 +78,29 @@ export function updateService(
 export function listServiceTypes(tenantId: string) {
   return apiFetch('/api/v1/service-types', tenantId).then((r) =>
     readJson<ServiceType[]>(r),
+  )
+}
+
+export function createPipeline(tenantId: string, body: CreatePipelineRequest) {
+  return apiFetch('/api/v1/pipelines', tenantId, {
+    method: 'POST',
+    body: JSON.stringify(body),
+  }).then((r) => readJson<PipelineResponse>(r))
+}
+
+export function replacePipelineSteps(
+  tenantId: string,
+  pipelineId: string,
+  body: ReplacePipelineStepsRequest,
+) {
+  return apiFetch(`/api/v1/pipelines/${pipelineId}/steps`, tenantId, {
+    method: 'PUT',
+    body: JSON.stringify(body),
+  }).then((r) => readJson<PipelineResponse>(r))
+}
+
+export function listPipelines(tenantId: string) {
+  return apiFetch('/api/v1/pipelines', tenantId).then((r) =>
+    readJson<PipelineResponse[]>(r),
   )
 }

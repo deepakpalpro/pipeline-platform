@@ -131,7 +131,7 @@ Guides: [`w6/`](w6/)
 | W6-US01 Nav shell + tenant context | [`w6/W6-US01-tdd.md`](w6/W6-US01-tdd.md) | Done |
 | W6-US02 Connectors / Services UI | [`w6/W6-US02-tdd.md`](w6/W6-US02-tdd.md) | Done |
 | W6-US03 Pipelets catalog | [`w6/W6-US03-tdd.md`](w6/W6-US03-tdd.md) | Done |
-| W6-US04 Pipeline builder | [`w6/W6-US04-tdd.md`](w6/W6-US04-tdd.md) | Draft (planning) |
+| W6-US04 Pipeline builder | [`w6/W6-US04-tdd.md`](w6/W6-US04-tdd.md) | Done |
 | W6-US05 Run / overlay | [`w6/W6-US05-tdd.md`](w6/W6-US05-tdd.md) | Draft (planning) |
 | W6-US06 Observability panels | [`w6/W6-US06-tdd.md`](w6/W6-US06-tdd.md) | Draft (planning) |
 

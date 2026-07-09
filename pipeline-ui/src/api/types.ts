@@ -60,3 +60,38 @@ export type ServiceType = {
   type: string
   displayName: string
 }
+
+export type CreatePipelineRequest = {
+  name: string
+  description?: string
+  visibility?: 'PRIVATE' | 'TENANT'
+  executionMode?: 'ASYNC' | 'SYNC'
+}
+
+export type PipelineStepPayload = {
+  pipelet_id: string
+  step_order: number
+  config: Record<string, unknown>
+  connector_ids: string[]
+  service_ids: string[]
+  input_queue: string | null
+  output_queue: string | null
+}
+
+export type ReplacePipelineStepsRequest = {
+  steps: PipelineStepPayload[]
+}
+
+export type PipelineResponse = {
+  id: string
+  tenantId: string
+  name: string
+  description?: string | null
+  visibility?: string
+  execution_mode?: string
+  version: number
+  status: string
+  created_at?: string
+  updated_at?: string
+  steps?: unknown[]
+}

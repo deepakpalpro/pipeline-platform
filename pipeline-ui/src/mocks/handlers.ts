@@ -3,7 +3,10 @@ import { redactConfig } from '../api/secrets'
 import type {
   ConnectorType,
   CreateConnectorRequest,
+  CreatePipelineRequest,
   CreateTenantServiceRequest,
+  PipelineResponse,
+  ReplacePipelineStepsRequest,
   ServiceType,
   TenantConnector,
   TenantService,
@@ -49,9 +52,14 @@ export const SERVICE_TYPES: ServiceType[] = [
 export const mockDb = {
   connectors: [] as TenantConnector[],
   services: [] as TenantService[],
+  pipelines: [] as PipelineResponse[],
+  /** Last PUT steps body — asserted by save tests. */
+  lastStepsPut: null as ReplacePipelineStepsRequest | null,
 }
 
 export function resetMockDb() {
+  mockDb.pipelines = []
+  mockDb.lastStepsPut = null
   mockDb.connectors = [
     {
       id: 'conn-1',
@@ -223,8 +231,61 @@ export const pipeletHandlers = [
   }),
 ]
 
+export const pipelineHandlers = [
+  http.get('/api/v1/pipelines', ({ request }) => {
+    const tid = tenantId(request)
+    return HttpResponse.json(
+      mockDb.pipelines.filter((p) => p.tenantId === tid),
+    )
+  }),
+
+  http.post('/api/v1/pipelines', async ({ request }) => {
+    const tid = tenantId(request)
+    const body = (await request.json()) as CreatePipelineRequest
+    if (!body.name?.trim()) {
+      return HttpResponse.json({ message: 'Validation failed' }, { status: 400 })
+    }
+    const created: PipelineResponse = {
+      id: id('pipe'),
+      tenantId: tid,
+      name: body.name.trim(),
+      description: body.description ?? null,
+      visibility: body.visibility ?? 'PRIVATE',
+      execution_mode: body.executionMode ?? 'ASYNC',
+      version: 1,
+      status: 'DRAFT',
+      created_at: nowIso(),
+      updated_at: nowIso(),
+      steps: [],
+    }
+    mockDb.pipelines.push(created)
+    return HttpResponse.json(created, { status: 201 })
+  }),
+
+  http.put('/api/v1/pipelines/:id/steps', async ({ params, request }) => {
+    const tid = tenantId(request)
+    const idx = mockDb.pipelines.findIndex(
+      (p) => p.id === params.id && p.tenantId === tid,
+    )
+    if (idx < 0) {
+      return HttpResponse.json({ message: 'Not found' }, { status: 404 })
+    }
+    const body = (await request.json()) as ReplacePipelineStepsRequest
+    mockDb.lastStepsPut = body
+    const updated: PipelineResponse = {
+      ...mockDb.pipelines[idx],
+      version: mockDb.pipelines[idx].version + 1,
+      updated_at: nowIso(),
+      steps: body.steps,
+    }
+    mockDb.pipelines[idx] = updated
+    return HttpResponse.json(updated)
+  }),
+]
+
 export const handlers = [
   ...connectorHandlers,
   ...serviceHandlers,
   ...pipeletHandlers,
+  ...pipelineHandlers,
 ]
