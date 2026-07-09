@@ -128,7 +128,7 @@ flowchart LR
 | **Priority** | Must |
 | **Dependencies** | W3-US01; W1-US04 |
 | **Architecture refs** | §11 security; §9.3 ServiceResolver |
-| **Status** | Todo |
+| **Status** | Done |
 
 **In scope:** HMAC (or vendor) verify using tenant Auth service config; reject invalid signatures.  
 **Out of scope:** Full OAuth login UI.
@@ -137,9 +137,9 @@ flowchart LR
 
 [`../tdd/stories/w3/W3-US02-tdd.md`](../tdd/stories/w3/W3-US02-tdd.md)
 
-#### Support KB (create)
+#### Support KB
 
-`docs/delivery/kb/W3-US02-webhook-signature.md`
+[`../kb/W3-US02-webhook-signature.md`](../kb/W3-US02-webhook-signature.md)
 
 ---
 

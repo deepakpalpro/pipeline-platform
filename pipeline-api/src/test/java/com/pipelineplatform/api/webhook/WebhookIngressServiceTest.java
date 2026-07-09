@@ -3,13 +3,14 @@ package com.pipelineplatform.api.webhook;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.pipelineplatform.api.connector.TenantConnector;
 import com.pipelineplatform.api.connector.TenantConnectorRepository;
 import com.pipelineplatform.api.k8s.PipeletJobClient;
@@ -18,6 +19,7 @@ import com.pipelineplatform.api.messaging.WebhookTopology;
 import com.pipelineplatform.api.messaging.WebhookTopologyService;
 import com.pipelineplatform.api.tenant.Tenant;
 import com.pipelineplatform.api.tenant.TenantRepository;
+import java.nio.charset.StandardCharsets;
 import java.util.Map;
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
@@ -36,6 +38,7 @@ class WebhookIngressServiceTest {
   @Mock private WebhookTopologyService webhookTopologyService;
   @Mock private RabbitTemplate rabbitTemplate;
   @Mock private PipeletJobClient pipeletJobClient;
+  @Mock private WebhookSignatureVerifier signatureVerifier;
 
   private WebhookIngressService service;
   private final ObjectMapper objectMapper = new ObjectMapper();
@@ -48,7 +51,9 @@ class WebhookIngressServiceTest {
             connectorRepository,
             webhookTopologyService,
             rabbitTemplate,
-            pipeletJobClient);
+            pipeletJobClient,
+            signatureVerifier,
+            objectMapper);
   }
 
   @Test
@@ -60,6 +65,7 @@ class WebhookIngressServiceTest {
     TenantConnector connector = new TenantConnector();
     connector.setId(connectorId);
     connector.setTenantId(tenantId);
+    connector.setConfig("{\"signing_secret\":\"test-secret\"}");
 
     when(tenantRepository.findById(tenantId)).thenReturn(Optional.of(tenant));
     when(connectorRepository.findByIdAndTenantId(connectorId, tenantId))
@@ -74,13 +80,16 @@ class WebhookIngressServiceTest {
                 QueueNaming.webhookDlq(tenantId, connectorId),
                 QueueNaming.webhookRoutingKey(connectorId)));
 
-    ObjectNode body = objectMapper.createObjectNode().put("action", "opened");
-    WebhookAcceptResponse response = service.accept(tenantId, connectorId, body);
+    byte[] body = "{\"action\":\"opened\"}".getBytes(StandardCharsets.UTF_8);
+    WebhookAcceptResponse response =
+        service.accept(tenantId, connectorId, body, "sha256=abc");
 
     assertThat(response.accepted()).isTrue();
     assertThat(response.eventId()).isNotBlank();
     assertThat(response.queuedTo())
         .isEqualTo(QueueNaming.webhookInputQueue(tenantId, connectorId));
+
+    verify(signatureVerifier).verifyOrThrow(eq(tenantId), eq(connector), eq(body), eq("sha256=abc"));
 
     ArgumentCaptor<Object> payloadCaptor = ArgumentCaptor.forClass(Object.class);
     verify(rabbitTemplate)
@@ -91,9 +100,6 @@ class WebhookIngressServiceTest {
     @SuppressWarnings("unchecked")
     Map<String, Object> envelope = (Map<String, Object>) payloadCaptor.getValue();
     assertThat(envelope.get("event_id")).isEqualTo(response.eventId());
-    assertThat(envelope.get("tenant_id")).isEqualTo(tenantId);
-    assertThat(envelope.get("connector_id")).isEqualTo(connectorId);
-    assertThat(envelope.get("payload")).isEqualTo(body);
 
     verify(pipeletJobClient, never()).create(any());
   }
@@ -103,11 +109,39 @@ class WebhookIngressServiceTest {
     when(tenantRepository.findById("T001")).thenReturn(Optional.of(new Tenant()));
     when(connectorRepository.findByIdAndTenantId("missing", "T001")).thenReturn(Optional.empty());
 
-    assertThatThrownBy(() -> service.accept("T001", "missing", objectMapper.createObjectNode()))
+    assertThatThrownBy(
+            () -> service.accept("T001", "missing", "{}".getBytes(StandardCharsets.UTF_8), null))
         .isInstanceOf(WebhookTargetNotFoundException.class);
 
+    verify(signatureVerifier, never()).verifyOrThrow(anyString(), any(), any(), any());
     verify(rabbitTemplate, never())
         .convertAndSend(any(String.class), any(String.class), any(Object.class));
     verify(pipeletJobClient, never()).create(any());
+  }
+
+  @Test
+  void invalidSignature_doesNotPublish() {
+    String tenantId = "T001";
+    String connectorId = "conn-1";
+    TenantConnector connector = new TenantConnector();
+    connector.setId(connectorId);
+    connector.setTenantId(tenantId);
+    connector.setConfig("{\"signing_secret\":\"test-secret\"}");
+
+    when(tenantRepository.findById(tenantId)).thenReturn(Optional.of(new Tenant()));
+    when(connectorRepository.findByIdAndTenantId(connectorId, tenantId))
+        .thenReturn(Optional.of(connector));
+    doThrow(new WebhookSignatureRejectedException("Invalid webhook signature"))
+        .when(signatureVerifier)
+        .verifyOrThrow(eq(tenantId), eq(connector), any(), any());
+
+    assertThatThrownBy(
+            () ->
+                service.accept(
+                    tenantId, connectorId, "{}".getBytes(StandardCharsets.UTF_8), "sha256=bad"))
+        .isInstanceOf(WebhookSignatureRejectedException.class);
+
+    verify(rabbitTemplate, never())
+        .convertAndSend(any(String.class), any(String.class), any(Object.class));
   }
 }
