@@ -4,7 +4,7 @@
 |-------|--------|
 | **Wave** | W2 — Pipelines & Ephemeral Execution |
 | **Audience** | Technical stakeholders |
-| **Status** | In Progress (W2-US01–US03 Done) |
+| **Status** | In Progress (W2-US01–US04 Done) |
 | **Architecture refs** | §1.4, §2 pipeline tables, §3.1–3.2, §8, §10.3 |
 | **Branch / tags** | `wave-2` · `W2-US##` |
 | **Last updated** | 2026-07-09 |
@@ -120,9 +120,11 @@ Junior step-by-step guides: [`stories/README.md`](stories/README.md) § Wave 2.
 
 | Step | Evidence |
 |------|----------|
-| **Red** | `PipelineRunOrchestratorTest` / run IT fail |
-| **Green** | `POST .../run` drives stages async |
-| **Refactor** | Clear separation orchestration vs Job client |
+| **Red** | `PipelineRunOrchestratorTest` / `PipelineRunIT` |
+| **Green** | `POST .../run` → 202 + execution id; stub worker → `completed` |
+| **Refactor** | Orchestrator vs stub worker separation |
+
+| Status | Done |
 
 ### W2-US05 — Pipelet Job spawn (Kind/stub)
 
