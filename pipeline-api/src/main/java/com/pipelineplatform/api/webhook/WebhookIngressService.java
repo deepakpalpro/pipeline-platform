@@ -12,6 +12,7 @@ import com.pipelineplatform.api.tenant.TenantRepository;
 import java.nio.charset.StandardCharsets;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.stereotype.Service;
@@ -26,6 +27,7 @@ public class WebhookIngressService {
   private final RabbitTemplate rabbitTemplate;
   private final PipeletJobClient pipeletJobClient;
   private final WebhookSignatureVerifier signatureVerifier;
+  private final WebhookIdempotencyService idempotencyService;
   private final ObjectMapper objectMapper;
 
   public WebhookIngressService(
@@ -35,6 +37,7 @@ public class WebhookIngressService {
       RabbitTemplate rabbitTemplate,
       PipeletJobClient pipeletJobClient,
       WebhookSignatureVerifier signatureVerifier,
+      WebhookIdempotencyService idempotencyService,
       ObjectMapper objectMapper) {
     this.tenantRepository = tenantRepository;
     this.connectorRepository = connectorRepository;
@@ -42,16 +45,21 @@ public class WebhookIngressService {
     this.rabbitTemplate = rabbitTemplate;
     this.pipeletJobClient = pipeletJobClient;
     this.signatureVerifier = signatureVerifier;
+    this.idempotencyService = idempotencyService;
     this.objectMapper = objectMapper;
   }
 
   /**
-   * Accept an external webhook: validate tenant+connector, verify HMAC on raw body, declare
-   * topology, publish, return 202. Must not start a pipelet Job (W3-US06).
+   * Accept an external webhook: validate, verify HMAC, idempotency check, publish once, return 202.
+   * Must not start a pipelet Job (W3-US06).
    */
-  @Transactional(readOnly = true)
+  @Transactional
   public WebhookAcceptResponse accept(
-      String tenantId, String connectorId, byte[] rawBody, String signatureHeaderValue) {
+      String tenantId,
+      String connectorId,
+      byte[] rawBody,
+      String signatureHeaderValue,
+      String webhookIdHeader) {
     if (tenantId == null || tenantId.isBlank() || connectorId == null || connectorId.isBlank()) {
       throw new WebhookTargetNotFoundException(tenantId, connectorId);
     }
@@ -68,12 +76,27 @@ public class WebhookIngressService {
     byte[] bodyBytes = rawBody == null ? new byte[0] : rawBody;
     signatureVerifier.verifyOrThrow(tenantId, connector, bodyBytes, signatureHeaderValue);
 
-    JsonNode body = parseBody(bodyBytes);
+    String idempotencyKey = idempotencyService.extractKey(webhookIdHeader, bodyBytes);
+    String queuedTo = QueueNaming.webhookInputQueue(tenantId, connectorId);
 
+    Optional<String> existing =
+        idempotencyService.findExistingEventId(tenantId, connectorId, idempotencyKey);
+    if (existing.isPresent()) {
+      return new WebhookAcceptResponse(true, existing.get(), queuedTo);
+    }
+
+    JsonNode body = parseBody(bodyBytes);
     WebhookTopology topology =
         webhookTopologyService.declare(connector.getTenantId(), connector.getId());
 
     String eventId = UUID.randomUUID().toString();
+    String claimed =
+        idempotencyService.claim(tenantId, connectorId, idempotencyKey, eventId);
+    if (!claimed.equals(eventId)) {
+      // Lost race to concurrent duplicate — do not publish again.
+      return new WebhookAcceptResponse(true, claimed, queuedTo);
+    }
+
     Map<String, Object> envelope = new LinkedHashMap<>();
     envelope.put("event_id", eventId);
     envelope.put("tenant_id", tenantId);
@@ -86,8 +109,7 @@ public class WebhookIngressService {
       throw new IllegalStateException("PipeletJobClient bean required");
     }
 
-    return new WebhookAcceptResponse(
-        true, eventId, QueueNaming.webhookInputQueue(tenantId, connectorId));
+    return new WebhookAcceptResponse(true, eventId, queuedTo);
   }
 
   private JsonNode parseBody(byte[] bodyBytes) {
@@ -97,7 +119,6 @@ public class WebhookIngressService {
     try {
       return objectMapper.readTree(bodyBytes);
     } catch (Exception ex) {
-      // Non-JSON payloads still queue as UTF-8 text for processors.
       return objectMapper.getNodeFactory().textNode(new String(bodyBytes, StandardCharsets.UTF_8));
     }
   }

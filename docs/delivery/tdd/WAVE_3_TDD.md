@@ -188,3 +188,4 @@ Reference AC: DELIVERY_PLAN fully worked **W3-US01** (`WebhookIngressServiceTest
 | 2026-07-09 | Linked execution plan + junior story TDD guides; wave-3 started |
 | 2026-07-09 | W3-US01 implemented: webhook accept + RabbitMQ publish |
 | 2026-07-09 | W3-US02 implemented: HMAC signature + ServiceResolver |
+| 2026-07-09 | W3-US03 implemented: idempotency keys + single publish |

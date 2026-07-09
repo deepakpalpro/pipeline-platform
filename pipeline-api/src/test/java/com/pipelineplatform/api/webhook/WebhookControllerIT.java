@@ -108,6 +108,48 @@ class WebhookControllerIT {
   }
 
   @Test
+  void duplicateWebhookId_returnsSameEventId_andSingleQueueMessage() throws Exception {
+    String suffix = UUID.randomUUID().toString().substring(0, 8);
+    TenantResponse tenant = createTenant("Webhook Idem " + suffix, "whid-" + suffix);
+    TenantConnectorResponse connector =
+        createEventListenerConnector(tenant.id(), "github-id-" + suffix);
+
+    String rawJson = "{\"action\":\"opened\"}";
+    byte[] rawBytes = rawJson.getBytes(StandardCharsets.UTF_8);
+    String signature =
+        "sha256=" + WebhookSignatureVerifier.hmacSha256Hex(SIGNING_SECRET, rawBytes);
+    String webhookId = "evt-dup-" + suffix;
+
+    HttpHeaders headers = signedJsonHeaders(signature);
+    headers.set(WebhookIdempotencyService.WEBHOOK_ID_HEADER, webhookId);
+
+    ResponseEntity<WebhookAcceptResponse> first =
+        restTemplate.exchange(
+            "/api/v1/webhooks/" + tenant.id() + "/" + connector.id(),
+            HttpMethod.POST,
+            new HttpEntity<>(rawBytes, headers),
+            WebhookAcceptResponse.class);
+    ResponseEntity<WebhookAcceptResponse> second =
+        restTemplate.exchange(
+            "/api/v1/webhooks/" + tenant.id() + "/" + connector.id(),
+            HttpMethod.POST,
+            new HttpEntity<>(rawBytes, headers),
+            WebhookAcceptResponse.class);
+
+    assertThat(first.getStatusCode()).isEqualTo(HttpStatus.ACCEPTED);
+    assertThat(second.getStatusCode()).isEqualTo(HttpStatus.ACCEPTED);
+    assertThat(first.getBody()).isNotNull();
+    assertThat(second.getBody()).isNotNull();
+    assertThat(second.getBody().eventId()).isEqualTo(first.getBody().eventId());
+
+    String queue = QueueNaming.webhookInputQueue(tenant.id(), connector.id());
+    Object firstMsg = rabbitTemplate.receiveAndConvert(queue, TimeUnit.SECONDS.toMillis(5));
+    Object secondMsg = rabbitTemplate.receiveAndConvert(queue, TimeUnit.SECONDS.toMillis(1));
+    assertThat(firstMsg).isNotNull();
+    assertThat(secondMsg).isNull();
+  }
+
+  @Test
   void badSignature_returns401_andDoesNotEnqueue() {
     String suffix = UUID.randomUUID().toString().substring(0, 8);
     TenantResponse tenant = createTenant("Webhook BadSig " + suffix, "whbs-" + suffix);
