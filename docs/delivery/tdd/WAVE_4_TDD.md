@@ -109,6 +109,8 @@ flowchart TB
 | **Green** | Gauges/counters registered |
 | **Refactor** | Label cardinality limits documented |
 
+**Status:** Done — `touchHeartbeat` + `recordCriticalError`; stub pod `stub-pipelet`; `PipeletErrorType` allowlist.
+
 ### W4-US04 — Logs → Logstash → ES → Kibana
 
 **Developer guide:** [`stories/w4/W4-US04-tdd.md`](stories/w4/W4-US04-tdd.md)
@@ -180,3 +182,4 @@ flowchart TB
 | 2026-07-09 | Linked execution plan + junior story TDD guides; wave-4 started |
 | 2026-07-09 | W4-US01 implemented: PipeletMetricsEmitter + stub worker emit |
 | 2026-07-09 | W4-US02 implemented: CompletenessCalculator + gauge + execution pct |
+| 2026-07-09 | W4-US03 implemented: heartbeat gauge + critical error counter |

@@ -78,7 +78,7 @@ Wave TDD (stakeholders): [`tdd/README.md`](tdd/README.md)
 |----------|------|-------------|----------|------------|--------|-----|
 | W4-US01 | x | x | n/a | n/a | x | x |
 | W4-US02 | x | x | n/a | n/a | x | x |
-| W4-US03 | | | n/a | n/a | | |
+| W4-US03 | x | | n/a | n/a | x | x |
 | W4-US04 | | | n/a | n/a | | |
 | W4-US05 | | | n/a | n/a | | |
 | W4-US06 | | | n/a | n/a | | |

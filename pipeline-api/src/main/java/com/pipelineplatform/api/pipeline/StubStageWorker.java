@@ -62,6 +62,8 @@ public class StubStageWorker {
         STUB_RECORDS_PER_STAGE,
         STUB_RECORDS_PER_STAGE,
         Duration.ofNanos(Math.max(1L, System.nanoTime() - startedNanos)));
+    pipeletMetricsEmitter.touchHeartbeat(
+        message.tenantId(), message.pipelineId(), message.pipeletId());
 
     String exchange = QueueNaming.pipelineExchange(message.tenantId(), message.pipelineId());
 

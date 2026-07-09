@@ -107,10 +107,10 @@ flowchart LR
 
 ### Checklist
 
-- [ ] Heartbeat gauge updates
-- [ ] Critical error counter increments
-- [ ] Label policy documented
-- [ ] Tests green
+- [x] Heartbeat gauge updates
+- [x] Critical error counter increments
+- [x] Label policy documented
+- [x] Tests green
 
 ---
 
@@ -123,8 +123,8 @@ flowchart LR
 
 ## 11. Docs & trackers
 
-- [ ] KB: how to spot stale heartbeat / error spikes
-- [ ] Tracker · TEST_MATRIX · `WAVE_4.md` Done
+- [x] KB: how to spot stale heartbeat / error spikes
+- [x] Tracker · TEST_MATRIX · `WAVE_4.md` Done
 
 ```text
 merge → tag W4-US03 → W4-US04 / continue
