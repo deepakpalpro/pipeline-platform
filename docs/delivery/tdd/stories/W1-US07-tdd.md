@@ -8,6 +8,7 @@
 | **Timebox hint** | 1–1.5 days |
 | **You will touch** | `StorageConnector`, AWS SDK S3 client config, LocalStack endpoint, IT |
 | **Stakeholder TDD** | [`../WAVE_1_TDD.md`](../WAVE_1_TDD.md) |
+| **AC source** | [`../../waves/WAVE_1.md`](../../waves/WAVE_1.md) § W1-US07 |
 | **Architecture** | §9.5 `storage` / S3; §10.6 LocalStack |
 | **KB (create)** | `docs/delivery/kb/W1-US07-storage-localstack.md` |
 

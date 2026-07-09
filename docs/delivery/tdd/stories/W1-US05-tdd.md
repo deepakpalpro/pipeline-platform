@@ -8,6 +8,7 @@
 | **Timebox hint** | 1–2 days |
 | **You will touch** | `Connector` SPI interface, Rest plugin, loader/registry, `connector_types` seed, unit tests |
 | **Stakeholder TDD** | [`../WAVE_1_TDD.md`](../WAVE_1_TDD.md) |
+| **AC source** | [`../../waves/WAVE_1.md`](../../waves/WAVE_1.md) § W1-US05 |
 | **Architecture** | §9 Connector SPI (especially §9.1–9.5) |
 | **KB (create)** | `docs/delivery/kb/W1-US05-connector-spi.md` |
 

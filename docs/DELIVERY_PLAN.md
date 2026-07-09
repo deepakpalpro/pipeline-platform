@@ -134,6 +134,7 @@ Stories below list **title + intent**. Fill full AC from the story template when
 
 **Exit criteria:** Tenant A cannot read Tenant B connectors; Rest test and S3 round-trip succeed; KB for “how to add a connector” drafted.
 
+**Wave 1 execution plan (full AC):** [`delivery/waves/WAVE_1.md`](delivery/waves/WAVE_1.md) · branch `wave-1`  
 **Wave 1 TDD (stakeholders):** [`delivery/tdd/WAVE_1_TDD.md`](delivery/tdd/WAVE_1_TDD.md)  
 **Wave 1 TDD (developers / juniors):** [`delivery/tdd/stories/README.md`](delivery/tdd/stories/README.md) § Wave 1
 

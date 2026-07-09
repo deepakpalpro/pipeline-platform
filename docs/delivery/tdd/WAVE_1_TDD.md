@@ -10,6 +10,7 @@
 | **Last updated** | 2026-07-09 |
 | **Template** | [`../TDD_WAVE_TEMPLATE.md`](../TDD_WAVE_TEMPLATE.md) |
 | **Catalog** | [`../../DELIVERY_PLAN.md`](../../DELIVERY_PLAN.md) § Wave 1 |
+| **Execution plan** | [`../waves/WAVE_1.md`](../waves/WAVE_1.md) |
 | **Developer story TDD** | [`stories/README.md`](stories/README.md) § Wave 1 |
 | **Coverage** | [`../TEST_MATRIX.md`](../TEST_MATRIX.md) § Wave 1 |
 

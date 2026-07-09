@@ -9,6 +9,7 @@
 | **Timebox hint** | 0.5–1 day |
 | **You will touch** | `MessageBusConnector`, SQS client, IT publish+receive |
 | **Stakeholder TDD** | [`../WAVE_1_TDD.md`](../WAVE_1_TDD.md) |
+| **AC source** | [`../../waves/WAVE_1.md`](../../waves/WAVE_1.md) § W1-US08 |
 | **Architecture** | §9.5 `message_bus`; LocalStack SQS |
 | **KB (create)** | `docs/delivery/kb/W1-US08-messagebus-sqs.md` |
 

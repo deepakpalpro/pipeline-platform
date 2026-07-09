@@ -34,6 +34,7 @@ Not the same as wave-level stakeholder TDD ([`../README.md`](../README.md)) or s
 **Suggested order:** US01 → US02 → US03 → US04 → US05 → US06 → US07 → US08.  
 US05 can start after W0-US05 even while US03/US04 are in flight if staffing allows — but **do not skip US02** before tenant-owned connector APIs.
 
+Execution plan (full AC): [`../../waves/WAVE_1.md`](../../waves/WAVE_1.md).  
 Stakeholder wave TDD: [`../WAVE_1_TDD.md`](../WAVE_1_TDD.md).
 
 ## Later waves (W2+)

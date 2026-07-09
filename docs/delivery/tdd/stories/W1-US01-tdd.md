@@ -8,6 +8,7 @@
 | **Timebox hint** | 1–2 days |
 | **You will touch** | Flyway `V2__…`, Tenant entity/repo/service/controller, `TenantContext`, security filter stub, fixtures `T001` |
 | **Stakeholder TDD** | [`../WAVE_1_TDD.md`](../WAVE_1_TDD.md) |
+| **AC source** | [`../../waves/WAVE_1.md`](../../waves/WAVE_1.md) § W1-US01 |
 | **Architecture** | [`../../../ARCHITECTURE.md`](../../../ARCHITECTURE.md) §2.2 `tenants`, §3 APIs, §6.1 |
 | **KB (create)** | `docs/delivery/kb/W1-US01-tenant-crud-context.md` |
 

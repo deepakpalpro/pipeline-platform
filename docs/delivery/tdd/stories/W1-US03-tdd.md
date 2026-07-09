@@ -8,6 +8,7 @@
 | **Timebox hint** | 0.5–1 day |
 | **You will touch** | `service_types` / defaults migration, seed data, `GET /service-types`, fixtures |
 | **Stakeholder TDD** | [`../WAVE_1_TDD.md`](../WAVE_1_TDD.md) |
+| **AC source** | [`../../waves/WAVE_1.md`](../../waves/WAVE_1.md) § W1-US03 |
 | **Architecture** | §2 services tables, §3.4 Service Endpoints |
 | **KB (create)** | `docs/delivery/kb/W1-US03-service-types.md` |
 
