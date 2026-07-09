@@ -139,7 +139,7 @@ flowchart LR
 | **Priority** | Must |
 | **Dependencies** | W5-US01 |
 | **Architecture refs** | §6.2 `usage_aggregates`, aggregation schedule |
-| **Status** | Todo |
+| **Status** | Done |
 
 **In scope:** Hourly rollup job into `usage_aggregates`; idempotent re-run for same hour; fixed-clock tests.  
 **Out of scope:** Monthly invoice generation.
@@ -148,9 +148,9 @@ flowchart LR
 
 [`../tdd/stories/w5/W5-US03-tdd.md`](../tdd/stories/w5/W5-US03-tdd.md)
 
-#### Support KB (create)
+#### Support KB
 
-`docs/delivery/kb/W5-US03-hourly-aggregates.md`
+[`../kb/W5-US03-hourly-aggregates.md`](../kb/W5-US03-hourly-aggregates.md)
 
 ---
 

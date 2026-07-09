@@ -102,23 +102,23 @@ flowchart LR
 
 ### Checklist
 
-- [ ] Hourly rows created
-- [ ] Re-run safe
-- [ ] Tests green
+- [x] Hourly rows created
+- [x] Re-run safe
+- [x] Tests green
 
 ---
 
 ## 10. REFACTOR
 
-- Cost calculation shared with US05
+- Cost calculation shared with US05 (`UsageUnitPrices`)
 - Ready for credit deduct (US04)
 
 ---
 
 ## 11. Docs & trackers
 
-- [ ] KB: how to re-run aggregate for an hour
-- [ ] Tracker · TEST_MATRIX · `WAVE_5.md` Done
+- [x] KB: how to re-run aggregate for an hour
+- [x] Tracker · TEST_MATRIX · `WAVE_5.md` Done
 
 ```text
 merge → tag W5-US03 → W5-US04 / US05
