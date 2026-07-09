@@ -108,10 +108,10 @@ flowchart LR
 
 ### Checklist
 
-- [ ] Stub provision path works
-- [ ] Tenant id mapped to org
-- [ ] KB documents stub vs real
-- [ ] Tests green
+- [x] Stub provision path works
+- [x] Tenant id mapped to org
+- [x] KB documents stub vs real
+- [x] Tests green
 
 ---
 
@@ -124,8 +124,8 @@ flowchart LR
 
 ## 11. Docs & trackers
 
-- [ ] KB: how dashboards are provisioned
-- [ ] Tracker · TEST_MATRIX · `WAVE_4.md` Done (Should)
+- [x] KB: how dashboards are provisioned
+- [x] Tracker · TEST_MATRIX · `WAVE_4.md` Done (Should)
 
 ```text
 merge → tag W4-US06 → wave exit prep

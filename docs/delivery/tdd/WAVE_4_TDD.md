@@ -4,7 +4,7 @@
 |-------|--------|
 | **Wave** | W4 — Observability |
 | **Audience** | Technical stakeholders |
-| **Status** | In Progress |
+| **Status** | Complete (W4-US01–US06 Done) |
 | **Architecture refs** | §7, §3.6 |
 | **Branch / tags** | `wave-4` · `W4-US##` |
 | **Last updated** | 2026-07-09 |
@@ -130,8 +130,10 @@ flowchart TB
 | Step | Evidence |
 |------|----------|
 | **Red** | `ObservabilityControllerIT` fail |
-| **Green** | completeness/latency/errors/logs endpoints |
+| **Green** | Completeness + latency/heartbeat/errors/logs |
 | **Refactor** | Tenant auth checks |
+
+**Status:** Done — tenant-scoped `/api/v1/observability/...`; cross-tenant 404.
 
 ### W4-US06 — Grafana dashboards (Should)
 
@@ -142,6 +144,8 @@ flowchart TB
 | **Red** | `GrafanaProvisionerTest` fail |
 | **Green** | Org/dashboard provision API |
 | **Refactor** | Template JSON fixtures |
+
+**Status:** Done — `StubGrafanaClient` + `GrafanaProvisioner` + optional `POST /tenants/{id}/grafana`.
 
 ---
 
@@ -187,3 +191,4 @@ flowchart TB
 | 2026-07-09 | W4-US03 implemented: heartbeat gauge + critical error counter |
 | 2026-07-09 | W4-US04 implemented: stub ELK indexer + optional compose profile |
 | 2026-07-09 | W4-US05 implemented: observability REST APIs + tenant isolation |
+| 2026-07-09 | W4-US06 implemented: Grafana provision stub; wave Must+Should complete |
