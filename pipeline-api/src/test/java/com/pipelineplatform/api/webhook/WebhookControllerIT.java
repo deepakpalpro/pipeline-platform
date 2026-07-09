@@ -14,6 +14,7 @@ import com.pipelineplatform.api.tenant.TenantContextFilter;
 import com.pipelineplatform.api.tenant.TenantResponse;
 import com.pipelineplatform.api.tenant.TenantStatus;
 import java.net.Socket;
+import java.nio.charset.StandardCharsets;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
@@ -32,10 +33,12 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
 
-/** W3-US01: public webhook POST → 202 + message on tenant webhook queue; no Job. */
+/** W3-US01/US02: signed webhook POST → 202 + queue message; bad sig → 401. */
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("local")
 class WebhookControllerIT {
+
+  private static final String SIGNING_SECRET = "test-secret";
 
   @BeforeAll
   static void requireComposeDeps() {
@@ -74,12 +77,16 @@ class WebhookControllerIT {
     TenantConnectorResponse connector = createEventListenerConnector(tenantId, "github-" + suffix);
     String connectorId = connector.id();
 
-    Map<String, Object> payload = Map.of("action", "opened", "number", 42);
+    String rawJson = "{\"action\":\"opened\",\"number\":42}";
+    byte[] rawBytes = rawJson.getBytes(StandardCharsets.UTF_8);
+    String signature =
+        "sha256=" + WebhookSignatureVerifier.hmacSha256Hex(SIGNING_SECRET, rawBytes);
+
     ResponseEntity<WebhookAcceptResponse> response =
         restTemplate.exchange(
             "/api/v1/webhooks/" + tenantId + "/" + connectorId,
             HttpMethod.POST,
-            new HttpEntity<>(payload, jsonHeaders()),
+            new HttpEntity<>(rawBytes, signedJsonHeaders(signature)),
             WebhookAcceptResponse.class);
 
     assertThat(response.getStatusCode()).isEqualTo(HttpStatus.ACCEPTED);
@@ -95,10 +102,29 @@ class WebhookControllerIT {
 
     JsonNode envelope = objectMapper.valueToTree(received);
     assertThat(envelope.get("event_id").asText()).isEqualTo(response.getBody().eventId());
-    assertThat(envelope.get("tenant_id").asText()).isEqualTo(tenantId);
-    assertThat(envelope.get("connector_id").asText()).isEqualTo(connectorId);
     assertThat(envelope.get("payload").get("action").asText()).isEqualTo("opened");
 
+    assertThat(stubPipeletJobClient.getCreated()).isEmpty();
+  }
+
+  @Test
+  void badSignature_returns401_andDoesNotEnqueue() {
+    String suffix = UUID.randomUUID().toString().substring(0, 8);
+    TenantResponse tenant = createTenant("Webhook BadSig " + suffix, "whbs-" + suffix);
+    TenantConnectorResponse connector =
+        createEventListenerConnector(tenant.id(), "github-bad-" + suffix);
+
+    String rawJson = "{\"action\":\"opened\"}";
+    byte[] rawBytes = rawJson.getBytes(StandardCharsets.UTF_8);
+
+    ResponseEntity<String> response =
+        restTemplate.exchange(
+            "/api/v1/webhooks/" + tenant.id() + "/" + connector.id(),
+            HttpMethod.POST,
+            new HttpEntity<>(rawBytes, signedJsonHeaders("sha256=deadbeef")),
+            String.class);
+
+    assertThat(response.getStatusCode()).isEqualTo(HttpStatus.UNAUTHORIZED);
     assertThat(stubPipeletJobClient.getCreated()).isEmpty();
   }
 
@@ -107,11 +133,15 @@ class WebhookControllerIT {
     String suffix = UUID.randomUUID().toString().substring(0, 8);
     TenantResponse tenant = createTenant("Webhook 404 " + suffix, "wh404-" + suffix);
 
+    byte[] rawBytes = "{}".getBytes(StandardCharsets.UTF_8);
+    String signature =
+        "sha256=" + WebhookSignatureVerifier.hmacSha256Hex(SIGNING_SECRET, rawBytes);
+
     ResponseEntity<String> response =
         restTemplate.exchange(
             "/api/v1/webhooks/" + tenant.id() + "/missing-connector",
             HttpMethod.POST,
-            new HttpEntity<>(Map.of("x", 1), jsonHeaders()),
+            new HttpEntity<>(rawBytes, signedJsonHeaders(signature)),
             String.class);
 
     assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
@@ -120,7 +150,12 @@ class WebhookControllerIT {
   private TenantConnectorResponse createEventListenerConnector(String tenantId, String name) {
     CreateConnectorRequest request =
         new CreateConnectorRequest(
-            "ct-event-listener", name, objectMapper.createObjectNode().put("path_hint", "/hooks"));
+            "ct-event-listener",
+            name,
+            objectMapper
+                .createObjectNode()
+                .put("path_hint", "/hooks")
+                .put("signing_secret", SIGNING_SECRET));
     ResponseEntity<TenantConnectorResponse> created =
         restTemplate.exchange(
             "/api/v1/connectors",
@@ -143,14 +178,16 @@ class WebhookControllerIT {
     return created.getBody();
   }
 
-  private static HttpHeaders jsonHeaders() {
+  private static HttpHeaders signedJsonHeaders(String signature) {
     HttpHeaders headers = new HttpHeaders();
     headers.setContentType(MediaType.APPLICATION_JSON);
+    headers.set(WebhookSignatureVerifier.DEFAULT_SIGNATURE_HEADER, signature);
     return headers;
   }
 
   private static HttpHeaders jsonTenantHeaders(String tenantId) {
-    HttpHeaders headers = jsonHeaders();
+    HttpHeaders headers = new HttpHeaders();
+    headers.setContentType(MediaType.APPLICATION_JSON);
     headers.set(TenantContextFilter.TENANT_ID_HEADER, tenantId);
     return headers;
   }

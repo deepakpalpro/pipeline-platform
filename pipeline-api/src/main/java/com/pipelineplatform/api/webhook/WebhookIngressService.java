@@ -1,6 +1,7 @@
 package com.pipelineplatform.api.webhook;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.pipelineplatform.api.connector.TenantConnector;
 import com.pipelineplatform.api.connector.TenantConnectorRepository;
 import com.pipelineplatform.api.k8s.PipeletJobClient;
@@ -8,6 +9,7 @@ import com.pipelineplatform.api.messaging.QueueNaming;
 import com.pipelineplatform.api.messaging.WebhookTopology;
 import com.pipelineplatform.api.messaging.WebhookTopologyService;
 import com.pipelineplatform.api.tenant.TenantRepository;
+import java.nio.charset.StandardCharsets;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -23,26 +25,33 @@ public class WebhookIngressService {
   private final WebhookTopologyService webhookTopologyService;
   private final RabbitTemplate rabbitTemplate;
   private final PipeletJobClient pipeletJobClient;
+  private final WebhookSignatureVerifier signatureVerifier;
+  private final ObjectMapper objectMapper;
 
   public WebhookIngressService(
       TenantRepository tenantRepository,
       TenantConnectorRepository connectorRepository,
       WebhookTopologyService webhookTopologyService,
       RabbitTemplate rabbitTemplate,
-      PipeletJobClient pipeletJobClient) {
+      PipeletJobClient pipeletJobClient,
+      WebhookSignatureVerifier signatureVerifier,
+      ObjectMapper objectMapper) {
     this.tenantRepository = tenantRepository;
     this.connectorRepository = connectorRepository;
     this.webhookTopologyService = webhookTopologyService;
     this.rabbitTemplate = rabbitTemplate;
     this.pipeletJobClient = pipeletJobClient;
+    this.signatureVerifier = signatureVerifier;
+    this.objectMapper = objectMapper;
   }
 
   /**
-   * Accept an external webhook: validate tenant+connector, declare topology, publish, return 202
-   * payload. Must not start a pipelet Job (W3-US06).
+   * Accept an external webhook: validate tenant+connector, verify HMAC on raw body, declare
+   * topology, publish, return 202. Must not start a pipelet Job (W3-US06).
    */
   @Transactional(readOnly = true)
-  public WebhookAcceptResponse accept(String tenantId, String connectorId, JsonNode body) {
+  public WebhookAcceptResponse accept(
+      String tenantId, String connectorId, byte[] rawBody, String signatureHeaderValue) {
     if (tenantId == null || tenantId.isBlank() || connectorId == null || connectorId.isBlank()) {
       throw new WebhookTargetNotFoundException(tenantId, connectorId);
     }
@@ -56,6 +65,11 @@ public class WebhookIngressService {
             .findByIdAndTenantId(connectorId, tenantId)
             .orElseThrow(() -> new WebhookTargetNotFoundException(tenantId, connectorId));
 
+    byte[] bodyBytes = rawBody == null ? new byte[0] : rawBody;
+    signatureVerifier.verifyOrThrow(tenantId, connector, bodyBytes, signatureHeaderValue);
+
+    JsonNode body = parseBody(bodyBytes);
+
     WebhookTopology topology =
         webhookTopologyService.declare(connector.getTenantId(), connector.getId());
 
@@ -68,12 +82,23 @@ public class WebhookIngressService {
 
     rabbitTemplate.convertAndSend(topology.exchange(), topology.routingKey(), envelope);
 
-    // Explicit non-use: US01 must not cold-start processing Jobs.
     if (pipeletJobClient == null) {
       throw new IllegalStateException("PipeletJobClient bean required");
     }
 
     return new WebhookAcceptResponse(
         true, eventId, QueueNaming.webhookInputQueue(tenantId, connectorId));
+  }
+
+  private JsonNode parseBody(byte[] bodyBytes) {
+    if (bodyBytes.length == 0) {
+      return objectMapper.createObjectNode();
+    }
+    try {
+      return objectMapper.readTree(bodyBytes);
+    } catch (Exception ex) {
+      // Non-JSON payloads still queue as UTF-8 text for processors.
+      return objectMapper.getNodeFactory().textNode(new String(bodyBytes, StandardCharsets.UTF_8));
+    }
   }
 }
