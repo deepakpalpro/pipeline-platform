@@ -89,7 +89,7 @@ flowchart LR
 | **Priority** | Must |
 | **Dependencies** | W2 fixture run; W0-US04 Prometheus |
 | **Architecture refs** | §7.1 `pipelet_records_*`, `pipelet_processing_duration_seconds` |
-| **Status** | Todo |
+| **Status** | Done |
 
 **In scope:** Emit `pipelet_records_in_total`, `pipelet_records_out_total`, processing histogram with tenant/pipeline/pipelet labels.  
 **Out of scope:** Completeness gauge (US02); heartbeat (US03).
@@ -98,9 +98,9 @@ flowchart LR
 
 [`../tdd/stories/w4/W4-US01-tdd.md`](../tdd/stories/w4/W4-US01-tdd.md)
 
-#### Support KB (create)
+#### Support KB
 
-`docs/delivery/kb/W4-US01-pipelet-metrics.md`
+[`../kb/W4-US01-pipelet-metrics.md`](../kb/W4-US01-pipelet-metrics.md)
 
 ---
 
@@ -224,6 +224,7 @@ flowchart LR
 - [x] `wave-4` branched from `master` (post Wave 3 merge / `wave-3-complete`)
 - [x] This execution plan + junior TDD guides committed
 - [x] `W4-US01` feature branch created
+- [x] W4-US01 Pipelet metrics emit (`PipeletMetricsEmitter` + stub worker)
 - [ ] WAVE_TRACKER / TEST_MATRIX / WAVE_4_TDD updated as stories complete
 - [ ] Each story: merge → tag `W4-US##` → delete → next from `wave-4`
 

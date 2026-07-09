@@ -102,7 +102,7 @@ Abbreviations: **U** = Unit, **I** = Integration, **WM** = WireMock, **LS** = Lo
 
 | Story ID | Feature / Epic | Title | Status | Owner | Test gate | Blockers |
 |----------|----------------|-------|--------|-------|-----------|----------|
-| W4-US01 | W4-F1 / W4-F1-E1 | Emit pipelet counters + histograms | In Progress | | | |
+| W4-US01 | W4-F1 / W4-F1-E1 | Emit pipelet counters + histograms | Done | | U,I,M,KB | §7.1 names; no execution_id label |
 | W4-US02 | W4-F1 / W4-F1-E1 | Completeness metric on fixture run | Todo | | | |
 | W4-US03 | W4-F1 / W4-F1-E2 | Heartbeat + critical error metrics | Todo | | | |
 | W4-US04 | W4-F2 / W4-F2-E1 | Logstash → ES → Kibana index pattern | Todo | | | |
