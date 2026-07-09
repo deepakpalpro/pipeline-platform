@@ -109,10 +109,10 @@ Auth: **`X-Tenant-Id`**; cross-tenant → **404**.
 
 ### Checklist
 
-- [ ] Usage summary shape matches §3.5
-- [ ] Cross-tenant 404
-- [ ] Tolerance documented
-- [ ] Tests green
+- [x] Usage summary shape matches §3.5
+- [x] Cross-tenant 404
+- [x] Tolerance documented
+- [x] Tests green
 
 ---
 
@@ -125,11 +125,11 @@ Auth: **`X-Tenant-Id`**; cross-tenant → **404**.
 
 ## 11. Docs & trackers
 
-- [ ] KB: curl examples + dispute checklist
-- [ ] Tracker · TEST_MATRIX · `WAVE_5.md` Done
+- [x] KB: curl examples + dispute checklist
+- [x] Tracker · TEST_MATRIX · `WAVE_5.md` Done
 
 ```text
-merge → tag W5-US05 → wave exit prep / US06
+merge → tag W5-US05 → W5-US06
 ```
 
 ---
