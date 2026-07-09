@@ -102,26 +102,26 @@ flowchart TD
 
 ### Checklist
 
-- [ ] Soft vs hard documented
-- [ ] Zero credit → block decision
-- [ ] Tests green
+- [x] Soft vs hard documented
+- [x] Zero credit → block decision
+- [x] Tests green
 
 ---
 
 ## 10. REFACTOR
 
-- Clear error codes for US06 body
+- Clear error codes for US06 body (`QuotaDecisionCode`)
 - Share DTO with US05 `/quota`
 
 ---
 
 ## 11. Docs & trackers
 
-- [ ] KB: how soft/hard limits work
-- [ ] Tracker · TEST_MATRIX · `WAVE_5.md` Done
+- [x] KB: how soft/hard limits work
+- [x] Tracker · TEST_MATRIX · `WAVE_5.md` Done
 
 ```text
-merge → tag W5-US04 → W5-US06
+merge → tag W5-US04 → W5-US05 / US06
 ```
 
 ---

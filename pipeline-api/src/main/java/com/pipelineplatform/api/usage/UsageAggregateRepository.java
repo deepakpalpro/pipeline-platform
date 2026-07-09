@@ -12,4 +12,8 @@ public interface UsageAggregateRepository extends JpaRepository<UsageAggregateEn
 
   List<UsageAggregateEntity> findByTenantIdAndGranularityAndPeriodStart(
       String tenantId, String granularity, Instant periodStart);
+
+  List<UsageAggregateEntity>
+      findByTenantIdAndGranularityAndPeriodStartGreaterThanEqualAndPeriodStartLessThan(
+          String tenantId, String granularity, Instant periodStartInclusive, Instant periodEndExclusive);
 }

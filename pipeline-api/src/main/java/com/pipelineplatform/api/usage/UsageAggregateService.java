@@ -1,5 +1,6 @@
 package com.pipelineplatform.api.usage;
 
+import com.pipelineplatform.api.billing.CreditBalanceService;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.Clock;
@@ -13,7 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Rolls raw {@code usage_events} into hourly {@code usage_aggregates}. Safe to re-run for the same
- * hour (upsert by tenant + dimension + period).
+ * hour (upsert by tenant + dimension + period). Deducts credit by cost delta on write.
  */
 @Service
 public class UsageAggregateService {
@@ -22,14 +23,17 @@ public class UsageAggregateService {
 
   private final UsageEventRepository eventRepository;
   private final UsageAggregateRepository aggregateRepository;
+  private final CreditBalanceService creditBalanceService;
   private final Clock clock;
 
   public UsageAggregateService(
       UsageEventRepository eventRepository,
       UsageAggregateRepository aggregateRepository,
+      CreditBalanceService creditBalanceService,
       Clock clock) {
     this.eventRepository = eventRepository;
     this.aggregateRepository = aggregateRepository;
+    this.creditBalanceService = creditBalanceService;
     this.clock = clock;
   }
 
@@ -72,10 +76,16 @@ public class UsageAggregateService {
 
       if (existing.isPresent()) {
         UsageAggregateEntity row = existing.get();
+        BigDecimal previousCost =
+            row.getTotalCost() == null ? BigDecimal.ZERO : row.getTotalCost();
+        BigDecimal delta = cost.subtract(previousCost);
         row.setTotalQuantity(quantity);
         row.setTotalCost(cost);
         row.setUpdatedAt(now);
         aggregateRepository.save(row);
+        if (delta.compareTo(BigDecimal.ZERO) != 0) {
+          creditBalanceService.deduct(sum.getTenantId(), delta);
+        }
       } else {
         UsageAggregateEntity row = new UsageAggregateEntity();
         row.setId(UUID.randomUUID().toString());
@@ -89,6 +99,9 @@ public class UsageAggregateService {
         row.setCreatedAt(now);
         row.setUpdatedAt(now);
         aggregateRepository.save(row);
+        if (cost.compareTo(BigDecimal.ZERO) != 0) {
+          creditBalanceService.deduct(sum.getTenantId(), cost);
+        }
       }
       written++;
     }
