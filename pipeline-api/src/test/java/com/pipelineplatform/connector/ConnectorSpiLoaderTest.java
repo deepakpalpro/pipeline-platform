@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
 import com.pipelineplatform.api.PipelineApiApplication;
+import com.pipelineplatform.connector.messagebus.MessageBusConnector;
 import com.pipelineplatform.connector.rest.RestConnector;
 import com.pipelineplatform.connector.storage.StorageConnector;
 import java.net.Socket;
@@ -52,5 +53,15 @@ class ConnectorSpiLoaderTest {
         .get()
         .extracting(c -> c.getType(), c -> c.getSpiVersion())
         .containsExactly(StorageConnector.TYPE, StorageConnector.SPI_VERSION);
+  }
+
+  @Test
+  void loadsMessageBusConnector() {
+    assertThat(registry.hasType(MessageBusConnector.TYPE)).isTrue();
+    assertThat(registry.findByType(MessageBusConnector.TYPE))
+        .isPresent()
+        .get()
+        .extracting(c -> c.getType(), c -> c.getSpiVersion())
+        .containsExactly(MessageBusConnector.TYPE, MessageBusConnector.SPI_VERSION);
   }
 }
