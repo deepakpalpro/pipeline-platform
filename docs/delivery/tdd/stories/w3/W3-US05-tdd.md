@@ -133,17 +133,17 @@ Auth stub: **`X-Tenant-Id` required** on this admin API. The provisioned public 
 
 ### Checklist
 
-- [ ] Stable URL for same connector
-- [ ] Tenant isolation on provision
-- [ ] Only `event_listener` allowed
-- [ ] Secrets redacted/encrypted in response
-- [ ] Tests green with MySQL up
+- [x] Stable URL for same connector
+- [x] Tenant isolation on provision
+- [x] Only `event_listener` allowed
+- [x] Secrets redacted/encrypted in response
+- [x] Tests green with MySQL up
 
 ---
 
 ## 10. REFACTOR
 
-- URL template from config (`ingress.base-url`)
+- URL template from config (`pipeline.ingress.base-url`)
 - Align `signature_header` / secret with US02 verifier
 - Avoid embedding host assumptions in tests (assert path suffix)
 
@@ -151,8 +151,8 @@ Auth stub: **`X-Tenant-Id` required** on this admin API. The provisioned public 
 
 ## 11. Docs & trackers
 
-- [ ] KB: provision curl + how external systems use the URL
-- [ ] Tracker · TEST_MATRIX · `WAVE_3.md` Done
+- [x] KB: provision curl + how external systems use the URL
+- [x] Tracker · TEST_MATRIX · `WAVE_3.md` Done
 
 | # | Action | Expected |
 |---|--------|----------|

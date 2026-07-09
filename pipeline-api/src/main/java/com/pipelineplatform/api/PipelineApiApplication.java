@@ -1,9 +1,12 @@
 package com.pipelineplatform.api;
 
+import com.pipelineplatform.api.config.IngressProperties;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 
 @SpringBootApplication(scanBasePackages = "com.pipelineplatform")
+@EnableConfigurationProperties(IngressProperties.class)
 public class PipelineApiApplication {
 
   public static void main(String[] args) {

@@ -197,7 +197,7 @@ flowchart LR
 | **Priority** | Must |
 | **Dependencies** | W3-US01 |
 | **Architecture refs** | §3.3 `POST /connectors/{id}/webhook-url` |
-| **Status** | Todo |
+| **Status** | Done |
 
 **In scope:** Provision stable ingress URL for `event_listener` connectors; tenant isolation.  
 **Out of scope:** Custom domains / TLS cert automation.
@@ -206,9 +206,9 @@ flowchart LR
 
 [`../tdd/stories/w3/W3-US05-tdd.md`](../tdd/stories/w3/W3-US05-tdd.md)
 
-#### Support KB (create)
+#### Support KB
 
-`docs/delivery/kb/W3-US05-webhook-url-provision.md`
+[`../kb/W3-US05-webhook-url-provision.md`](../kb/W3-US05-webhook-url-provision.md)
 
 ---
 
@@ -266,6 +266,7 @@ flowchart LR
 - [x] W3-US01 Ingress accept + publish implemented (`V12__event_listener_connector_type.sql`)
 - [x] W3-US02 HMAC signature verification
 - [x] W3-US03 Idempotency (`V13__webhook_idempotency.sql`)
+- [x] W3-US05 Provision webhook URL (`pipeline.ingress.base-url`)
 - [ ] WAVE_TRACKER / TEST_MATRIX / WAVE_3_TDD updated as stories complete
 - [ ] Each story: merge → tag `W3-US##` → delete → next from `wave-3`
 
