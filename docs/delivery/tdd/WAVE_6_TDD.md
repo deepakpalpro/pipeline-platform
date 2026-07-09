@@ -4,13 +4,15 @@
 |-------|--------|
 | **Wave** | W6 — No-code UI |
 | **Audience** | Technical stakeholders |
-| **Status** | Draft (planning) |
+| **Status** | In Progress (wave-6 started; W6-US01 next) |
 | **Architecture refs** | §4 |
-| **Branch / tags** | `wave-6` (planned) · `W6-US##` |
-| **Last updated** | 2026-07-08 |
+| **Branch / tags** | `wave-6` · `W6-US##` |
+| **Last updated** | 2026-07-10 |
 | **Template** | [`../TDD_WAVE_TEMPLATE.md`](../TDD_WAVE_TEMPLATE.md) |
 | **Catalog** | [`../../DELIVERY_PLAN.md`](../../DELIVERY_PLAN.md) § Wave 6 |
-| **Depends on** | W1 APIs stable; W2 run APIs; W4 for observability panels |
+| **Execution plan** | [`../waves/WAVE_6.md`](../waves/WAVE_6.md) |
+| **Developer guides** | [`stories/README.md`](stories/README.md) § Wave 6 |
+| **Depends on** | W1 APIs stable; W2 run APIs; W5 complete (`wave-5-complete`); W4 for observability panels |
 
 ---
 
@@ -78,6 +80,8 @@ Per working agreements: UI stories require unit tests for reducers/hooks and Pla
 
 ### W6-US01 — Level-1 nav shell + auth context
 
+**Developer guide:** [`stories/w6/W6-US01-tdd.md`](stories/w6/W6-US01-tdd.md)
+
 | Step | Evidence |
 |------|----------|
 | **Red** | `AuthContext.test`, shell render test fail |
@@ -85,6 +89,8 @@ Per working agreements: UI stories require unit tests for reducers/hooks and Pla
 | **Refactor** | Route table isolation |
 
 ### W6-US02 — Connectors / Services list+forms
+
+**Developer guide:** [`stories/w6/W6-US02-tdd.md`](stories/w6/W6-US02-tdd.md)
 
 | Step | Evidence |
 |------|----------|
@@ -94,6 +100,8 @@ Per working agreements: UI stories require unit tests for reducers/hooks and Pla
 
 ### W6-US03 — Global Pipelets catalog + admin register
 
+**Developer guide:** [`stories/w6/W6-US03-tdd.md`](stories/w6/W6-US03-tdd.md)
+
 | Step | Evidence |
 |------|----------|
 | **Red** | Catalog filter tests fail |
@@ -101,6 +109,8 @@ Per working agreements: UI stories require unit tests for reducers/hooks and Pla
 | **Refactor** | Role-gate helpers |
 
 ### W6-US04 — Drag-drop pipeline builder save
+
+**Developer guide:** [`stories/w6/W6-US04-tdd.md`](stories/w6/W6-US04-tdd.md)
 
 | Step | Evidence |
 |------|----------|
@@ -110,6 +120,8 @@ Per working agreements: UI stories require unit tests for reducers/hooks and Pla
 
 ### W6-US05 — Run / dry-run / execution overlay
 
+**Developer guide:** [`stories/w6/W6-US05-tdd.md`](stories/w6/W6-US05-tdd.md)
+
 | Step | Evidence |
 |------|----------|
 | **Red** | Overlay state tests / E2E fail |
@@ -117,6 +129,8 @@ Per working agreements: UI stories require unit tests for reducers/hooks and Pla
 | **Refactor** | Shared poller hook |
 
 ### W6-US06 — Observability panels (Should)
+
+**Developer guide:** [`stories/w6/W6-US06-tdd.md`](stories/w6/W6-US06-tdd.md)
 
 | Step | Evidence |
 |------|----------|
@@ -161,3 +175,4 @@ Per working agreements: UI stories require unit tests for reducers/hooks and Pla
 | Date | Change |
 |------|--------|
 | 2026-07-08 | Initial Draft for technical stakeholders |
+| 2026-07-10 | Linked execution plan + junior story guides; wave-6 started |

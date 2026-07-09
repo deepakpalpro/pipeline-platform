@@ -4,7 +4,7 @@
 |-------|--------|
 | **Wave** | W5 — Metering & Pay-as-you-go |
 | **Audience** | Technical stakeholders |
-| **Status** | Complete (W5-US01–US06 Done; `wave-5-complete`; PR #10 → master open) |
+| **Status** | Complete (W5-US01–US06 Done; `wave-5-complete`; PR #10 → master **merged**) |
 | **Architecture refs** | §6.2, §3.5 |
 | **Branch / tags** | `wave-5` · `W5-US##` · `wave-5-complete` |
 | **Last updated** | 2026-07-09 |
@@ -192,3 +192,4 @@ flowchart TB
 | 2026-07-09 | W5-US04 implemented: QuotaEvaluator + credit deduct |
 | 2026-07-09 | W5-US05 implemented: usage/billing/quota query APIs |
 | 2026-07-09 | W5-US06 implemented: run blocked 402; wave exit (`wave-5-complete`) |
+| 2026-07-10 | PR #10 merged to `master`; Wave 6 started |

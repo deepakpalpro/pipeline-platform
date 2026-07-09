@@ -117,7 +117,7 @@ Abbreviations: **U** = Unit, **I** = Integration, **WM** = WireMock, **LS** = Lo
 
 **Wave goal:** Fixture run yields billable events across compute, records, connector calls, webhooks.  
 **Plan:** [`waves/WAVE_5.md`](waves/WAVE_5.md) · **TDD:** [`tdd/WAVE_5_TDD.md`](tdd/WAVE_5_TDD.md) · **Developer guides:** [`tdd/stories/README.md`](tdd/stories/README.md) § Wave 5  
-**Branch:** `wave-5` · **Tags:** `W5-US01`–`W5-US06`, `wave-5-complete` · **PR:** [#10](https://github.com/deepakpalpro/pipeline-platform/pull/10) → `master` (**open**)
+**Branch:** `wave-5` · **Tags:** `W5-US01`–`W5-US06`, `wave-5-complete` · **PR:** [#10](https://github.com/deepakpalpro/pipeline-platform/pull/10) → `master` (**merged**)
 
 | Story ID | Feature / Epic | Title | Status | Owner | Test gate | Blockers |
 |----------|----------------|-------|--------|-------|-----------|----------|
@@ -134,7 +134,9 @@ Abbreviations: **U** = Unit, **I** = Integration, **WM** = WireMock, **LS** = Lo
 
 ## Wave 6 — No-code UI
 
-**Wave goal:** Build and run a 3-step pipeline in UI without code.
+**Wave goal:** Build and run a 3-step pipeline in UI without code.  
+**Plan:** [`waves/WAVE_6.md`](waves/WAVE_6.md) · **TDD:** [`tdd/WAVE_6_TDD.md`](tdd/WAVE_6_TDD.md) · **Developer guides:** [`tdd/stories/README.md`](tdd/stories/README.md) § Wave 6  
+**Branch:** `wave-6`
 
 | Story ID | Feature / Epic | Title | Status | Owner | Test gate | Blockers |
 |----------|----------------|-------|--------|-------|-----------|----------|
