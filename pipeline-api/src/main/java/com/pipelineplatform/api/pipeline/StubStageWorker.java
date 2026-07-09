@@ -4,6 +4,7 @@ import com.pipelineplatform.api.k8s.PipeletJobClient;
 import com.pipelineplatform.api.k8s.PipeletJobRequest;
 import com.pipelineplatform.api.messaging.QueueNaming;
 import com.pipelineplatform.api.messaging.RabbitMessagingConfig;
+import com.pipelineplatform.api.observability.PipelineLogEmitter;
 import com.pipelineplatform.api.observability.PipeletMetricsEmitter;
 import java.time.Duration;
 import org.slf4j.Logger;
@@ -14,7 +15,8 @@ import org.springframework.stereotype.Component;
 
 /**
  * Stub stage worker for Wave 2: advances stages over RabbitMQ. Spawns subsequent stage Jobs via
- * {@link PipeletJobClient} (stage 1 is spawned by the orchestrator). Emits pipelet metrics (W4-US01).
+ * {@link PipeletJobClient} (stage 1 is spawned by the orchestrator). Emits pipelet metrics (W4-US01)
+ * and structured pipeline logs (W4-US04).
  */
 @Component
 public class StubStageWorker {
@@ -29,18 +31,21 @@ public class StubStageWorker {
   private final PipeletJobClient pipeletJobClient;
   private final PipelineStepRepository pipelineStepRepository;
   private final PipeletMetricsEmitter pipeletMetricsEmitter;
+  private final PipelineLogEmitter pipelineLogEmitter;
 
   public StubStageWorker(
       RabbitTemplate rabbitTemplate,
       PipelineRunOrchestrator orchestrator,
       PipeletJobClient pipeletJobClient,
       PipelineStepRepository pipelineStepRepository,
-      PipeletMetricsEmitter pipeletMetricsEmitter) {
+      PipeletMetricsEmitter pipeletMetricsEmitter,
+      PipelineLogEmitter pipelineLogEmitter) {
     this.rabbitTemplate = rabbitTemplate;
     this.orchestrator = orchestrator;
     this.pipeletJobClient = pipeletJobClient;
     this.pipelineStepRepository = pipelineStepRepository;
     this.pipeletMetricsEmitter = pipeletMetricsEmitter;
+    this.pipelineLogEmitter = pipelineLogEmitter;
   }
 
   @RabbitListener(queues = RabbitMessagingConfig.STUB_STAGE_WORKER_QUEUE)
@@ -55,15 +60,24 @@ public class StubStageWorker {
         message.executionId());
 
     long startedNanos = System.nanoTime();
+    Duration processing = Duration.ofNanos(Math.max(1L, System.nanoTime() - startedNanos));
     pipeletMetricsEmitter.recordBatch(
         message.tenantId(),
         message.pipelineId(),
         message.pipeletId(),
         STUB_RECORDS_PER_STAGE,
         STUB_RECORDS_PER_STAGE,
-        Duration.ofNanos(Math.max(1L, System.nanoTime() - startedNanos)));
+        processing);
     pipeletMetricsEmitter.touchHeartbeat(
         message.tenantId(), message.pipelineId(), message.pipeletId());
+    pipelineLogEmitter.emitStageProcessed(
+        message.tenantId(),
+        message.pipelineId(),
+        message.executionId(),
+        message.pipeletId(),
+        STUB_RECORDS_PER_STAGE,
+        STUB_RECORDS_PER_STAGE,
+        Math.max(1L, processing.toMillis()));
 
     String exchange = QueueNaming.pipelineExchange(message.tenantId(), message.pipelineId());
 
