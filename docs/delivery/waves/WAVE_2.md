@@ -212,7 +212,7 @@ flowchart LR
 | **Priority** | Must |
 | **Dependencies** | W2-US04 |
 | **Architecture refs** | §10.3 Jobs |
-| **Status** | Todo |
+| **Status** | Done |
 
 **As a** platform engineer  
 **I want** a `PipeletJobClient` that creates a Job (Kind or stub)  
@@ -294,6 +294,7 @@ flowchart LR
 - [x] W2-US02 Pipeline steps implemented (`V10__pipeline_steps.sql`)
 - [x] W2-US03 RabbitMQ topology (`QueueNaming` + `PipelineTopologyService`)
 - [x] W2-US04 Async run (`V11__pipeline_executions.sql` + stub stage worker)
+- [x] W2-US05 PipeletJobClient stub wired into run path
 - [ ] WAVE_TRACKER / TEST_MATRIX / WAVE_2_TDD updated as stories complete
 - [ ] Each story: merge → tag `W2-US##` → delete → next from `wave-2`
 

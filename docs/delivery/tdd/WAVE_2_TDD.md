@@ -4,7 +4,7 @@
 |-------|--------|
 | **Wave** | W2 — Pipelines & Ephemeral Execution |
 | **Audience** | Technical stakeholders |
-| **Status** | In Progress (W2-US01–US04 Done) |
+| **Status** | In Progress (W2-US01–US05 Done) |
 | **Architecture refs** | §1.4, §2 pipeline tables, §3.1–3.2, §8, §10.3 |
 | **Branch / tags** | `wave-2` · `W2-US##` |
 | **Last updated** | 2026-07-09 |
@@ -132,9 +132,11 @@ Junior step-by-step guides: [`stories/README.md`](stories/README.md) § Wave 2.
 
 | Step | Evidence |
 |------|----------|
-| **Red** | `PipeletJobClientTest` fail |
-| **Green** | Stub or Kind Job create |
-| **Refactor** | Interface for later prod client |
+| **Red** | `PipeletJobClientTest` / extended `PipelineRunIT` |
+| **Green** | Stub records creates with tenant/pipeline/execution; run path spawns per stage |
+| **Refactor** | Interface ready for Kind/Fabric8 swap |
+
+| Status | Done |
 
 ### W2-US06 — Retries + per-stage DLQ
 

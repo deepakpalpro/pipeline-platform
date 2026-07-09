@@ -1,5 +1,7 @@
 package com.pipelineplatform.api.pipeline;
 
+import com.pipelineplatform.api.k8s.PipeletJobClient;
+import com.pipelineplatform.api.k8s.PipeletJobRequest;
 import com.pipelineplatform.api.messaging.PipelineTopology;
 import com.pipelineplatform.api.messaging.PipelineTopologyService;
 import com.pipelineplatform.api.messaging.QueueNaming;
@@ -14,9 +16,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- * Starts async pipeline runs: persist execution, declare topology, publish to stub stage worker.
+ * Starts async pipeline runs: persist execution, declare topology, publish stage-1 work.
  *
- * <p>Real pipelet Jobs arrive in W2-US05; this story uses {@link StubStageWorker} to advance stages.
+ * <p>Stage advancement is handled by {@link StubStageWorker}, which spawns work via {@link
+ * PipeletJobClient}.
  */
 @Service
 public class PipelineRunOrchestrator {
@@ -26,14 +29,17 @@ public class PipelineRunOrchestrator {
   private final PipelineExecutionRepository executionRepository;
   private final PipelineTopologyService topologyService;
   private final RabbitTemplate rabbitTemplate;
+  private final PipeletJobClient pipeletJobClient;
 
   public PipelineRunOrchestrator(
       PipelineExecutionRepository executionRepository,
       PipelineTopologyService topologyService,
-      RabbitTemplate rabbitTemplate) {
+      RabbitTemplate rabbitTemplate,
+      PipeletJobClient pipeletJobClient) {
     this.executionRepository = executionRepository;
     this.topologyService = topologyService;
     this.rabbitTemplate = rabbitTemplate;
+    this.pipeletJobClient = pipeletJobClient;
   }
 
   @Transactional
@@ -65,17 +71,39 @@ public class PipelineRunOrchestrator {
     PipelineTopology topology =
         topologyService.declare(pipeline.getTenantId(), pipeline.getId(), stageCount);
 
-    // Mirror kickoff onto stage-1 queue for topology observability; stub worker drives progress.
+    PipelineStep first = steps.get(0);
+    String inputQueue =
+        first.getInputQueue() != null
+            ? first.getInputQueue()
+            : QueueNaming.stageInputQueue(pipeline.getTenantId(), pipeline.getId(), 1);
+    String outputQueue =
+        first.getOutputQueue() != null
+            ? first.getOutputQueue()
+            : (stageCount > 1
+                ? QueueNaming.stageOutputQueue(pipeline.getTenantId(), pipeline.getId(), 1)
+                : null);
+
+    pipeletJobClient.create(
+        PipeletJobRequest.of(
+            pipeline.getTenantId(),
+            pipeline.getId(),
+            saved.getId(),
+            first.getPipeletId(),
+            1,
+            stageCount,
+            inputQueue,
+            outputQueue));
+
     StageMessage message =
         new StageMessage(
             saved.getId(),
             pipeline.getId(),
             pipeline.getTenantId(),
+            first.getPipeletId(),
             1,
             stageCount,
             "run-" + saved.getId());
-    rabbitTemplate.convertAndSend(
-        topology.exchange(), QueueNaming.stageRoutingKey(1), message);
+    rabbitTemplate.convertAndSend(topology.exchange(), QueueNaming.stageRoutingKey(1), message);
     rabbitTemplate.convertAndSend(RabbitMessagingConfig.STUB_STAGE_WORKER_QUEUE, message);
 
     saved.setStatus(ExecutionStatus.RUNNING);
