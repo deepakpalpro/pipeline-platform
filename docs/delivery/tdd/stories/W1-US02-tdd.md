@@ -135,6 +135,17 @@ merge → tag W1-US02 → delete → W1-US03
 
 ---
 
+## Reference shape (this repo)
+
+- Flyway `V2__tenant_notes.sql`
+- `@TenantOwned` + Hibernate `@Filter` on `TenantNote`
+- `TenantNoteService` enables `tenantFilter` per call; JPQL `findFilteredById`
+- APIs: `/api/v1/tenant-notes` (requires `X-Tenant-Id`)
+- Tests: `TenantIsolationIT`, `TenantNoteServiceTest`
+- KB: [`../../kb/W1-US02-tenant-isolation.md`](../../kb/W1-US02-tenant-isolation.md)
+
+---
+
 ## Help / escalate
 
 - Security-sensitive: get a senior review on the IT before merge
