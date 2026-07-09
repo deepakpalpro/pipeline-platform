@@ -117,7 +117,7 @@ Abbreviations: **U** = Unit, **I** = Integration, **WM** = WireMock, **LS** = Lo
 
 **Wave goal:** Fixture run yields billable events across compute, records, connector calls, webhooks.  
 **Plan:** [`waves/WAVE_5.md`](waves/WAVE_5.md) · **TDD:** [`tdd/WAVE_5_TDD.md`](tdd/WAVE_5_TDD.md) · **Developer guides:** [`tdd/stories/README.md`](tdd/stories/README.md) § Wave 5  
-**Branch:** `wave-5`
+**Branch:** `wave-5` · **Tags:** `W5-US01`–`W5-US06`, `wave-5-complete` · **PR:** (open → `master`)
 
 | Story ID | Feature / Epic | Title | Status | Owner | Test gate | Blockers |
 |----------|----------------|-------|--------|-------|-----------|----------|
@@ -126,9 +126,9 @@ Abbreviations: **U** = Unit, **I** = Integration, **WM** = WireMock, **LS** = Lo
 | W5-US03 | W5-F1 / W5-F1-E2 | Hourly aggregates job | Done | | U,I,M,KB | V15 usage_aggregates; UTC hourly upsert + stub cost |
 | W5-US04 | W5-F2 / W5-F2-E1 | Quota soft/hard + credit balance | Done | | U,I,M,KB | QuotaEvaluator; credit deduct on aggregate delta |
 | W5-US05 | W5-F2 / W5-F2-E1 | Usage and billing query APIs | Done | | U,I,M,KB | §3.5 usage/events/quota/periods; cross-tenant 404 |
-| W5-US06 | W5-F2 / W5-F2-E2 | Block run on hard limit / zero credit (402) | Todo | | | |
+| W5-US06 | W5-F2 / W5-F2-E2 | Block run on hard limit / zero credit (402) | Done | | U,I,M,KB | Pre-run QuotaService gate; HTTP 402; no execution row |
 
-**Wave exit criteria:** Usage summary matches fixture meters within tolerance; KB for billing disputes drafted.
+**Wave exit criteria:** Usage summary matches fixture meters within tolerance; hard/zero credit returns `402`; billing-dispute KB drafted. **Met** (US05 tolerance + US06 `RunBlockedIT`; tag `wave-5-complete`).
 
 ---
 

@@ -4,9 +4,9 @@
 |-------|--------|
 | **Wave** | W5 — Metering & Pay-as-you-go |
 | **Audience** | Technical stakeholders |
-| **Status** | In Progress (W5-US01–US05 Done) |
+| **Status** | Complete (W5-US01–US06 Done; `wave-5-complete`) |
 | **Architecture refs** | §6.2, §3.5 |
-| **Branch / tags** | `wave-5` · `W5-US##` |
+| **Branch / tags** | `wave-5` · `W5-US##` · `wave-5-complete` |
 | **Last updated** | 2026-07-09 |
 | **Template** | [`../TDD_WAVE_TEMPLATE.md`](../TDD_WAVE_TEMPLATE.md) |
 | **Catalog** | [`../../DELIVERY_PLAN.md`](../../DELIVERY_PLAN.md) § Wave 5 |
@@ -145,6 +145,8 @@ flowchart TB
 | **Green** | Orchestrator checks quota before run |
 | **Refactor** | Align with W2 run API |
 
+**Status:** Done — pre-run `QuotaService` gate; HTTP 402 body; no execution on block; default trial credit 100.
+
 ---
 
 ## 5. Cross-cutting test themes
@@ -189,3 +191,4 @@ flowchart TB
 | 2026-07-09 | W5-US03 implemented: hourly usage_aggregates job |
 | 2026-07-09 | W5-US04 implemented: QuotaEvaluator + credit deduct |
 | 2026-07-09 | W5-US05 implemented: usage/billing/quota query APIs |
+| 2026-07-09 | W5-US06 implemented: run blocked 402; wave exit (`wave-5-complete`) |

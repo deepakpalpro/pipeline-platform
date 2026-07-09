@@ -208,7 +208,7 @@ flowchart LR
 | **Priority** | Must |
 | **Dependencies** | W5-US04; W2 run API |
 | **Architecture refs** | §6.2 Quota Enforcement |
-| **Status** | Todo |
+| **Status** | Done |
 
 **In scope:** Pre-run quota/credit check in orchestrator/run path; HTTP **402** with quota details when hard-limited or credit ≤ 0.  
 **Out of scope:** Soft-limit UX beyond warn stub.
@@ -217,9 +217,9 @@ flowchart LR
 
 [`../tdd/stories/w5/W5-US06-tdd.md`](../tdd/stories/w5/W5-US06-tdd.md)
 
-#### Support KB (create)
+#### Support KB
 
-`docs/delivery/kb/W5-US06-run-blocked-402.md` (or fold into billing-dispute KB)
+[`../kb/W5-US06-run-blocked-402.md`](../kb/W5-US06-run-blocked-402.md)
 
 ---
 
@@ -230,18 +230,25 @@ flowchart LR
 - [x] `W5-US01` feature branch created
 - [x] W5-US01 UsageEvent ingest + persist (`PersistingUsageEventCollector` + V14)
 - [x] W5-US02 MeterAgent emit from stub stage worker
-- [ ] WAVE_TRACKER / TEST_MATRIX / WAVE_5_TDD updated as stories complete
-- [ ] Each story: merge → tag `W5-US##` → delete → next from `wave-5`
+- [x] W5-US03 Hourly aggregates (`V15` + job)
+- [x] W5-US04 Quota + credits
+- [x] W5-US05 Usage/billing query APIs
+- [x] W5-US06 Block run 402
+- [x] WAVE_TRACKER / TEST_MATRIX / WAVE_5_TDD updated as stories complete
+- [x] Each story: merge → tag `W5-US##` → delete → next from `wave-5`
+- [x] Exit verified: usage summary ± tolerance; `402` on hard/zero credit; KBs
+- [ ] PR `wave-5` → `master`
+- [x] Tag `wave-5-complete`
 
 ---
 
 ## Definition of Done (Wave 5)
 
-- All **Must** stories W5-US01–US06 Done  
-- Exit criteria verified (usage summary ± tolerance; `402` on hard/zero credit)  
-- Billing-dispute KB drafted  
-- PR `wave-5` → `master` when exit criteria met  
-- Tag `wave-5-complete`
+- [x] All **Must** stories W5-US01–US06 Done  
+- [x] Exit criteria verified (usage summary ± tolerance; `402` on hard/zero credit)  
+- [x] Billing-dispute KB drafted (`W5-US05` + `W5-US06`)  
+- [ ] PR `wave-5` → `master` when exit criteria met  
+- [x] Tag `wave-5-complete`
 
 ---
 

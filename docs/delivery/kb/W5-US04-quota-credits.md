@@ -50,7 +50,7 @@ Soft **never** blocks. Hard / zero credit **do** (HTTP wiring in W5-US06).
 On hourly aggregate insert: deduct full `total_cost`.  
 On re-run upsert: deduct `(new_cost - previous_cost)` only (idempotent).
 
-New tenants default to `credit_balance = 0` — top up before expecting ALLOW.
+New tenants default to `credit_balance = 0` — top up before expecting ALLOW. After W5-US06, **new** tenants get trial credit **100.0000** on create (`TenantService.DEFAULT_CREDIT_BALANCE`). Legacy rows may still be 0.
 
 ## How to verify
 

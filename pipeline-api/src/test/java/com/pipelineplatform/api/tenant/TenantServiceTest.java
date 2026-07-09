@@ -53,6 +53,7 @@ class TenantServiceTest {
     assertThat(saved.getSlug()).isEqualTo("demo");
     assertThat(saved.getName()).isEqualTo("Demo Tenant");
     assertThat(saved.getStatus()).isEqualTo(TenantStatus.active);
+    assertThat(saved.getCreditBalance()).isEqualByComparingTo(TenantService.DEFAULT_CREDIT_BALANCE);
     assertThat(response.id()).isEqualTo(saved.getId());
     assertThat(response.slug()).isEqualTo("demo");
   }

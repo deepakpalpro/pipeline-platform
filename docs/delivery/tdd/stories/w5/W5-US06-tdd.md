@@ -103,27 +103,27 @@ flowchart TD
 
 ### Checklist
 
-- [ ] 402 on hard / zero credit
-- [ ] 202 still works when allowed
-- [ ] No execution row on block (or document)
-- [ ] Tests green
+- [x] 402 on hard / zero credit
+- [x] 202 still works when allowed
+- [x] No execution row on block (or document)
+- [x] Tests green
 
 ---
 
 ## 10. REFACTOR
 
-- Shared error shape with other APIs
+- Shared error shape with other APIs (`RunBlockedResponse`)
 - Align message with billing-dispute KB
 
 ---
 
 ## 11. Docs & trackers
 
-- [ ] KB: why run returned 402 / how to unblock
-- [ ] Tracker · TEST_MATRIX · `WAVE_5.md` Done
+- [x] KB: why run returned 402 / how to unblock
+- [x] Tracker · TEST_MATRIX · `WAVE_5.md` Done
 
 ```text
-merge → tag W5-US06 → wave exit prep
+merge → tag W5-US06 → wave-5-complete → PR wave-5 → master
 ```
 
 ---

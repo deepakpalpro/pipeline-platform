@@ -70,4 +70,14 @@ public class CreditBalanceService {
         balance == null ? BigDecimal.ZERO : balance.setScale(4, RoundingMode.HALF_UP));
     tenantRepository.save(tenant);
   }
+
+  @Transactional
+  public void setQuotaConfig(String tenantId, String quotaConfigJson) {
+    Tenant tenant =
+        tenantRepository
+            .findById(tenantId)
+            .orElseThrow(() -> new TenantNotFoundException(tenantId));
+    tenant.setQuotaConfig(quotaConfigJson);
+    tenantRepository.save(tenant);
+  }
 }
