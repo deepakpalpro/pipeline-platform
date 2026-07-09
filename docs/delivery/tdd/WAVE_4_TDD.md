@@ -4,9 +4,9 @@
 |-------|--------|
 | **Wave** | W4 — Observability |
 | **Audience** | Technical stakeholders |
-| **Status** | Complete (W4-US01–US06 Done) |
+| **Status** | Complete (W4-US01–US06 Done; `wave-4-complete`; PR #9 → master open) |
 | **Architecture refs** | §7, §3.6 |
-| **Branch / tags** | `wave-4` · `W4-US##` |
+| **Branch / tags** | `wave-4` · `W4-US##` · `wave-4-complete` |
 | **Last updated** | 2026-07-09 |
 | **Execution plan** | [`../waves/WAVE_4.md`](../waves/WAVE_4.md) |
 | **Developer guides** | [`stories/README.md`](stories/README.md) § Wave 4 |
@@ -86,6 +86,8 @@ flowchart TB
 | **Red** | `PipeletMetricsEmitterTest` fail |
 | **Green** | records_in/out + processing timers |
 | **Refactor** | Shared Micrometer binders |
+
+**Status:** Done — `PipeletMetricsEmitter` + stub worker emit; no `execution_id` label.
 
 ### W4-US02 — Completeness ratio on fixture run
 
@@ -192,3 +194,4 @@ flowchart TB
 | 2026-07-09 | W4-US04 implemented: stub ELK indexer + optional compose profile |
 | 2026-07-09 | W4-US05 implemented: observability REST APIs + tenant isolation |
 | 2026-07-09 | W4-US06 implemented: Grafana provision stub; wave Must+Should complete |
+| 2026-07-09 | Wave exit: tags `W4-US01`–`W4-US06` + `wave-4-complete`; PR #9 opened |

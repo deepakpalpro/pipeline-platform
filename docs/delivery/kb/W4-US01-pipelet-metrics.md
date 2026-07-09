@@ -21,7 +21,7 @@
 | `pipelet_records_out_total` | Counter | same |
 | `pipelet_processing_duration_seconds` | Histogram/Timer | same |
 
-**Cardinality policy:** `execution_id` is **not** a label on these series (avoids unbounded Prometheus cardinality). Correlate executions via logs / completeness APIs (later W4 stories).
+**Cardinality policy:** `execution_id` is **not** a label on these series (avoids unbounded Prometheus cardinality). Correlate executions via logs / completeness APIs (W4-US02, W4-US05).
 
 Local stub: each `StubStageWorker` stage message emits in=1, out=1 plus a short processing duration.
 

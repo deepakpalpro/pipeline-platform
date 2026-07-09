@@ -8,7 +8,7 @@
 | **Timebox hint** | 1–1.5 days |
 | **You will touch** | Compose ELK (or stub), index naming, smoke script/IT |
 | **Architecture refs** | §7.3 Logging (ELK) |
-| **KB (create)** | `docs/delivery/kb/W4-US04-elk-logs.md` |
+| **KB** | [`../../../kb/W4-US04-elk-logs.md`](../../../kb/W4-US04-elk-logs.md) |
 | **Stakeholder TDD** | [`../../WAVE_4_TDD.md`](../../WAVE_4_TDD.md) |
 | **AC source** | [`../../../waves/WAVE_4.md`](../../../waves/WAVE_4.md) § W4-US04 |
 

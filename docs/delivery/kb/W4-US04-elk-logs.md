@@ -58,7 +58,7 @@ Ports:
 
 ## Finding logs for `exec-*`
 
-1. **Stub / API path (Wave 4):** `InMemoryPipelineLogIndexer.findByExecutionId("exec-…")` (used by W4-US05 later).
+1. **Stub / API path (Wave 4):** `InMemoryPipelineLogIndexer.findByExecutionId("exec-…")` (also exposed by W4-US05 `GET /api/v1/observability/executions/{id}/logs`).
 2. **Kibana:** Discover → filter `execution_id: "exec-…"` on pattern `pipeline-logs-{tenant}-*`.
 3. **Console:** Logstash JSON lines include MDC `execution_id` after a stub run.
 

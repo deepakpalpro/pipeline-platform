@@ -98,7 +98,7 @@ Abbreviations: **U** = Unit, **I** = Integration, **WM** = WireMock, **LS** = Lo
 
 **Wave goal:** Completeness % and logs visible for a known fixture execution.  
 **Plan:** [`waves/WAVE_4.md`](waves/WAVE_4.md) · **TDD:** [`tdd/WAVE_4_TDD.md`](tdd/WAVE_4_TDD.md) · **Developer guides:** [`tdd/stories/README.md`](tdd/stories/README.md) § Wave 4  
-**Branch:** `wave-4`
+**Branch:** `wave-4` · **Tags:** `W4-US01`–`W4-US06`, `wave-4-complete` · **PR:** [#9](https://github.com/deepakpalpro/pipeline-platform/pull/9) → `master` (open)
 
 | Story ID | Feature / Epic | Title | Status | Owner | Test gate | Blockers |
 |----------|----------------|-------|--------|-------|-----------|----------|
@@ -109,7 +109,7 @@ Abbreviations: **U** = Unit, **I** = Integration, **WM** = WireMock, **LS** = Lo
 | W4-US05 | W4-F2 / W4-F2-E2 | Observability REST APIs | Done | | U,I,M,KB | /api/v1/observability; cross-tenant 404 |
 | W4-US06 | W4-F2 / W4-F2-E1 | Grafana dashboard provisioning (tenant) | Done | | U,M,KB | Should; StubGrafanaClient + provisioner |
 
-**Wave exit criteria:** Support can locate completeness and error logs for fixture `exec-*`.
+**Wave exit criteria:** Support can locate completeness and error logs for fixture `exec-*`. **Met** (US02 completeness + US04/US05 logs; tag `wave-4-complete`).
 
 ---
 

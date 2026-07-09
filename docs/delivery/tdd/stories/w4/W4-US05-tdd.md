@@ -8,7 +8,7 @@
 | **Timebox hint** | 1–1.5 days |
 | **You will touch** | Observability controller/service, DTOs, tenant isolation |
 | **Architecture refs** | §3.6 Observability Endpoints |
-| **KB (create)** | `docs/delivery/kb/W4-US05-observability-api.md` |
+| **KB** | [`../../../kb/W4-US05-observability-api.md`](../../../kb/W4-US05-observability-api.md) |
 | **Stakeholder TDD** | [`../../WAVE_4_TDD.md`](../../WAVE_4_TDD.md) |
 | **AC source** | [`../../../waves/WAVE_4.md`](../../../waves/WAVE_4.md) § W4-US05 |
 

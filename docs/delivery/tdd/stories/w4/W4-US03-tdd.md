@@ -8,7 +8,7 @@
 | **Timebox hint** | 0.5–1 day |
 | **You will touch** | Heartbeat gauge, error counter, tests |
 | **Architecture refs** | §7.1, §7.5 Heartbeat |
-| **KB (create)** | `docs/delivery/kb/W4-US03-heartbeat-errors.md` |
+| **KB** | [`../../../kb/W4-US03-heartbeat-errors.md`](../../../kb/W4-US03-heartbeat-errors.md) |
 | **Stakeholder TDD** | [`../../WAVE_4_TDD.md`](../../WAVE_4_TDD.md) |
 | **AC source** | [`../../../waves/WAVE_4.md`](../../../waves/WAVE_4.md) § W4-US03 |
 

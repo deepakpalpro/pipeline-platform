@@ -8,7 +8,7 @@
 | **Timebox hint** | 0.5–1 day |
 | **You will touch** | Grafana client stub, provisioner, template JSON |
 | **Architecture refs** | §7.2 Grafana Dashboards |
-| **KB (create)** | `docs/delivery/kb/W4-US06-grafana-provision.md` |
+| **KB** | [`../../../kb/W4-US06-grafana-provision.md`](../../../kb/W4-US06-grafana-provision.md) |
 | **Stakeholder TDD** | [`../../WAVE_4_TDD.md`](../../WAVE_4_TDD.md) |
 | **AC source** | [`../../../waves/WAVE_4.md`](../../../waves/WAVE_4.md) § W4-US06 |
 

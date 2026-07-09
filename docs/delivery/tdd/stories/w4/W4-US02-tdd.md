@@ -8,7 +8,7 @@
 | **Timebox hint** | 0.5–1 day |
 | **You will touch** | Completeness calculator, gauge emit, fixture IT |
 | **Architecture refs** | §7.4 Completeness Calculation |
-| **KB (create)** | `docs/delivery/kb/W4-US02-completeness.md` |
+| **KB** | [`../../../kb/W4-US02-completeness.md`](../../../kb/W4-US02-completeness.md) |
 | **Stakeholder TDD** | [`../../WAVE_4_TDD.md`](../../WAVE_4_TDD.md) |
 | **AC source** | [`../../../waves/WAVE_4.md`](../../../waves/WAVE_4.md) § W4-US02 |
 
