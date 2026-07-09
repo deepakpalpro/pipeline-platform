@@ -21,6 +21,12 @@ public record UsageEvent(
   public static final String WEBHOOK_EVENTS = "platform.webhook_events";
   public static final String BYTES_IN = "data.bytes_in";
 
+  /** Architecture §6.2 / Wave 5 pipelet stub dimensions. */
+  public static final String RECORDS_PROCESSED = "data.records_processed";
+  public static final String VCPU_SECONDS = "compute.vcpu_seconds";
+  public static final String CONNECTOR_API_CALLS = "connector.api_calls";
+  public static final String PIPELINE_RUNS = "platform.pipeline_runs";
+
   /** W3 webhook / simple emit shape. */
   public UsageEvent(
       String dimension, double amount, String tenantId, String connectorId, Instant occurredAt) {

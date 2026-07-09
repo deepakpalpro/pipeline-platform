@@ -4,7 +4,7 @@
 |-------|--------|
 | **Wave** | W5 — Metering & Pay-as-you-go |
 | **Audience** | Technical stakeholders |
-| **Status** | In Progress (W5-US01 Done) |
+| **Status** | In Progress (W5-US01–US02 Done) |
 | **Architecture refs** | §6.2, §3.5 |
 | **Branch / tags** | `wave-5` · `W5-US##` |
 | **Last updated** | 2026-07-09 |
@@ -97,6 +97,8 @@ flowchart TB
 | **Green** | Emit from fixture pipelet run |
 | **Refactor** | Shared dimension schema |
 
+**Status:** Done — `MeterAgent` + stub worker; records + stub vcpu; `pipeline_runs` on last stage.
+
 ### W5-US03 — Hourly aggregates job
 
 **Developer guide:** [`stories/w5/W5-US03-tdd.md`](stories/w5/W5-US03-tdd.md)
@@ -177,3 +179,4 @@ flowchart TB
 | 2026-07-08 | Initial Draft for technical stakeholders |
 | 2026-07-09 | Linked execution plan + junior story TDD guides; wave-5 started |
 | 2026-07-09 | W5-US01 implemented: usage_events persist + idempotent collector |
+| 2026-07-09 | W5-US02 implemented: MeterAgent stub stage emit |
