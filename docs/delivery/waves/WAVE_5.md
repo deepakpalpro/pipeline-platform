@@ -162,7 +162,7 @@ flowchart LR
 | **Priority** | Must |
 | **Dependencies** | W5-US03 |
 | **Architecture refs** | §6.2 Quota Enforcement; `tenants.credit_balance` / `quota_config` |
-| **Status** | Todo |
+| **Status** | Done |
 
 **In scope:** Evaluate soft warn vs hard block; read/update credit balance on aggregate path (stub deduct OK).  
 **Out of scope:** Notification service delivery (log/stub warn OK).
@@ -171,9 +171,9 @@ flowchart LR
 
 [`../tdd/stories/w5/W5-US04-tdd.md`](../tdd/stories/w5/W5-US04-tdd.md)
 
-#### Support KB (create)
+#### Support KB
 
-`docs/delivery/kb/W5-US04-quota-credits.md`
+[`../kb/W5-US04-quota-credits.md`](../kb/W5-US04-quota-credits.md)
 
 ---
 

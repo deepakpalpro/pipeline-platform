@@ -4,7 +4,7 @@
 |-------|--------|
 | **Wave** | W5 — Metering & Pay-as-you-go |
 | **Audience** | Technical stakeholders |
-| **Status** | In Progress (W5-US01–US03 Done) |
+| **Status** | In Progress (W5-US01–US04 Done) |
 | **Architecture refs** | §6.2, §3.5 |
 | **Branch / tags** | `wave-5` · `W5-US##` |
 | **Last updated** | 2026-07-09 |
@@ -121,6 +121,8 @@ flowchart TB
 | **Green** | Soft warn / hard block thresholds |
 | **Refactor** | Clear error codes |
 
+**Status:** Done — `QuotaEvaluator` + credit deduct on aggregate cost delta; soft log-only.
+
 ### W5-US05 — Usage and billing query APIs
 
 **Developer guide:** [`stories/w5/W5-US05-tdd.md`](stories/w5/W5-US05-tdd.md)
@@ -183,3 +185,4 @@ flowchart TB
 | 2026-07-09 | W5-US01 implemented: usage_events persist + idempotent collector |
 | 2026-07-09 | W5-US02 implemented: MeterAgent stub stage emit |
 | 2026-07-09 | W5-US03 implemented: hourly usage_aggregates job |
+| 2026-07-09 | W5-US04 implemented: QuotaEvaluator + credit deduct |

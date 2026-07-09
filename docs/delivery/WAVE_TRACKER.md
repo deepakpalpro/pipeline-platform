@@ -124,7 +124,7 @@ Abbreviations: **U** = Unit, **I** = Integration, **WM** = WireMock, **LS** = Lo
 | W5-US01 | W5-F1 / W5-F1-E1 | UsageEvent ingest + persist | Done | | U,I,M,KB | V14 usage_events; PersistingUsageEventCollector |
 | W5-US02 | W5-F1 / W5-F1-E1 | MeterAgent emit from pipelet sidecar/lib | Done | | U,I,M,KB | Stub records+vcpu; pipeline_runs on last stage |
 | W5-US03 | W5-F1 / W5-F1-E2 | Hourly aggregates job | Done | | U,I,M,KB | V15 usage_aggregates; UTC hourly upsert + stub cost |
-| W5-US04 | W5-F2 / W5-F2-E1 | Quota soft/hard + credit balance | Todo | | | |
+| W5-US04 | W5-F2 / W5-F2-E1 | Quota soft/hard + credit balance | Done | | U,I,M,KB | QuotaEvaluator; credit deduct on aggregate delta |
 | W5-US05 | W5-F2 / W5-F2-E1 | Usage and billing query APIs | Todo | | | |
 | W5-US06 | W5-F2 / W5-F2-E2 | Block run on hard limit / zero credit (402) | Todo | | | |
 

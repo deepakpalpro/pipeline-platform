@@ -8,6 +8,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import com.pipelineplatform.api.billing.CreditBalanceService;
 import java.math.BigDecimal;
 import java.time.Clock;
 import java.time.Instant;
@@ -27,6 +28,7 @@ class UsageAggregateJobTest {
 
   @Mock private UsageEventRepository eventRepository;
   @Mock private UsageAggregateRepository aggregateRepository;
+  @Mock private CreditBalanceService creditBalanceService;
 
   private Clock clock;
   private UsageAggregateService service;
@@ -35,7 +37,9 @@ class UsageAggregateJobTest {
   void setUp() {
     // 15:30 UTC → previous complete hour is 14:00–15:00
     clock = Clock.fixed(Instant.parse("2026-07-09T15:30:00Z"), ZoneOffset.UTC);
-    service = new UsageAggregateService(eventRepository, aggregateRepository, clock);
+    service =
+        new UsageAggregateService(
+            eventRepository, aggregateRepository, creditBalanceService, clock);
   }
 
   @Test
@@ -89,6 +93,9 @@ class UsageAggregateJobTest {
             .orElseThrow();
     // 100 * $0.00001
     assertThat(records.getTotalCost()).isEqualByComparingTo("0.0010");
+
+    verify(creditBalanceService).deduct("T001", new BigDecimal("0.0200"));
+    verify(creditBalanceService).deduct("T001", new BigDecimal("0.0010"));
   }
 
   @Test
@@ -131,6 +138,8 @@ class UsageAggregateJobTest {
     assertThat(updated.getTotalCost()).isEqualByComparingTo("0.0300");
     assertThat(updated.getUpdatedAt()).isEqualTo(clock.instant());
     assertThat(updated.getCreatedAt()).isEqualTo(Instant.parse("2026-07-09T15:01:00Z"));
+    // cost delta 0.03 - 0.01
+    verify(creditBalanceService).deduct("T001", new BigDecimal("0.0200"));
   }
 
   @Test
