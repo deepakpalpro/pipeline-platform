@@ -186,3 +186,4 @@ flowchart TB
 | 2026-07-09 | W4-US02 implemented: CompletenessCalculator + gauge + execution pct |
 | 2026-07-09 | W4-US03 implemented: heartbeat gauge + critical error counter |
 | 2026-07-09 | W4-US04 implemented: stub ELK indexer + optional compose profile |
+| 2026-07-09 | W4-US05 implemented: observability REST APIs + tenant isolation |

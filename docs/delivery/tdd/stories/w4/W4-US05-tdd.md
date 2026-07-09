@@ -120,11 +120,11 @@ Auth: **`X-Tenant-Id` required**. Cross-tenant → 404.
 
 ### Checklist
 
-- [ ] Completeness endpoint works
-- [ ] Cross-tenant 404
-- [ ] At least latency or heartbeat or errors stubbed
-- [ ] Logs endpoint returns documented shape
-- [ ] Tests green
+- [x] Completeness endpoint works
+- [x] Cross-tenant 404
+- [x] At least latency or heartbeat or errors stubbed
+- [x] Logs endpoint returns documented shape
+- [x] Tests green
 
 ---
 
@@ -137,8 +137,8 @@ Auth: **`X-Tenant-Id` required**. Cross-tenant → 404.
 
 ## 11. Docs & trackers
 
-- [ ] KB: curl examples for support
-- [ ] Tracker · TEST_MATRIX · `WAVE_4.md` Done
+- [x] KB: curl examples for support
+- [x] Tracker · TEST_MATRIX · `WAVE_4.md` Done
 
 ```text
 merge → tag W4-US05 → W4-US06 / wave exit prep
