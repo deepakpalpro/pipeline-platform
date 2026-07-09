@@ -33,18 +33,20 @@ Abbreviations: **U** = Unit, **I** = Integration, **WM** = WireMock, **LS** = Lo
 ## Wave 1 — Tenancy, Services, Connectors
 
 **Wave goal:** Tenant + service config + Rest connector test against WireMock/LocalStack.  
-**TDD:** [`tdd/WAVE_1_TDD.md`](tdd/WAVE_1_TDD.md) · **Developer guides:** [`tdd/stories/README.md`](tdd/stories/README.md) § Wave 1
+**Branch:** `wave-1`  
+**TDD:** [`tdd/WAVE_1_TDD.md`](tdd/WAVE_1_TDD.md) · **Developer guides:** [`tdd/stories/README.md`](tdd/stories/README.md) § Wave 1  
+**KB:** [`kb/W1-US01-tenant-crud-context.md`](kb/W1-US01-tenant-crud-context.md) · [`kb/W1-US02-tenant-isolation.md`](kb/W1-US02-tenant-isolation.md) · [`kb/W1-US03-service-types.md`](kb/W1-US03-service-types.md) · [`kb/W1-US04-tenant-service-config.md`](kb/W1-US04-tenant-service-config.md) · [`kb/W1-US05-connector-spi.md`](kb/W1-US05-connector-spi.md) · [`kb/W1-US06-connector-test-wiremock.md`](kb/W1-US06-connector-test-wiremock.md) · [`kb/W1-US07-storage-localstack.md`](kb/W1-US07-storage-localstack.md) · [`kb/W1-US08-messagebus-sqs.md`](kb/W1-US08-messagebus-sqs.md)
 
 | Story ID | Feature / Epic | Title | Status | Owner | Test gate | Blockers |
 |----------|----------------|-------|--------|-------|-----------|----------|
-| W1-US01 | W1-F1 / W1-F1-E1 | Tenant CRUD + JWT tenant context | Todo | | | |
-| W1-US02 | W1-F1 / W1-F1-E1 | Tenant isolation filters (JPA) | Todo | | | |
-| W1-US03 | W1-F2 / W1-F2-E1 | Service types + defaults | Todo | | | |
-| W1-US04 | W1-F2 / W1-F2-E1 | Tenant service config (Auth pattern) | Todo | | | |
-| W1-US05 | W1-F3 / W1-F3-E1 | Connector SPI load + Rest plugin | Todo | | | |
-| W1-US06 | W1-F3 / W1-F3-E1 | Connector test vs WireMock | Todo | | | |
-| W1-US07 | W1-F3 / W1-F3-E2 | Storage connector vs LocalStack S3 | Todo | | | |
-| W1-US08 | W1-F3 / W1-F3-E2 | MessageBus connector vs LocalStack SQS | Todo | | | |
+| W1-US01 | W1-F1 / W1-F1-E1 | Tenant CRUD + JWT tenant context | Done | | U,I,M,KB | Stub `X-Tenant-Id` (JWT later) |
+| W1-US02 | W1-F1 / W1-F1-E1 | Tenant isolation filters (JPA) | Done | | U,I,M,KB | Proven via `tenant_notes` + Hibernate filter |
+| W1-US03 | W1-F2 / W1-F2-E1 | Service types + defaults | Done | | U,I,M,KB | Seeded `StubAuth` via Flyway V3 |
+| W1-US04 | W1-F2 / W1-F2-E1 | Tenant service config (Auth pattern) | Done | | U,I,M,KB | Crypto stub `encrypted:` prefix; redaction on responses |
+| W1-US05 | W1-F3 / W1-F3-E1 | Connector SPI load + Rest plugin | Done | | U,I,M,KB | Spring bean registry (PF4J deferred) |
+| W1-US06 | W1-F3 / W1-F3-E1 | Connector test vs WireMock | Done | | U,I,WM,M,KB | |
+| W1-US07 | W1-F3 / W1-F3-E2 | Storage connector vs LocalStack S3 | Done | | U,I,LS,M,KB | |
+| W1-US08 | W1-F3 / W1-F3-E2 | MessageBus connector vs LocalStack SQS | Done | | U,I,LS,M,KB | Should priority — completed |
 
 **Wave exit criteria:** Rest + Storage + MessageBus paths proven with mocks; no cross-tenant connector read.
 
@@ -173,7 +175,7 @@ Canonical description: [`../DELIVERY_PLAN.md`](../DELIVERY_PLAN.md) → Working 
 | Wave | Todo | In Progress | Blocked | Done |
 |------|------|-------------|---------|------|
 | 0 | | | | |
-| 1 | | | | |
+| 1 | | | | 8 |
 | 2 | | | | |
 | 3 | | | | |
 | 4 | | | | |

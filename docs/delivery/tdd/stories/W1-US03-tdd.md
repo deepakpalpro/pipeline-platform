@@ -119,6 +119,16 @@ merge → tag W1-US03 → W1-US04
 
 ---
 
+## Reference shape (this repo)
+
+- Flyway `V3__service_types.sql` — `service_types` + `service_defaults` + `StubAuth` seed
+- `GET /api/v1/service-types` (global catalog)
+- Tests: `ServiceTypeServiceTest`, `ServiceTypeControllerIT`
+- Fixture: `fixtures/services/auth-default.json`
+- KB: [`../../kb/W1-US03-service-types.md`](../../kb/W1-US03-service-types.md)
+
+---
+
 ## Help / escalate
 
 - Architecture §3.4

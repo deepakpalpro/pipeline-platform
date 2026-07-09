@@ -1,0 +1,18 @@
+package com.pipelineplatform.api.service;
+
+import java.util.List;
+import java.util.Optional;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+
+public interface TenantServiceConfigRepository extends JpaRepository<TenantServiceConfig, String> {
+
+  @Query("select s from TenantServiceConfig s where s.id = :id")
+  Optional<TenantServiceConfig> findFilteredById(@Param("id") String id);
+
+  @Query("select s from TenantServiceConfig s order by s.createdAt desc")
+  List<TenantServiceConfig> findAllFiltered();
+
+  boolean existsByTenantIdAndName(String tenantId, String name);
+}
