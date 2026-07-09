@@ -1,0 +1,4 @@
+package com.pipelineplatform.api.observability;
+
+/** Result of creating/looking up a Grafana organization. */
+public record GrafanaOrg(long orgId, String name) {}

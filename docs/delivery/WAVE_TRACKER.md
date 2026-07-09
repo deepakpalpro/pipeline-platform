@@ -107,7 +107,7 @@ Abbreviations: **U** = Unit, **I** = Integration, **WM** = WireMock, **LS** = Lo
 | W4-US03 | W4-F1 / W4-F1-E2 | Heartbeat + critical error metrics | Done | | U,M,KB | §7.5 epoch seconds; stub pod; error_type enum |
 | W4-US04 | W4-F2 / W4-F2-E1 | Logstash → ES → Kibana index pattern | Done | | U,M,KB | Stub indexer CI; compose --profile elk optional |
 | W4-US05 | W4-F2 / W4-F2-E2 | Observability REST APIs | Done | | U,I,M,KB | /api/v1/observability; cross-tenant 404 |
-| W4-US06 | W4-F2 / W4-F2-E1 | Grafana dashboard provisioning (tenant) | Todo | | | |
+| W4-US06 | W4-F2 / W4-F2-E1 | Grafana dashboard provisioning (tenant) | Done | | U,M,KB | Should; StubGrafanaClient + provisioner |
 
 **Wave exit criteria:** Support can locate completeness and error logs for fixture `exec-*`.
 

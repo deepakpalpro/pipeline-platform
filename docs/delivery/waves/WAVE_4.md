@@ -204,7 +204,7 @@ flowchart LR
 | **Priority** | Should |
 | **Dependencies** | W4-US02 |
 | **Architecture refs** | §7.2 Grafana |
-| **Status** | Todo |
+| **Status** | Done |
 
 **In scope:** Provision tenant Grafana org/dashboard via API (stub OK).  
 **Out of scope:** Full multi-cluster Grafana ops.
@@ -213,9 +213,9 @@ flowchart LR
 
 [`../tdd/stories/w4/W4-US06-tdd.md`](../tdd/stories/w4/W4-US06-tdd.md)
 
-#### Support KB (create)
+#### Support KB
 
-`docs/delivery/kb/W4-US06-grafana-provision.md`
+[`../kb/W4-US06-grafana-provision.md`](../kb/W4-US06-grafana-provision.md)
 
 ---
 
@@ -229,8 +229,9 @@ flowchart LR
 - [x] W4-US03 Heartbeat gauge + critical error counter (`PipeletErrorType`)
 - [x] W4-US04 ELK path (stub indexer + optional compose `--profile elk`)
 - [x] W4-US05 Observability REST (`/api/v1/observability/...`)
-- [ ] WAVE_TRACKER / TEST_MATRIX / WAVE_4_TDD updated as stories complete
-- [ ] Each story: merge → tag `W4-US##` → delete → next from `wave-4`
+- [x] W4-US06 Grafana provision stub (`StubGrafanaClient` + template)
+- [x] WAVE_TRACKER / TEST_MATRIX / WAVE_4_TDD updated as stories complete
+- [x] Each story: merge → tag `W4-US##` → delete → next from `wave-4`
 
 ---
 
