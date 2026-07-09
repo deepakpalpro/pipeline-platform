@@ -145,7 +145,7 @@ Abbreviations: **U** = Unit, **I** = Integration, **WM** = WireMock, **LS** = Lo
 | W6-US03 | W6-F1 / W6-F1-E2 | Global Pipelets catalog + admin register | Done | | catalogFilter + PipeletsCatalog | |
 | W6-US04 | W6-F2 / W6-F2-E1 | Drag-drop pipeline builder save | Done | | pipelineGraphReducer + PipelineBuilder.save | |
 | W6-US05 | W6-F2 / W6-F2-E1 | Run / dry-run / execution overlay | Done | | executionOverlay + RunControls.quota | |
-| W6-US06 | W6-F2 / W6-F2-E2 | Observability panels in UI | Todo | | | |
+| W6-US06 | W6-F2 / W6-F2-E2 | Observability panels in UI | Done | | Completeness/Latency/Heartbeat panels | |
 
 **Wave exit criteria:** Manual E2E script passes without Postman for happy path.
 

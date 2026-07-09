@@ -63,7 +63,21 @@ export const mockDb = {
 }
 
 export function resetMockDb() {
-  mockDb.pipelines = []
+  mockDb.pipelines = [
+    {
+      id: 'pipe-demo',
+      tenantId: 'T001',
+      name: 'threeStage',
+      description: 'Demo pipeline',
+      visibility: 'PRIVATE',
+      execution_mode: 'ASYNC',
+      version: 1,
+      status: 'ACTIVE',
+      created_at: '2026-07-01T00:00:00Z',
+      updated_at: '2026-07-01T00:00:00Z',
+      steps: [],
+    },
+  ]
   mockDb.lastStepsPut = null
   mockDb.executions = {}
   mockDb.executionPollCount = {}
@@ -384,9 +398,49 @@ export const pipelineHandlers = [
   }),
 ]
 
+export const observabilityHandlers = [
+  http.get('/api/v1/observability/pipelines/:id/completeness', ({ params, request }) => {
+    const tid = tenantId(request)
+    return HttpResponse.json({
+      pipeline_id: params.id,
+      tenant_id: tid,
+      execution_id: 'exec-fixture',
+      records_in: 1000,
+      records_out: 980,
+      completeness_pct: 98,
+      completeness_ratio: 0.98,
+    })
+  }),
+
+  http.get('/api/v1/observability/pipelines/:id/latency', ({ params, request }) => {
+    const tid = tenantId(request)
+    return HttpResponse.json({
+      pipeline_id: params.id,
+      tenant_id: tid,
+      sample_count: 42,
+      mean_ms: 48.5,
+      max_ms: 210,
+      p50_ms: 40,
+      p95_ms: 120,
+      p99_ms: 180,
+    })
+  }),
+
+  http.get('/api/v1/observability/pipelines/:id/heartbeat', ({ params, request }) => {
+    const tid = tenantId(request)
+    return HttpResponse.json({
+      pipeline_id: params.id,
+      tenant_id: tid,
+      last_heartbeat_epoch_seconds: Math.floor(Date.now() / 1000) - 30,
+      stale: false,
+    })
+  }),
+]
+
 export const handlers = [
   ...connectorHandlers,
   ...serviceHandlers,
   ...pipeletHandlers,
   ...pipelineHandlers,
+  ...observabilityHandlers,
 ]

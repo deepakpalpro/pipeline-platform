@@ -143,3 +143,33 @@ export class ApiError extends Error {
     this.body = body
   }
 }
+
+export type CompletenessResponse = {
+  pipeline_id: string
+  tenant_id: string
+  execution_id: string
+  records_in: number
+  records_out: number
+  completeness_pct: number
+  completeness_ratio: number
+}
+
+export type LatencyResponse = {
+  pipeline_id: string
+  tenant_id: string
+  sample_count: number
+  mean_ms: number
+  max_ms: number
+  p50_ms?: number
+  p95_ms?: number
+  p99_ms?: number
+}
+
+export type HeartbeatResponse = {
+  pipeline_id: string
+  tenant_id: string
+  last_heartbeat_epoch_seconds: number | null
+  stale: boolean
+}
+
+export type TimeRange = '1h' | '24h' | '7d'

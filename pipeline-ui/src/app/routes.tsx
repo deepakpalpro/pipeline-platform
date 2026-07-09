@@ -3,7 +3,7 @@ import { ConnectorsPage } from '../features/connectors/ConnectorsPage'
 import { ServicesPage } from '../features/services/ServicesPage'
 import { PipeletsCatalogPage } from '../features/pipelets/PipeletsCatalogPage'
 import { PipelineBuilderPage } from '../features/pipelines/builder/PipelineBuilderPage'
-import { PlaceholderPage } from '../features/PlaceholderPage'
+import { ObservabilityPage } from '../features/observability/ObservabilityPage'
 
 export function AppRoutes() {
   return (
@@ -13,10 +13,7 @@ export function AppRoutes() {
       <Route path="/pipelines" element={<PipelineBuilderPage />} />
       <Route path="/connectors" element={<ConnectorsPage />} />
       <Route path="/services" element={<ServicesPage />} />
-      <Route
-        path="/observability"
-        element={<PlaceholderPage title="Observability" />}
-      />
+      <Route path="/observability" element={<ObservabilityPage />} />
       <Route path="*" element={<Navigate to="/pipelets" replace />} />
     </Routes>
   )

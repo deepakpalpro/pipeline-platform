@@ -218,7 +218,7 @@ flowchart LR
 | **Priority** | Should |
 | **Dependencies** | W6-US05; W4 observability REST |
 | **Architecture refs** | §4.6 Observability; §3.6 |
-| **Status** | Todo |
+| **Status** | Done |
 
 **In scope:** Completeness / latency / heartbeat widgets from `/api/v1/observability/...`.  
 **Out of scope:** Embedding live Grafana iframe (link out OK).
@@ -227,9 +227,9 @@ flowchart LR
 
 [`../tdd/stories/w6/W6-US06-tdd.md`](../tdd/stories/w6/W6-US06-tdd.md)
 
-#### Support KB (create)
+#### Support KB
 
-`docs/delivery/kb/W6-US06-observability-panels.md`
+[`../kb/W6-US06-observability-panels.md`](../kb/W6-US06-observability-panels.md)
 
 ---
 
@@ -238,9 +238,9 @@ flowchart LR
 - [x] `wave-6` branched from `master` (post Wave 5 merge / `wave-5-complete`)
 - [x] This execution plan + junior TDD guides committed
 - [x] `W6-US01` feature branch created
-- [ ] Scaffold `pipeline-ui` (Vite React TS) on US01
-- [ ] WAVE_TRACKER / TEST_MATRIX / WAVE_6_TDD updated as stories complete
-- [ ] Each story: merge → tag `W6-US##` → delete → next from `wave-6`
+- [x] Scaffold `pipeline-ui` (Vite React TS) on US01
+- [x] WAVE_TRACKER / TEST_MATRIX / WAVE_6_TDD updated as stories complete
+- [x] Each story: merge → tag `W6-US##` → delete → next from `wave-6`
 
 ---
 

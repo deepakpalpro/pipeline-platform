@@ -133,7 +133,7 @@ Guides: [`w6/`](w6/)
 | W6-US03 Pipelets catalog | [`w6/W6-US03-tdd.md`](w6/W6-US03-tdd.md) | Done |
 | W6-US04 Pipeline builder | [`w6/W6-US04-tdd.md`](w6/W6-US04-tdd.md) | Done |
 | W6-US05 Run / overlay | [`w6/W6-US05-tdd.md`](w6/W6-US05-tdd.md) | Done |
-| W6-US06 Observability panels | [`w6/W6-US06-tdd.md`](w6/W6-US06-tdd.md) | Draft (planning) |
+| W6-US06 Observability panels | [`w6/W6-US06-tdd.md`](w6/W6-US06-tdd.md) | Done |
 
 **Suggested order:** US01 → US02 → US03 → US04 → US05 → US06 (US02 can parallel US03 after US01).
 
