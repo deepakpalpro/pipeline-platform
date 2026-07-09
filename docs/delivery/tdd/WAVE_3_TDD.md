@@ -4,12 +4,14 @@
 |-------|--------|
 | **Wave** | W3 — Webhook Ingress + Queue |
 | **Audience** | Technical stakeholders |
-| **Status** | Draft (planning) |
+| **Status** | In Progress (wave-3 started) |
 | **Architecture refs** | **§11**, §3.3 webhook APIs |
-| **Branch / tags** | `wave-3` (planned) · `W3-US##` |
-| **Last updated** | 2026-07-08 |
+| **Branch / tags** | `wave-3` · `W3-US##` |
+| **Last updated** | 2026-07-09 |
 | **Template** | [`../TDD_WAVE_TEMPLATE.md`](../TDD_WAVE_TEMPLATE.md) |
 | **Catalog** | [`../../DELIVERY_PLAN.md`](../../DELIVERY_PLAN.md) § Wave 3 (includes fully worked W3-US01) |
+| **Execution plan** | [`../waves/WAVE_3.md`](../waves/WAVE_3.md) |
+| **Developer story TDD** | [`stories/README.md`](stories/README.md) § Wave 3 |
 
 ---
 
@@ -77,6 +79,8 @@ Reference AC: DELIVERY_PLAN fully worked **W3-US01** (`WebhookIngressServiceTest
 
 ### W3-US01 — Ingress accept + queue publish
 
+**Developer guide:** [`stories/w3/W3-US01-tdd.md`](stories/w3/W3-US01-tdd.md)
+
 | Step | Evidence |
 |------|----------|
 | **Red** | `WebhookIngressServiceTest.shouldPublishToTenantQueue_andReturnAccepted`; `WebhookControllerIT.shouldReturn202_whenQueuePublishSucceeds` |
@@ -84,6 +88,8 @@ Reference AC: DELIVERY_PLAN fully worked **W3-US01** (`WebhookIngressServiceTest
 | **Refactor** | Routing-key builder |
 
 ### W3-US02 — Signature verification + Auth service
+
+**Developer guide:** [`stories/w3/W3-US02-tdd.md`](stories/w3/W3-US02-tdd.md)
 
 | Step | Evidence |
 |------|----------|
@@ -93,6 +99,8 @@ Reference AC: DELIVERY_PLAN fully worked **W3-US01** (`WebhookIngressServiceTest
 
 ### W3-US03 — Idempotency (X-Webhook-Id / hash)
 
+**Developer guide:** [`stories/w3/W3-US03-tdd.md`](stories/w3/W3-US03-tdd.md)
+
 | Step | Evidence |
 |------|----------|
 | **Red** | `WebhookIdempotencyTest.duplicate_isNoOpOrSameEvent` fail |
@@ -100,6 +108,8 @@ Reference AC: DELIVERY_PLAN fully worked **W3-US01** (`WebhookIngressServiceTest
 | **Refactor** | TTL cleanup strategy documented |
 
 ### W3-US04 — Rate limit + backpressure (Should)
+
+**Developer guide:** [`stories/w3/W3-US04-tdd.md`](stories/w3/W3-US04-tdd.md)
 
 | Step | Evidence |
 |------|----------|
@@ -109,6 +119,8 @@ Reference AC: DELIVERY_PLAN fully worked **W3-US01** (`WebhookIngressServiceTest
 
 ### W3-US05 — Provision webhook URL API
 
+**Developer guide:** [`stories/w3/W3-US05-tdd.md`](stories/w3/W3-US05-tdd.md)
+
 | Step | Evidence |
 |------|----------|
 | **Red** | `WebhookUrlProvisionIT` fail |
@@ -117,6 +129,8 @@ Reference AC: DELIVERY_PLAN fully worked **W3-US01** (`WebhookIngressServiceTest
 
 ### W3-US06 — On-demand processor trigger
 
+**Developer guide:** [`stories/w3/W3-US06-tdd.md`](stories/w3/W3-US06-tdd.md)
+
 | Step | Evidence |
 |------|----------|
 | **Red** | `WebhookQueueTriggerIT.depth_triggersJob` fail |
@@ -124,6 +138,8 @@ Reference AC: DELIVERY_PLAN fully worked **W3-US01** (`WebhookIngressServiceTest
 | **Refactor** | Coalesce triggers |
 
 ### W3-US07 — Meter webhook_events + bytes_in
+
+**Developer guide:** [`stories/w3/W3-US07-tdd.md`](stories/w3/W3-US07-tdd.md)
 
 | Step | Evidence |
 |------|----------|
@@ -169,3 +185,4 @@ Reference AC: DELIVERY_PLAN fully worked **W3-US01** (`WebhookIngressServiceTest
 | Date | Change |
 |------|--------|
 | 2026-07-08 | Initial Draft; mirrors W3-US01 worked example |
+| 2026-07-09 | Linked execution plan + junior story TDD guides; wave-3 started |

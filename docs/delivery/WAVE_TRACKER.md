@@ -76,7 +76,9 @@ Abbreviations: **U** = Unit, **I** = Integration, **WM** = WireMock, **LS** = Lo
 
 ## Wave 3 — Webhook Ingress + Queue
 
-**Wave goal:** External POST `202`; event on tenant webhook queue; processing without ingress cold-start.
+**Wave goal:** External POST `202`; event on tenant webhook queue; processing without ingress cold-start.  
+**Plan:** [`waves/WAVE_3.md`](waves/WAVE_3.md) · **TDD:** [`tdd/WAVE_3_TDD.md`](tdd/WAVE_3_TDD.md) · **Developer guides:** [`tdd/stories/README.md`](tdd/stories/README.md) § Wave 3  
+**Branch:** `wave-3`
 
 | Story ID | Feature / Epic | Title | Status | Owner | Test gate | Blockers |
 |----------|----------------|-------|--------|-------|-----------|----------|

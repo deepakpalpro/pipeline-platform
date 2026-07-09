@@ -193,6 +193,7 @@ Stories below list **title + intent**. Fill full AC from the story template when
 
 **Exit criteria:** External POST `202` without waiting for pipelets; event on `tenant.*.webhook.*.in`; support KB for webhook troubleshooting live.
 
+**Wave 3 execution plan (full AC):** [`delivery/waves/WAVE_3.md`](delivery/waves/WAVE_3.md) · branch `wave-3`  
 **Wave 3 TDD (stakeholders):** [`delivery/tdd/WAVE_3_TDD.md`](delivery/tdd/WAVE_3_TDD.md)
 
 #### Fully worked example: W3-US01
