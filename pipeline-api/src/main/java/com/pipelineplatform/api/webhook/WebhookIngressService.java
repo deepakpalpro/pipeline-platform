@@ -28,6 +28,7 @@ public class WebhookIngressService {
   private final PipeletJobClient pipeletJobClient;
   private final WebhookSignatureVerifier signatureVerifier;
   private final WebhookIdempotencyService idempotencyService;
+  private final WebhookQueueWatchRegistry queueWatchRegistry;
   private final ObjectMapper objectMapper;
 
   public WebhookIngressService(
@@ -38,6 +39,7 @@ public class WebhookIngressService {
       PipeletJobClient pipeletJobClient,
       WebhookSignatureVerifier signatureVerifier,
       WebhookIdempotencyService idempotencyService,
+      WebhookQueueWatchRegistry queueWatchRegistry,
       ObjectMapper objectMapper) {
     this.tenantRepository = tenantRepository;
     this.connectorRepository = connectorRepository;
@@ -46,6 +48,7 @@ public class WebhookIngressService {
     this.pipeletJobClient = pipeletJobClient;
     this.signatureVerifier = signatureVerifier;
     this.idempotencyService = idempotencyService;
+    this.queueWatchRegistry = queueWatchRegistry;
     this.objectMapper = objectMapper;
   }
 
@@ -104,6 +107,9 @@ public class WebhookIngressService {
     envelope.put("payload", body);
 
     rabbitTemplate.convertAndSend(topology.exchange(), topology.routingKey(), envelope);
+
+    // Register for on-demand processor poller (W3-US06). Do not create Jobs here (US01).
+    queueWatchRegistry.register(tenantId, connectorId, queuedTo);
 
     if (pipeletJobClient == null) {
       throw new IllegalStateException("PipeletJobClient bean required");

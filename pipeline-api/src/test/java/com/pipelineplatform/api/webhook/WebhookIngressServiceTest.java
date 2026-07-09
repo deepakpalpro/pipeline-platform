@@ -40,6 +40,7 @@ class WebhookIngressServiceTest {
   @Mock private PipeletJobClient pipeletJobClient;
   @Mock private WebhookSignatureVerifier signatureVerifier;
   @Mock private WebhookIdempotencyService idempotencyService;
+  @Mock private WebhookQueueWatchRegistry queueWatchRegistry;
 
   private WebhookIngressService service;
   private final ObjectMapper objectMapper = new ObjectMapper();
@@ -55,6 +56,7 @@ class WebhookIngressServiceTest {
             pipeletJobClient,
             signatureVerifier,
             idempotencyService,
+            queueWatchRegistry,
             objectMapper);
   }
 
@@ -109,6 +111,9 @@ class WebhookIngressServiceTest {
     assertThat(envelope.get("event_id")).isEqualTo(response.eventId());
 
     verify(pipeletJobClient, never()).create(any());
+    verify(queueWatchRegistry)
+        .register(
+            tenantId, connectorId, QueueNaming.webhookInputQueue(tenantId, connectorId));
   }
 
   @Test
