@@ -176,3 +176,4 @@ flowchart TB
 |------|--------|
 | 2026-07-08 | Initial Draft for technical stakeholders |
 | 2026-07-09 | Linked execution plan + junior story TDD guides; wave-4 started |
+| 2026-07-09 | W4-US01 implemented: PipeletMetricsEmitter + stub worker emit |

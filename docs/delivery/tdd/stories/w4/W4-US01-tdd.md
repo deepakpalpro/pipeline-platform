@@ -118,25 +118,25 @@ Auth stub: N/A for scrape; tenant labels from processing context.
 
 ### Checklist
 
-- [ ] `pipelet_records_in_total` / `pipelet_records_out_total`
-- [ ] Processing histogram present
-- [ ] Labels include tenant + pipeline + pipelet
-- [ ] Tests green
+- [x] `pipelet_records_in_total` / `pipelet_records_out_total`
+- [x] Processing histogram present
+- [x] Labels include tenant + pipeline + pipelet
+- [x] Tests green
 
 ---
 
 ## 10. REFACTOR
 
 - Shared binder helpers
-- Document label policy in KB
+- Document label policy in KB (`execution_id` omitted)
 - Keep emitter free of RabbitMQ details
 
 ---
 
 ## 11. Docs & trackers
 
-- [ ] KB: metric names + how to scrape locally
-- [ ] Tracker · TEST_MATRIX · `WAVE_4.md` Done
+- [x] KB: metric names + how to scrape locally
+- [x] Tracker · TEST_MATRIX · `WAVE_4.md` Done
 
 | # | Action | Expected |
 |---|--------|----------|
