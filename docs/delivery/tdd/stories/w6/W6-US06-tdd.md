@@ -135,12 +135,12 @@ npm test -- CompletenessPanel LatencyPanel HeartbeatPanel
 
 ### Checklist
 
-- [ ] Observability route with sub-nav tabs
-- [ ] MSW mock series for completeness/latency/heartbeat
-- [ ] Pipeline selector + time range controls
-- [ ] Completeness panel render test green
-- [ ] Latency panel render test green
-- [ ] Heartbeat panel render test green
+- [x] Observability route with sub-nav tabs
+- [x] MSW mock series for completeness/latency/heartbeat
+- [x] Pipeline selector + time range controls
+- [x] Completeness panel render test green
+- [x] Latency panel render test green
+- [x] Heartbeat panel render test green
 
 ---
 

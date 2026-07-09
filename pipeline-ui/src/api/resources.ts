@@ -1,10 +1,13 @@
 import { apiFetch } from './apiClient'
 import type {
+  CompletenessResponse,
   ConnectorType,
   CreateConnectorRequest,
   CreatePipelineRequest,
   CreateTenantServiceRequest,
   DryRunResponse,
+  HeartbeatResponse,
+  LatencyResponse,
   PipelineExecutionDetail,
   PipelineResponse,
   PipelineRunResponse,
@@ -140,4 +143,25 @@ export function getPipelineExecution(
     `/api/v1/pipelines/${pipelineId}/executions/${executionId}`,
     tenantId,
   ).then((r) => readJson<PipelineExecutionDetail>(r))
+}
+
+export function getCompleteness(tenantId: string, pipelineId: string) {
+  return apiFetch(
+    `/api/v1/observability/pipelines/${pipelineId}/completeness`,
+    tenantId,
+  ).then((r) => readJson<CompletenessResponse>(r))
+}
+
+export function getLatency(tenantId: string, pipelineId: string) {
+  return apiFetch(
+    `/api/v1/observability/pipelines/${pipelineId}/latency`,
+    tenantId,
+  ).then((r) => readJson<LatencyResponse>(r))
+}
+
+export function getHeartbeat(tenantId: string, pipelineId: string) {
+  return apiFetch(
+    `/api/v1/observability/pipelines/${pipelineId}/heartbeat`,
+    tenantId,
+  ).then((r) => readJson<HeartbeatResponse>(r))
 }
