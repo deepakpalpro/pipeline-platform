@@ -53,3 +53,4 @@ curl -s localhost:8080/actuator/prometheus | grep pipelet_records
 - Developer TDD: [`../tdd/stories/w4/W4-US01-tdd.md`](../tdd/stories/w4/W4-US01-tdd.md)
 - Prometheus baseline: [`W0-US04-logging-prometheus.md`](W0-US04-logging-prometheus.md)
 - Architecture §7.1
+- Modeling (telemetry vs billing; Grafana panels): [`../../SERVICE_CONNECTOR_PIPELET_MODEL.md`](../../SERVICE_CONNECTOR_PIPELET_MODEL.md) §5

@@ -4,6 +4,8 @@ This document is the full system design for a no-code, multi-tenant data process
 
 **Incremental delivery** (waves → features → epics → user stories, with test and support-KB acceptance criteria): [DELIVERY_PLAN.md](DELIVERY_PLAN.md) · trackers under [delivery/](delivery/).
 
+**Design notes:** [Service, connector & pipelet modeling](SERVICE_CONNECTOR_PIPELET_MODEL.md) (config layers, Python sink injection, telemetry vs billing, Grafana completeness expectations).
+
 ---
 
 ## Table of Contents
@@ -19,6 +21,7 @@ This document is the full system design for a no-code, multi-tenant data process
 9. [Connector SPI Interface](#9-connector-spi-interface)
 10. [Kubernetes Deployment Topology](#10-kubernetes-deployment-topology)
 11. [Event-Driven Ingress (Webhook / Event Listener)](#11-event-driven-ingress-webhook--event-listener)
+12. [Design notes (index)](#12-design-notes-index)
 
 ---
 
@@ -193,6 +196,8 @@ flowchart LR
 - **Pipelets** contain data transformation logic and run in containers.
 - **Connectors** abstract external system I/O and are shared, configurable plugins.
 - **Services** provide tenant-level platform capabilities (auth tokens, notification endpoints) that pipelets and connectors consume.
+
+**Expanded modeling** (ADLS sink, auth modes, step vs connector config, Python injection): [SERVICE_CONNECTOR_PIPELET_MODEL.md](SERVICE_CONNECTOR_PIPELET_MODEL.md).
 
 ---
 
@@ -1125,6 +1130,8 @@ completeness_pct = (total_records_out / total_records_in) × 100
 - `records_in` for stage N = `records_out` from stage N-1 (validates queue integrity).
 - Alert rule in Grafana: `pipeline_completeness_ratio < 0.95 for 5m` → notification via tenant Notification service.
 
+**Surfaces & cardinality** (per-execution DB/API vs latest Prometheus gauge; telemetry vs billing): [SERVICE_CONNECTOR_PIPELET_MODEL.md](SERVICE_CONNECTOR_PIPELET_MODEL.md) §5.
+
 ### 7.5 Heartbeat
 
 - Each pipelet pod emits `pipelet_heartbeat_timestamp` every 30 seconds.
@@ -1608,6 +1615,14 @@ Bindings:
   stage.2.in ← routing_key: stage.2
   stage.3.in ← routing_key: stage.3
 ```
+
+---
+
+## 12. Design notes (index)
+
+| Note | Topic |
+|------|--------|
+| [SERVICE_CONNECTOR_PIPELET_MODEL.md](SERVICE_CONNECTOR_PIPELET_MODEL.md) | Service vs connector vs step; Python/ADLS config injection; pipelet telemetry & completeness in Grafana; telemetry vs billing |
 
 ---
 

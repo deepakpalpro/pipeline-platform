@@ -58,3 +58,4 @@ curl -s localhost:8080/actuator/prometheus | grep pipeline_completeness_ratio
 - Developer TDD: [`../tdd/stories/w4/W4-US02-tdd.md`](../tdd/stories/w4/W4-US02-tdd.md)
 - Pipelet metrics: [`W4-US01-pipelet-metrics.md`](W4-US01-pipelet-metrics.md)
 - Architecture §7.4
+- Modeling (Grafana completeness expectations): [`../../SERVICE_CONNECTOR_PIPELET_MODEL.md`](../../SERVICE_CONNECTOR_PIPELET_MODEL.md) §5
