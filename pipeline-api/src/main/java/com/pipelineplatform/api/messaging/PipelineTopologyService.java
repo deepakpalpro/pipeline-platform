@@ -10,9 +10,10 @@ import org.springframework.amqp.core.TopicExchange;
 import org.springframework.stereotype.Service;
 
 /**
- * Declares tenant-prefixed pipeline stage exchanges/queues (idempotent via AmqpAdmin).
+ * Declares tenant-prefixed pipeline stage exchanges/queues with per-stage DLQ (architecture §8.2).
  *
- * <p>DLQ queues are provisioned now; dead-letter routing policy is completed in W2-US06.
+ * <p>Stage input queues are bound to a pipeline DLX so broker rejects and app-level dead-letters
+ * land on {@code ...stage.{n}.dlq}.
  */
 @Service
 public class PipelineTopologyService {
@@ -32,18 +33,29 @@ public class PipelineTopologyService {
     TopicExchange exchange = new TopicExchange(exchangeName, true, false);
     amqpAdmin.declareExchange(exchange);
 
+    String dlxName = QueueNaming.deadLetterExchange(tenantId, pipelineId);
+    TopicExchange deadLetterExchange = new TopicExchange(dlxName, true, false);
+    amqpAdmin.declareExchange(deadLetterExchange);
+
     List<PipelineStageTopology> stages = new ArrayList<>();
     for (int stage = 1; stage <= stageCount; stage++) {
       String inputQueue = QueueNaming.stageInputQueue(tenantId, pipelineId, stage);
       String dlqName = QueueNaming.stageDlq(tenantId, pipelineId, stage);
       String routingKey = QueueNaming.stageRoutingKey(stage);
+      String dlqRoutingKey = QueueNaming.stageDlqRoutingKey(stage);
       String outputQueue =
           stage < stageCount ? QueueNaming.stageOutputQueue(tenantId, pipelineId, stage) : null;
 
       Queue dlq = QueueBuilder.durable(dlqName).build();
       amqpAdmin.declareQueue(dlq);
+      amqpAdmin.declareBinding(
+          BindingBuilder.bind(dlq).to(deadLetterExchange).with(dlqRoutingKey));
 
-      Queue queue = QueueBuilder.durable(inputQueue).build();
+      Queue queue =
+          QueueBuilder.durable(inputQueue)
+              .deadLetterExchange(dlxName)
+              .deadLetterRoutingKey(dlqRoutingKey)
+              .build();
       amqpAdmin.declareQueue(queue);
       amqpAdmin.declareBinding(BindingBuilder.bind(queue).to(exchange).with(routingKey));
 

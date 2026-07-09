@@ -40,11 +40,15 @@ class PipelineTopologyServiceTest {
         .isEqualTo("tenant.T001.pipeline.pipe1.stage.1.in");
     assertThat(topology.stages().get(0).outputQueue())
         .isEqualTo("tenant.T001.pipeline.pipe1.stage.2.in");
+    assertThat(topology.stages().get(0).dlq())
+        .isEqualTo("tenant.T001.pipeline.pipe1.stage.1.dlq");
 
-    verify(amqpAdmin).declareExchange(any(Exchange.class));
+    // main exchange + DLX
+    verify(amqpAdmin, times(2)).declareExchange(any(Exchange.class));
     // 2 stages × (queue + dlq)
     verify(amqpAdmin, times(4)).declareQueue(any(Queue.class));
-    verify(amqpAdmin, times(2)).declareBinding(any(Binding.class));
+    // 2 stages × (queue bind + dlq bind)
+    verify(amqpAdmin, times(4)).declareBinding(any(Binding.class));
 
     ArgumentCaptor<Queue> queueCaptor = ArgumentCaptor.forClass(Queue.class);
     verify(amqpAdmin, times(4)).declareQueue(queueCaptor.capture());
@@ -55,5 +59,14 @@ class PipelineTopologyServiceTest {
             "tenant.T001.pipeline.pipe1.stage.1.dlq",
             "tenant.T001.pipeline.pipe1.stage.2.in",
             "tenant.T001.pipeline.pipe1.stage.2.dlq");
+
+    Queue stage1In =
+        queueCaptor.getAllValues().stream()
+            .filter(q -> q.getName().endsWith(".stage.1.in"))
+            .findFirst()
+            .orElseThrow();
+    assertThat(stage1In.getArguments())
+        .containsEntry("x-dead-letter-exchange", "tenant.T001.pipeline.pipe1.dlx")
+        .containsEntry("x-dead-letter-routing-key", "stage.1.dlq");
   }
 }

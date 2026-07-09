@@ -239,7 +239,7 @@ flowchart LR
 | **Priority** | Must |
 | **Dependencies** | W2-US03 |
 | **Architecture refs** | §8 retries / DLQ |
-| **Status** | Todo |
+| **Status** | Done |
 
 **As a** platform engineer  
 **I want** poison messages to retry then land on a stage DLQ  
@@ -295,6 +295,7 @@ flowchart LR
 - [x] W2-US03 RabbitMQ topology (`QueueNaming` + `PipelineTopologyService`)
 - [x] W2-US04 Async run (`V11__pipeline_executions.sql` + stub stage worker)
 - [x] W2-US05 PipeletJobClient stub wired into run path
+- [x] W2-US06 Retries + per-stage DLQ (`RetryPolicy` + DLX binds)
 - [ ] WAVE_TRACKER / TEST_MATRIX / WAVE_2_TDD updated as stories complete
 - [ ] Each story: merge → tag `W2-US##` → delete → next from `wave-2`
 

@@ -43,6 +43,16 @@ public final class QueueNaming {
     return "stage." + stageOrder;
   }
 
+  /** Dead-letter exchange for a pipeline (architecture §8.2). */
+  public static String deadLetterExchange(String tenantId, String pipelineId) {
+    return pipelineExchange(tenantId, pipelineId) + ".dlx";
+  }
+
+  public static String stageDlqRoutingKey(int stageOrder) {
+    requirePositiveStage(stageOrder);
+    return "stage." + stageOrder + ".dlq";
+  }
+
   /** W3 webhook exchange — declared here so ingress reuses the same prefix rules. */
   public static String webhookExchange(String tenantId) {
     requireToken(tenantId, "tenantId");
