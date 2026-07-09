@@ -10,6 +10,7 @@ Ship the multi-tenant, pay-as-you-go, no-code pipeline platform in incremental *
 | [`delivery/STORY_TEMPLATE.md`](delivery/STORY_TEMPLATE.md) | Mandatory AC: TDD, unit, integration, mocks/LocalStack, manual, support KB |
 | [`delivery/TDD_WAVE_TEMPLATE.md`](delivery/TDD_WAVE_TEMPLATE.md) | Template for per-wave TDD docs (technical stakeholders) |
 | [`delivery/tdd/`](delivery/tdd/README.md) | Wave TDD docs W0–W7 (strategy, red/green backlog, exit gates) |
+| [`delivery/tdd/stories/`](delivery/tdd/stories/README.md) | Per-story TDD playbooks for developers (junior Red→Green→Refactor) |
 | [`delivery/WAVE_TRACKER.md`](delivery/WAVE_TRACKER.md) | Status per story |
 | [`delivery/TEST_MATRIX.md`](delivery/TEST_MATRIX.md) | Story × test-type coverage |
 | [`delivery/SUPPORT_KB_TEMPLATE.md`](delivery/SUPPORT_KB_TEMPLATE.md) | Customer-support feature + dataflow articles |
@@ -409,7 +410,8 @@ W4 can start after W2 once fixture executions exist; W3 can proceed in parallel 
 4. **Every customer-visible story** updates or creates a KB article.
 5. **Trackers:** update WAVE_TRACKER and TEST_MATRIX in the same PR as the story.
 6. **Wave TDD docs:** keep [`delivery/tdd/WAVE_N_TDD.md`](delivery/tdd/README.md) current for technical stakeholders (red/green evidence, deferrals, exit gates) when stories ship or strategy changes.
-7. **Story branch lifecycle (mandatory for every user story):**
+7. **Story TDD playbooks:** before coding, follow or create [`delivery/tdd/stories/W#-US##-tdd.md`](delivery/tdd/stories/README.md) (junior Red→Green→Refactor guide). Wave 0 examples are the pattern.
+8. **Story branch lifecycle (mandatory for every user story):**
 
 ```text
 feature branch (e.g. W0-US02)

@@ -1,6 +1,15 @@
-# Wave TDD documents (technical stakeholders)
+# TDD documents
 
-Per-wave TDD strategy for eng leads, architects, QA, and SRE. Not support playbooks — those live under [`../kb/`](../kb/).
+Two layers:
+
+| Layer | Audience | Location |
+|-------|----------|----------|
+| **Wave TDD** | Eng leads, architects, QA, SRE | this folder (`WAVE_N_TDD.md`) |
+| **Story TDD** | Developers (junior-friendly playbooks) | [`stories/`](stories/README.md) |
+
+Not support playbooks — those live under [`../kb/`](../kb/).
+
+## Wave TDD (stakeholders)
 
 **Template:** [`../TDD_WAVE_TEMPLATE.md`](../TDD_WAVE_TEMPLATE.md)
 
@@ -16,3 +25,9 @@ Per-wave TDD strategy for eng leads, architects, QA, and SRE. Not support playbo
 | 7 Hardening / Ops | [`WAVE_7_TDD.md`](WAVE_7_TDD.md) | Draft |
 
 Update the matching `WAVE_N_TDD.md` when stories ship (red/green evidence, deferrals, exit sign-off). Coverage checkboxes remain in [`../TEST_MATRIX.md`](../TEST_MATRIX.md).
+
+## Story TDD (developers)
+
+**Template:** [`stories/TDD_STORY_TEMPLATE.md`](stories/TDD_STORY_TEMPLATE.md) · **Index:** [`stories/README.md`](stories/README.md)
+
+Wave 0 has a full junior playbook per story (Red → Green → Refactor, commands, pitfalls, ship checklist). Use those as the pattern for W1+.
