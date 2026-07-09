@@ -121,7 +121,7 @@ Abbreviations: **U** = Unit, **I** = Integration, **WM** = WireMock, **LS** = Lo
 
 | Story ID | Feature / Epic | Title | Status | Owner | Test gate | Blockers |
 |----------|----------------|-------|--------|-------|-----------|----------|
-| W5-US01 | W5-F1 / W5-F1-E1 | UsageEvent ingest + persist | In Progress | | | Reuse W3 UsageEventCollector |
+| W5-US01 | W5-F1 / W5-F1-E1 | UsageEvent ingest + persist | Done | | U,I,M,KB | V14 usage_events; PersistingUsageEventCollector |
 | W5-US02 | W5-F1 / W5-F1-E1 | MeterAgent emit from pipelet sidecar/lib | Todo | | | |
 | W5-US03 | W5-F1 / W5-F1-E2 | Hourly aggregates job | Todo | | | |
 | W5-US04 | W5-F2 / W5-F2-E1 | Quota soft/hard + credit balance | Todo | | | |

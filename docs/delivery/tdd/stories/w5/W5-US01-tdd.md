@@ -8,7 +8,7 @@
 | **Timebox hint** | 1–1.5 days |
 | **You will touch** | Flyway `usage_events`, durable collector, optional ingest API |
 | **Architecture refs** | §6.2 `usage_events` |
-| **KB (create)** | `docs/delivery/kb/W5-US01-usage-ingest.md` |
+| **KB** | [`../../../kb/W5-US01-usage-ingest.md`](../../../kb/W5-US01-usage-ingest.md) |
 | **Stakeholder TDD** | [`../../WAVE_5_TDD.md`](../../WAVE_5_TDD.md) |
 | **AC source** | [`../../../waves/WAVE_5.md`](../../../waves/WAVE_5.md) § W5-US01 |
 
@@ -109,10 +109,10 @@ flowchart LR
 
 ### Checklist
 
-- [ ] `usage_events` migration
-- [ ] Collector persists
-- [ ] Idempotent / no double-bill on retry
-- [ ] Tests green
+- [x] `usage_events` migration
+- [x] Collector persists
+- [x] Idempotent / no double-bill on retry
+- [x] Tests green
 
 ---
 
@@ -125,8 +125,8 @@ flowchart LR
 
 ## 11. Docs & trackers
 
-- [ ] KB: how to query raw events for a tenant
-- [ ] Tracker · TEST_MATRIX · `WAVE_5.md` Done
+- [x] KB: how to query raw events for a tenant
+- [x] Tracker · TEST_MATRIX · `WAVE_5.md` Done
 
 ```text
 merge → tag W5-US01 → W5-US02

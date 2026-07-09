@@ -93,7 +93,7 @@ flowchart LR
 | **Priority** | Must |
 | **Dependencies** | W0 MySQL; W3 `UsageEvent` shape |
 | **Architecture refs** | §6.2 `usage_events` |
-| **Status** | In Progress |
+| **Status** | Done |
 
 **In scope:** Persist usage events to MySQL (`usage_events`); replace or wrap stub collector with durable sink; idempotent ingest keys.  
 **Out of scope:** Aggregates (US03); MeterAgent pipelet emit (US02).
@@ -102,9 +102,9 @@ flowchart LR
 
 [`../tdd/stories/w5/W5-US01-tdd.md`](../tdd/stories/w5/W5-US01-tdd.md)
 
-#### Support KB (create)
+#### Support KB
 
-`docs/delivery/kb/W5-US01-usage-ingest.md`
+[`../kb/W5-US01-usage-ingest.md`](../kb/W5-US01-usage-ingest.md)
 
 ---
 
@@ -228,7 +228,7 @@ flowchart LR
 - [x] `wave-5` branched from `master` (post Wave 4 merge / `wave-4-complete`)
 - [x] This execution plan + junior TDD guides committed
 - [x] `W5-US01` feature branch created
-- [ ] W5-US01 UsageEvent ingest + persist
+- [x] W5-US01 UsageEvent ingest + persist (`PersistingUsageEventCollector` + V14)
 - [ ] WAVE_TRACKER / TEST_MATRIX / WAVE_5_TDD updated as stories complete
 - [ ] Each story: merge → tag `W5-US##` → delete → next from `wave-5`
 

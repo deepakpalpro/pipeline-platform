@@ -4,7 +4,7 @@
 |-------|--------|
 | **Wave** | W5 — Metering & Pay-as-you-go |
 | **Audience** | Technical stakeholders |
-| **Status** | In Progress (wave-5 started; W5-US01 next) |
+| **Status** | In Progress (W5-US01 Done) |
 | **Architecture refs** | §6.2, §3.5 |
 | **Branch / tags** | `wave-5` · `W5-US##` |
 | **Last updated** | 2026-07-09 |
@@ -84,6 +84,8 @@ flowchart TB
 | **Red** | `UsageEventServiceTest` / IT fail |
 | **Green** | Ingest API/queue → MySQL |
 | **Refactor** | Idempotent ingest keys |
+
+**Status:** Done — `V14__usage_events`, `PersistingUsageEventCollector`, idempotent keys.
 
 ### W5-US02 — MeterAgent emit from pipelet
 
@@ -174,3 +176,4 @@ flowchart TB
 |------|--------|
 | 2026-07-08 | Initial Draft for technical stakeholders |
 | 2026-07-09 | Linked execution plan + junior story TDD guides; wave-5 started |
+| 2026-07-09 | W5-US01 implemented: usage_events persist + idempotent collector |
