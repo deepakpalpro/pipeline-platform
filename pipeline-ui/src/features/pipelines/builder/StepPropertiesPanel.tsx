@@ -9,6 +9,7 @@ type Props = {
     nodeId: string,
     patch: Partial<PipelineGraphNode['data']>,
   ) => void
+  onRemove?: (nodeId: string) => void
 }
 
 export function StepPropertiesPanel({
@@ -16,6 +17,7 @@ export function StepPropertiesPanel({
   connectors,
   services,
   onChange,
+  onRemove,
 }: Props) {
   if (!node) {
     return (
@@ -74,6 +76,20 @@ export function StepPropertiesPanel({
           ))}
         </select>
       </label>
+
+      {onRemove ? (
+        <div className="form-actions props-danger">
+          <button
+            type="button"
+            className="danger"
+            aria-label="Remove step"
+            onClick={() => onRemove(node.id)}
+          >
+            Remove step
+          </button>
+          <p className="muted props-hint">Or press Delete / Backspace</p>
+        </div>
+      ) : null}
     </aside>
   )
 }

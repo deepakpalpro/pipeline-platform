@@ -257,10 +257,12 @@ export function PipelineBuilderPage({ catalog = PIPELET_FIXTURE }: Props) {
           nodes={state.nodes}
           edges={state.edges}
           overlayByNodeId={overlay.byNodeId}
+          selectedNodeId={state.selectedNodeId}
           onSelect={(nodeId) => dispatch({ type: 'SELECT_NODE', nodeId })}
           onConnect={(source, target) =>
             dispatch({ type: 'CONNECT', source, target })
           }
+          onRemove={(nodeId) => dispatch({ type: 'REMOVE_NODE', nodeId })}
         />
         <StepPropertiesPanel
           node={selected}
@@ -269,6 +271,7 @@ export function PipelineBuilderPage({ catalog = PIPELET_FIXTURE }: Props) {
           onChange={(nodeId, patch) =>
             dispatch({ type: 'UPDATE_STEP', nodeId, patch })
           }
+          onRemove={(nodeId) => dispatch({ type: 'REMOVE_NODE', nodeId })}
         />
       </div>
     </section>

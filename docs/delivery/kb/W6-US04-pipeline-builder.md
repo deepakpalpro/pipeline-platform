@@ -33,13 +33,20 @@ Save payload steps (ordered):
 
 Each step includes `pipelet_id`, `step_order`, `config`, `connector_ids`, `service_ids`, `input_queue`, `output_queue`.
 
+### Remove a step
+
+1. Click the step on the canvas (or it is already selected after add).
+2. In **Properties**, click **Remove step** — or focus the canvas and press **Delete** / **Backspace**.
+3. Connected edges for that node are removed with it.
+
 ### Manual smoke
 
 1. Open Pipelines; name `threeStage`.
 2. Add REST Source → JSON Transform → S3 Destination from palette.
 3. Select source; pick connector. Select destination; pick service.
-4. Save → status shows pipeline id/version.
-5. With MSW, inspect `mockDb.lastStepsPut` in tests; with live API, `GET` pipeline steps.
+4. Optionally remove/re-add a middle step via **Remove step**.
+5. Save → status shows pipeline id/version.
+6. With MSW, inspect `mockDb.lastStepsPut` in tests; with live API, `GET` pipeline steps.
 
 ## How to verify
 

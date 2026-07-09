@@ -42,21 +42,26 @@ type Props = {
   nodes: PipelineGraphNode[]
   edges: PipelineGraphEdge[]
   overlayByNodeId?: Record<string, OverlayNodeState>
+  selectedNodeId?: string | null
   onSelect: (nodeId: string | null) => void
   onConnect: (source: string, target: string) => void
+  onRemove?: (nodeId: string) => void
 }
 
 export function PipelineCanvas({
   nodes,
   edges,
   overlayByNodeId = {},
+  selectedNodeId = null,
   onSelect,
   onConnect,
+  onRemove,
 }: Props) {
   const rfNodes: Node[] = nodes.map((n) => ({
     id: n.id,
     type: 'step',
     position: n.position,
+    selected: n.id === selectedNodeId,
     data: { ...n.data, overlay: overlayByNodeId[n.id] ?? 'idle' },
   }))
 
@@ -69,7 +74,29 @@ export function PipelineCanvas({
   }))
 
   return (
-    <div className="builder-canvas" aria-label="Pipeline canvas">
+    <div
+      className="builder-canvas"
+      aria-label="Pipeline canvas"
+      tabIndex={0}
+      onKeyDown={(e) => {
+        if (!onRemove || !selectedNodeId) {
+          return
+        }
+        if (e.key === 'Delete' || e.key === 'Backspace') {
+          const target = e.target as HTMLElement
+          if (
+            target.tagName === 'INPUT' ||
+            target.tagName === 'TEXTAREA' ||
+            target.tagName === 'SELECT' ||
+            target.isContentEditable
+          ) {
+            return
+          }
+          e.preventDefault()
+          onRemove(selectedNodeId)
+        }
+      }}
+    >
       <ReactFlow
         nodes={rfNodes}
         edges={rfEdges}
@@ -84,6 +111,7 @@ export function PipelineCanvas({
         }}
         nodesDraggable={false}
         nodesConnectable
+        deleteKeyCode={null}
       >
         <Background />
         <Controls />
