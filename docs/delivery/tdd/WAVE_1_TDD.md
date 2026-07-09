@@ -4,10 +4,10 @@
 |-------|--------|
 | **Wave** | W1 — Tenancy, Services, Connectors |
 | **Audience** | Technical stakeholders |
-| **Status** | Draft (planning) |
+| **Status** | In Progress (W1-US01 Done) |
 | **Architecture refs** | §2, §3.3–3.4, §6.1, §9 SPI |
-| **Branch / tags** | `wave-1` (planned) · `W1-US##` |
-| **Last updated** | 2026-07-08 |
+| **Branch / tags** | `wave-1` · `W1-US##` |
+| **Last updated** | 2026-07-09 |
 | **Template** | [`../TDD_WAVE_TEMPLATE.md`](../TDD_WAVE_TEMPLATE.md) |
 | **Catalog** | [`../../DELIVERY_PLAN.md`](../../DELIVERY_PLAN.md) § Wave 1 |
 | **Developer story TDD** | [`stories/README.md`](stories/README.md) § Wave 1 |
@@ -212,3 +212,4 @@ Junior step-by-step guides: [`stories/README.md`](stories/README.md) § Wave 1.
 |------|--------|
 | 2026-07-08 | Initial Draft for technical stakeholders |
 | 2026-07-09 | Linked junior developer story TDD playbooks W1-US01–US08 |
+| 2026-07-09 | W1-US01 implemented: tenant CRUD + stub X-Tenant-Id context |

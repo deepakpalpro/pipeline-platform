@@ -33,7 +33,7 @@ Wave TDD (stakeholders): [`tdd/README.md`](tdd/README.md)
 
 | Story ID | Unit | Integration | WireMock | LocalStack | Manual | KB |
 |----------|------|-------------|----------|------------|--------|-----|
-| W1-US01 | | | n/a | n/a | | |
+| W1-US01 | x | x | n/a | n/a | x | x |
 | W1-US02 | | | n/a | n/a | | |
 | W1-US03 | | | n/a | n/a | | |
 | W1-US04 | | | | n/a | | |
