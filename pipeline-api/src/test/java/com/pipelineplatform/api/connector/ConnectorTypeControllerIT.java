@@ -63,5 +63,12 @@ class ConnectorTypeControllerIT {
               assertThat(row.get("spiClass"))
                   .isEqualTo("com.pipelineplatform.connector.storage.StorageConnector");
             });
+    assertThat(response.getBody())
+        .anySatisfy(
+            row -> {
+              assertThat(row.get("type")).isEqualTo("message_bus");
+              assertThat(row.get("spiClass"))
+                  .isEqualTo("com.pipelineplatform.connector.messagebus.MessageBusConnector");
+            });
   }
 }

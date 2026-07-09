@@ -4,7 +4,7 @@
 |-------|--------|
 | **Wave** | W1 — Tenancy, Services, Connectors |
 | **Audience** | Technical stakeholders |
-| **Status** | In Progress (W1-US01–US03 Done) |
+| **Status** | Complete (W1-US01–US08 Done) |
 | **Architecture refs** | §2, §3.3–3.4, §6.1, §9 SPI |
 | **Branch / tags** | `wave-1` · `W1-US##` |
 | **Last updated** | 2026-07-09 |
@@ -219,3 +219,5 @@ Junior step-by-step guides: [`stories/README.md`](stories/README.md) § Wave 1.
 | 2026-07-09 | W1-US05 implemented: Connector SPI + Rest plugin + connector_types catalog |
 | 2026-07-09 | W1-US06 implemented: tenant connectors + POST /test vs WireMock |
 | 2026-07-09 | W1-US07 implemented: StorageConnector put/get vs LocalStack S3 |
+| 2026-07-09 | W1-US08 implemented: MessageBusConnector publish/receive vs LocalStack SQS |
+| 2026-07-09 | Wave 1 complete (US01–US08) |
