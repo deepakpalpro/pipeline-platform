@@ -12,6 +12,7 @@ import org.hibernate.annotations.ParamDef;
 @Entity
 @Table(name = "tenant_notes")
 @TenantOwned
+// Single global FilterDef for tenantFilter — other @TenantOwned entities only declare @Filter.
 @FilterDef(
     name = TenantFilters.NAME,
     parameters = @ParamDef(name = TenantFilters.PARAM_TENANT_ID, type = String.class))
