@@ -41,7 +41,7 @@ Stakeholder wave TDD: [`../WAVE_1_TDD.md`](../WAVE_1_TDD.md).
 
 | Story | Guide | Status |
 |-------|-------|--------|
-| W2-US01 Pipeline CRUD | [`W2-US01-tdd.md`](W2-US01-tdd.md) | Draft (planning) |
+| W2-US01 Pipeline CRUD | [`W2-US01-tdd.md`](W2-US01-tdd.md) | Done |
 | W2-US02 Pipeline steps | [`W2-US02-tdd.md`](W2-US02-tdd.md) | Draft (planning) |
 | W2-US03 RabbitMQ topology | [`W2-US03-tdd.md`](W2-US03-tdd.md) | Draft (planning) |
 | W2-US04 Async run | [`W2-US04-tdd.md`](W2-US04-tdd.md) | Draft (planning) |

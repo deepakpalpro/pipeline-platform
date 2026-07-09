@@ -189,3 +189,4 @@ Junior step-by-step guides: [`stories/README.md`](stories/README.md) § Wave 2.
 |------|--------|
 | 2026-07-08 | Initial Draft for technical stakeholders |
 | 2026-07-09 | Linked execution plan + junior story TDD guides; wave-2 started |
+| 2026-07-09 | W2-US01 implemented: pipeline CRUD + tenant isolation |
