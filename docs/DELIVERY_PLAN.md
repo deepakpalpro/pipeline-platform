@@ -333,7 +333,9 @@ Stories below list **title + intent**. Fill full AC from the story template when
 
 **Exit criteria:** Usage summary matches fixture within defined tolerance; billing-dispute KB drafted.
 
-**Wave 5 TDD (stakeholders):** [`delivery/tdd/WAVE_5_TDD.md`](delivery/tdd/WAVE_5_TDD.md)
+**Wave 5 execution plan:** [`delivery/waves/WAVE_5.md`](delivery/waves/WAVE_5.md)  
+**Wave 5 TDD (stakeholders):** [`delivery/tdd/WAVE_5_TDD.md`](delivery/tdd/WAVE_5_TDD.md)  
+**Wave 5 developer guides:** [`delivery/tdd/stories/README.md`](delivery/tdd/stories/README.md) § Wave 5
 
 ---
 

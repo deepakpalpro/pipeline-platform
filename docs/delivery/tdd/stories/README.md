@@ -104,11 +104,29 @@ Guides: [`w4/`](w4/)
 Execution plan (full AC): [`../../waves/WAVE_4.md`](../../waves/WAVE_4.md).  
 Stakeholder wave TDD: [`../WAVE_4_TDD.md`](../WAVE_4_TDD.md).
 
-## Later waves (W5+)
+## Wave 5
 
-1. Create folder `docs/delivery/tdd/stories/wN/` (e.g. `w5/`).
+Guides: [`w5/`](w5/)
+
+| Story | Guide | Status |
+|-------|-------|--------|
+| W5-US01 UsageEvent ingest | [`w5/W5-US01-tdd.md`](w5/W5-US01-tdd.md) | In Progress |
+| W5-US02 MeterAgent emit | [`w5/W5-US02-tdd.md`](w5/W5-US02-tdd.md) | Draft (planning) |
+| W5-US03 Hourly aggregates | [`w5/W5-US03-tdd.md`](w5/W5-US03-tdd.md) | Draft (planning) |
+| W5-US04 Quota + credits | [`w5/W5-US04-tdd.md`](w5/W5-US04-tdd.md) | Draft (planning) |
+| W5-US05 Usage/billing APIs | [`w5/W5-US05-tdd.md`](w5/W5-US05-tdd.md) | Draft (planning) |
+| W5-US06 Block run 402 | [`w5/W5-US06-tdd.md`](w5/W5-US06-tdd.md) | Draft (planning) |
+
+**Suggested order:** US01 → US02 → US03 → US04 → US05 → US06 (US05 can parallel US04 after US03).
+
+Execution plan (full AC): [`../../waves/WAVE_5.md`](../../waves/WAVE_5.md).  
+Stakeholder wave TDD: [`../WAVE_5_TDD.md`](../WAVE_5_TDD.md).
+
+## Later waves (W6+)
+
+1. Create folder `docs/delivery/tdd/stories/wN/` (e.g. `w6/`).
 2. Copy [`TDD_STORY_TEMPLATE.md`](TDD_STORY_TEMPLATE.md) to `wN/W#-US##-tdd.md`.
 3. Fill all 12 sections **before** coding.
 4. Link from `waves/WAVE_N.md`, `tdd/WAVE_N_TDD.md`, the story KB, and this README.
 
-Use `w0/`–`w4/` guides as the pattern. Do **not** put new guides in the flat `stories/` root.
+Use `w0/`–`w5/` guides as the pattern. Do **not** put new guides in the flat `stories/` root.

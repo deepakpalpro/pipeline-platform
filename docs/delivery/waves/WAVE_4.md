@@ -240,7 +240,7 @@ flowchart LR
 - [x] All **Must** stories W4-US01–US05 Done; US06 Should completed  
 - [x] Exit criteria verified (completeness + logs for fixture)  
 - [x] Tag `wave-4-complete`  
-- [ ] PR `wave-4` → `master` merged ([#9](https://github.com/deepakpalpro/pipeline-platform/pull/9) open)
+- [x] PR `wave-4` → `master` merged ([#9](https://github.com/deepakpalpro/pipeline-platform/pull/9))
 
 ---
 
