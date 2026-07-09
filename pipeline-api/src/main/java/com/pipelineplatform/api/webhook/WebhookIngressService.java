@@ -57,8 +57,8 @@ public class WebhookIngressService {
   }
 
   /**
-   * Accept an external webhook: validate, verify HMAC, idempotency check, publish once, return 202.
-   * Must not start a pipelet Job (W3-US06).
+   * Accept an external webhook: validate, verify HMAC, rate-limit, idempotency, publish once,
+   * return 202. Must not start a pipelet Job (W3-US06).
    */
   @Transactional
   public WebhookAcceptResponse accept(
@@ -110,7 +110,13 @@ public class WebhookIngressService {
     envelope.put("connector_id", connectorId);
     envelope.put("payload", body);
 
-    rabbitTemplate.convertAndSend(topology.exchange(), topology.routingKey(), envelope);
+    try {
+      rabbitTemplate.convertAndSend(topology.exchange(), topology.routingKey(), envelope);
+    } catch (RuntimeException ex) {
+      idempotencyService.release(tenantId, connectorId, idempotencyKey);
+      throw new WebhookBrokerUnavailableException(
+          "Failed to publish webhook event to broker", ex);
+    }
 
     // Register for on-demand processor poller (W3-US06). Do not create Jobs here (US01).
     queueWatchRegistry.register(tenantId, connectorId, queuedTo);

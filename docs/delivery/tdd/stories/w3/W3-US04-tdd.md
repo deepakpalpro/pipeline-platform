@@ -123,10 +123,10 @@ Auth stub: public ingress — tenant from URL. Prefer `Retry-After` on 429 if ea
 
 ### Checklist
 
-- [ ] Over limit → 429
-- [ ] Publish fail → 503
-- [ ] Happy path still 202
-- [ ] Tests green with MySQL + RabbitMQ (or mocked fail)
+- [x] Over limit → 429
+- [x] Publish fail → 503
+- [x] Happy path still 202
+- [x] Tests green with MySQL + RabbitMQ (or mocked fail)
 
 ---
 
@@ -140,8 +140,8 @@ Auth stub: public ingress — tenant from URL. Prefer `Retry-After` on 429 if ea
 
 ## 11. Docs & trackers
 
-- [ ] KB: 429 vs 503 — when sender should retry
-- [ ] Tracker · TEST_MATRIX · `WAVE_3.md` Done (Should)
+- [x] KB: 429 vs 503 — when sender should retry
+- [x] Tracker · TEST_MATRIX · `WAVE_3.md` Done (Should)
 
 | # | Action | Expected |
 |---|--------|----------|

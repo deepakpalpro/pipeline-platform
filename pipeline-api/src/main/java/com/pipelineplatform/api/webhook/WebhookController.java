@@ -15,11 +15,15 @@ public class WebhookController {
 
   private final WebhookIngressService webhookIngressService;
   private final WebhookSignatureVerifier signatureVerifier;
+  private final WebhookRateLimiter rateLimiter;
 
   public WebhookController(
-      WebhookIngressService webhookIngressService, WebhookSignatureVerifier signatureVerifier) {
+      WebhookIngressService webhookIngressService,
+      WebhookSignatureVerifier signatureVerifier,
+      WebhookRateLimiter rateLimiter) {
     this.webhookIngressService = webhookIngressService;
     this.signatureVerifier = signatureVerifier;
+    this.rateLimiter = rateLimiter;
   }
 
   @PostMapping("/{tenantId}/{connectorId}")
@@ -28,6 +32,7 @@ public class WebhookController {
       @PathVariable String connectorId,
       @RequestBody(required = false) byte[] rawBody,
       HttpServletRequest request) {
+    rateLimiter.checkOrThrow(tenantId);
     String headerName = signatureVerifier.resolveSignatureHeader(tenantId);
     String signature = request.getHeader(headerName);
     String webhookId = request.getHeader(WebhookIdempotencyService.WEBHOOK_ID_HEADER);

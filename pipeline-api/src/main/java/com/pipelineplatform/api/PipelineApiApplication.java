@@ -2,12 +2,17 @@ package com.pipelineplatform.api;
 
 import com.pipelineplatform.api.config.IngressProperties;
 import com.pipelineplatform.api.config.WebhookQueueTriggerProperties;
+import com.pipelineplatform.api.config.WebhookRateLimitProperties;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 
 @SpringBootApplication(scanBasePackages = "com.pipelineplatform")
-@EnableConfigurationProperties({IngressProperties.class, WebhookQueueTriggerProperties.class})
+@EnableConfigurationProperties({
+  IngressProperties.class,
+  WebhookQueueTriggerProperties.class,
+  WebhookRateLimitProperties.class
+})
 public class PipelineApiApplication {
 
   public static void main(String[] args) {
