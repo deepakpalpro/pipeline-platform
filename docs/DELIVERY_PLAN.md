@@ -305,7 +305,9 @@ Stories below list **title + intent**. Fill full AC from the story template when
 
 **Exit criteria:** Support locates completeness and logs for known `execution_id`; KB “how to read completeness”.
 
-**Wave 4 TDD (stakeholders):** [`delivery/tdd/WAVE_4_TDD.md`](delivery/tdd/WAVE_4_TDD.md)
+**Wave 4 execution plan:** [`delivery/waves/WAVE_4.md`](delivery/waves/WAVE_4.md)  
+**Wave 4 TDD (stakeholders):** [`delivery/tdd/WAVE_4_TDD.md`](delivery/tdd/WAVE_4_TDD.md)  
+**Wave 4 developer guides:** [`delivery/tdd/stories/README.md`](delivery/tdd/stories/README.md) § Wave 4
 
 ---
 

@@ -273,8 +273,8 @@ flowchart LR
 - [x] WAVE_TRACKER / TEST_MATRIX / WAVE_3_TDD updated as Must stories complete
 - [x] Each story: merge → tag `W3-US##` → delete → next from `wave-3`
 - [x] Exit verified: all Must + Should Done; tags `W3-US01`–`W3-US07`
-- [ ] PR `wave-3` → `master`
-- [ ] Tag `wave-3-complete`
+- [x] PR `wave-3` → `master` ([#8](https://github.com/deepakpalpro/pipeline-platform/pull/8))
+- [x] Tag `wave-3-complete`
 
 ---
 
@@ -282,8 +282,8 @@ flowchart LR
 
 - [x] All **Must** stories W3-US01–US03, US05–US07 Done; US04 Should completed  
 - [x] Exit criteria verified (202 + queue message + KB suite)  
-- PR `wave-3` → `master` when exit criteria met  
-- Tag `wave-3-complete`
+- [x] PR `wave-3` → `master` ([#8](https://github.com/deepakpalpro/pipeline-platform/pull/8))  
+- [x] Tag `wave-3-complete`
 
 ---
 

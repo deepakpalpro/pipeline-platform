@@ -96,11 +96,13 @@ Abbreviations: **U** = Unit, **I** = Integration, **WM** = WireMock, **LS** = Lo
 
 ## Wave 4 — Observability
 
-**Wave goal:** Completeness % and logs visible for a known fixture execution.
+**Wave goal:** Completeness % and logs visible for a known fixture execution.  
+**Plan:** [`waves/WAVE_4.md`](waves/WAVE_4.md) · **TDD:** [`tdd/WAVE_4_TDD.md`](tdd/WAVE_4_TDD.md) · **Developer guides:** [`tdd/stories/README.md`](tdd/stories/README.md) § Wave 4  
+**Branch:** `wave-4`
 
 | Story ID | Feature / Epic | Title | Status | Owner | Test gate | Blockers |
 |----------|----------------|-------|--------|-------|-----------|----------|
-| W4-US01 | W4-F1 / W4-F1-E1 | Emit pipelet counters + histograms | Todo | | | |
+| W4-US01 | W4-F1 / W4-F1-E1 | Emit pipelet counters + histograms | In Progress | | | |
 | W4-US02 | W4-F1 / W4-F1-E1 | Completeness metric on fixture run | Todo | | | |
 | W4-US03 | W4-F1 / W4-F1-E2 | Heartbeat + critical error metrics | Todo | | | |
 | W4-US04 | W4-F2 / W4-F2-E1 | Logstash → ES → Kibana index pattern | Todo | | | |

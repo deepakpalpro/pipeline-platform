@@ -4,10 +4,12 @@
 |-------|--------|
 | **Wave** | W4 — Observability |
 | **Audience** | Technical stakeholders |
-| **Status** | Draft (planning) |
+| **Status** | In Progress |
 | **Architecture refs** | §7, §3.6 |
-| **Branch / tags** | `wave-4` (planned) · `W4-US##` |
-| **Last updated** | 2026-07-08 |
+| **Branch / tags** | `wave-4` · `W4-US##` |
+| **Last updated** | 2026-07-09 |
+| **Execution plan** | [`../waves/WAVE_4.md`](../waves/WAVE_4.md) |
+| **Developer guides** | [`stories/README.md`](stories/README.md) § Wave 4 |
 | **Template** | [`../TDD_WAVE_TEMPLATE.md`](../TDD_WAVE_TEMPLATE.md) |
 | **Catalog** | [`../../DELIVERY_PLAN.md`](../../DELIVERY_PLAN.md) § Wave 4 |
 | **Depends on** | W0-US04 baseline; W2 fixture executions |
@@ -77,6 +79,8 @@ flowchart TB
 
 ### W4-US01 — Emit pipelet counters + histograms
 
+**Developer guide:** [`stories/w4/W4-US01-tdd.md`](stories/w4/W4-US01-tdd.md)
+
 | Step | Evidence |
 |------|----------|
 | **Red** | `PipeletMetricsEmitterTest` fail |
@@ -84,6 +88,8 @@ flowchart TB
 | **Refactor** | Shared Micrometer binders |
 
 ### W4-US02 — Completeness ratio on fixture run
+
+**Developer guide:** [`stories/w4/W4-US02-tdd.md`](stories/w4/W4-US02-tdd.md)
 
 | Step | Evidence |
 |------|----------|
@@ -93,6 +99,8 @@ flowchart TB
 
 ### W4-US03 — Heartbeat + critical error metrics
 
+**Developer guide:** [`stories/w4/W4-US03-tdd.md`](stories/w4/W4-US03-tdd.md)
+
 | Step | Evidence |
 |------|----------|
 | **Red** | `HeartbeatGaugeTest`, `CriticalErrorCounterTest` fail |
@@ -100,6 +108,8 @@ flowchart TB
 | **Refactor** | Label cardinality limits documented |
 
 ### W4-US04 — Logs → Logstash → ES → Kibana
+
+**Developer guide:** [`stories/w4/W4-US04-tdd.md`](stories/w4/W4-US04-tdd.md)
 
 | Step | Evidence |
 |------|----------|
@@ -109,6 +119,8 @@ flowchart TB
 
 ### W4-US05 — Observability REST APIs
 
+**Developer guide:** [`stories/w4/W4-US05-tdd.md`](stories/w4/W4-US05-tdd.md)
+
 | Step | Evidence |
 |------|----------|
 | **Red** | `ObservabilityControllerIT` fail |
@@ -116,6 +128,8 @@ flowchart TB
 | **Refactor** | Tenant auth checks |
 
 ### W4-US06 — Grafana dashboards (Should)
+
+**Developer guide:** [`stories/w4/W4-US06-tdd.md`](stories/w4/W4-US06-tdd.md)
 
 | Step | Evidence |
 |------|----------|
@@ -161,3 +175,4 @@ flowchart TB
 | Date | Change |
 |------|--------|
 | 2026-07-08 | Initial Draft for technical stakeholders |
+| 2026-07-09 | Linked execution plan + junior story TDD guides; wave-4 started |
