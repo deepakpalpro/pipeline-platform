@@ -17,6 +17,8 @@ import com.pipelineplatform.api.messaging.PipelineStageTopology;
 import com.pipelineplatform.api.messaging.PipelineTopology;
 import com.pipelineplatform.api.messaging.PipelineTopologyService;
 import com.pipelineplatform.api.messaging.RabbitMessagingConfig;
+import com.pipelineplatform.api.observability.CompletenessMetricsPublisher;
+import java.math.BigDecimal;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -36,6 +38,7 @@ class PipelineRunOrchestratorTest {
   @Mock private PipelineTopologyService topologyService;
   @Mock private RabbitTemplate rabbitTemplate;
   @Mock private PipeletJobClient pipeletJobClient;
+  @Mock private CompletenessMetricsPublisher completenessMetricsPublisher;
 
   private PipelineRunOrchestrator orchestrator;
 
@@ -43,7 +46,11 @@ class PipelineRunOrchestratorTest {
   void setUp() {
     orchestrator =
         new PipelineRunOrchestrator(
-            executionRepository, topologyService, rabbitTemplate, pipeletJobClient);
+            executionRepository,
+            topologyService,
+            rabbitTemplate,
+            pipeletJobClient,
+            completenessMetricsPublisher);
     when(executionRepository.save(any(PipelineExecution.class)))
         .thenAnswer(inv -> inv.getArgument(0));
     when(topologyService.declare(anyString(), anyString(), anyInt()))
@@ -126,6 +133,25 @@ class PipelineRunOrchestratorTest {
             () -> orchestrator.start(activePipeline(), List.of(), ExecutionTrigger.MANUAL))
         .isInstanceOf(PipelineValidationException.class)
         .hasMessageContaining("steps");
+  }
+
+  @Test
+  void markCompleted_persistsCompletenessAndPublishesGauge() {
+    PipelineExecution execution = new PipelineExecution();
+    execution.setId("exec-1");
+    execution.setTenantId("tenant-a");
+    execution.setPipelineId("p1");
+    execution.setStatus(ExecutionStatus.RUNNING);
+    when(executionRepository.findById("exec-1")).thenReturn(java.util.Optional.of(execution));
+
+    orchestrator.markCompleted("exec-1", 100, 98);
+
+    assertThat(execution.getStatus()).isEqualTo(ExecutionStatus.COMPLETED);
+    assertThat(execution.getCompletenessPct()).isEqualByComparingTo(new BigDecimal("98.00"));
+    assertThat(execution.getRecordsIn()).isEqualTo(100);
+    assertThat(execution.getRecordsOut()).isEqualTo(98);
+    verify(completenessMetricsPublisher).publish("tenant-a", "p1", 0.98);
+    verify(executionRepository).save(execution);
   }
 
   private static Pipeline activePipeline() {

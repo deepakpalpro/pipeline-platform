@@ -93,7 +93,7 @@ Guides: [`w4/`](w4/)
 | Story | Guide | Status |
 |-------|-------|--------|
 | W4-US01 Pipelet metrics emit | [`w4/W4-US01-tdd.md`](w4/W4-US01-tdd.md) | Done |
-| W4-US02 Completeness ratio | [`w4/W4-US02-tdd.md`](w4/W4-US02-tdd.md) | Draft (planning) |
+| W4-US02 Completeness ratio | [`w4/W4-US02-tdd.md`](w4/W4-US02-tdd.md) | Done |
 | W4-US03 Heartbeat + errors | [`w4/W4-US03-tdd.md`](w4/W4-US03-tdd.md) | Draft (planning) |
 | W4-US04 ELK log path | [`w4/W4-US04-tdd.md`](w4/W4-US04-tdd.md) | Draft (planning) |
 | W4-US05 Observability REST | [`w4/W4-US05-tdd.md`](w4/W4-US05-tdd.md) | Draft (planning) |

@@ -94,8 +94,10 @@ flowchart TB
 | Step | Evidence |
 |------|----------|
 | **Red** | `CompletenessCalculatorTest` / IT fail |
-| **Green** | `(out/in)*100` for fixture |
-| **Refactor** | Stage + pipeline aggregation |
+| **Green** | `(out/in)*100` for fixture; gauge + `completeness_pct` |
+| **Refactor** | Pure calculator; latest-per-pipeline gauge labels |
+
+**Status:** Done — `CompletenessCalculator` + `CompletenessMetricsPublisher`; stub `1/1` → 100%; fixture `98/100` → 0.98.
 
 ### W4-US03 — Heartbeat + critical error metrics
 
@@ -177,3 +179,4 @@ flowchart TB
 | 2026-07-08 | Initial Draft for technical stakeholders |
 | 2026-07-09 | Linked execution plan + junior story TDD guides; wave-4 started |
 | 2026-07-09 | W4-US01 implemented: PipeletMetricsEmitter + stub worker emit |
+| 2026-07-09 | W4-US02 implemented: CompletenessCalculator + gauge + execution pct |

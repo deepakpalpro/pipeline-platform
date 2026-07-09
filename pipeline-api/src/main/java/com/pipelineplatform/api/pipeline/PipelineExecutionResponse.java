@@ -1,6 +1,7 @@
 package com.pipelineplatform.api.pipeline;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import java.math.BigDecimal;
 import java.time.Instant;
 
 public record PipelineExecutionResponse(
@@ -13,7 +14,8 @@ public record PipelineExecutionResponse(
     @JsonProperty("started_at") Instant startedAt,
     @JsonProperty("completed_at") Instant completedAt,
     @JsonProperty("records_in") long recordsIn,
-    @JsonProperty("records_out") long recordsOut) {
+    @JsonProperty("records_out") long recordsOut,
+    @JsonProperty("completeness_pct") BigDecimal completenessPct) {
 
   static PipelineExecutionResponse from(PipelineExecution entity) {
     return new PipelineExecutionResponse(
@@ -26,6 +28,7 @@ public record PipelineExecutionResponse(
         entity.getStartedAt(),
         entity.getCompletedAt(),
         entity.getRecordsIn(),
-        entity.getRecordsOut());
+        entity.getRecordsOut(),
+        entity.getCompletenessPct());
   }
 }
