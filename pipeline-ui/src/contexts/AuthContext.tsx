@@ -6,6 +6,7 @@ import {
   useState,
   type ReactNode,
 } from 'react'
+import { isAdminRole } from './roleGate'
 
 export type AuthSession = {
   isAuthenticated: boolean
@@ -13,6 +14,7 @@ export type AuthSession = {
 }
 
 type AuthContextValue = AuthSession & {
+  isAdmin: boolean
   signInStub: (displayName?: string) => void
   signOutStub: () => void
 }
@@ -38,6 +40,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const value = useMemo(
     () => ({
       ...session,
+      isAdmin: isAdminRole(session.displayName, session.isAuthenticated),
       signInStub,
       signOutStub,
     }),

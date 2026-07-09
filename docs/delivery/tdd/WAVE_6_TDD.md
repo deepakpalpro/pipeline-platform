@@ -4,7 +4,7 @@
 |-------|--------|
 | **Wave** | W6 — No-code UI |
 | **Audience** | Technical stakeholders |
-| **Status** | In Progress (W6-US02 Done; W6-US03 next) |
+| **Status** | In Progress (W6-US03 Done; W6-US04 next) |
 | **Architecture refs** | §4 |
 | **Branch / tags** | `wave-6` · `W6-US##` |
 | **Last updated** | 2026-07-10 |

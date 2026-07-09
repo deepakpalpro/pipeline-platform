@@ -1,0 +1,56 @@
+[
+  {
+    "id": "plet-rest-source",
+    "name": "REST Source",
+    "category": "Source",
+    "version": "1.0.0",
+    "runtime": "Java",
+    "description": "Pull or receive HTTP payloads into a pipeline.",
+    "configSchemaPreview": { "type": "object", "required": ["connectorId"] }
+  },
+  {
+    "id": "plet-webhook-source",
+    "name": "Webhook Source",
+    "category": "Source",
+    "version": "1.0.0",
+    "runtime": "Java",
+    "description": "Ingress webhook events via provisioned connector URL.",
+    "configSchemaPreview": { "type": "object", "required": ["connectorId"] }
+  },
+  {
+    "id": "plet-json-transform",
+    "name": "JSON Transform",
+    "category": "Processor",
+    "version": "1.2.0",
+    "runtime": "Java",
+    "description": "Map and reshape JSON records between stages.",
+    "configSchemaPreview": { "type": "object", "required": ["mapping"] }
+  },
+  {
+    "id": "plet-python-filter",
+    "name": "Python Filter",
+    "category": "Processor",
+    "version": "0.9.0",
+    "runtime": "Python",
+    "description": "Filter records with a tenant-supplied Python expression.",
+    "configSchemaPreview": { "type": "object", "required": ["expression"] }
+  },
+  {
+    "id": "plet-adls-destination",
+    "name": "ADLS Destination",
+    "category": "Destination",
+    "version": "1.1.0",
+    "runtime": "Java",
+    "description": "Write batches to Azure Data Lake Storage.",
+    "configSchemaPreview": { "type": "object", "required": ["serviceId", "path"] }
+  },
+  {
+    "id": "plet-s3-destination",
+    "name": "S3 Destination",
+    "category": "Destination",
+    "version": "1.0.0",
+    "runtime": "Java",
+    "description": "Write objects to S3-compatible storage.",
+    "configSchemaPreview": { "type": "object", "required": ["serviceId", "bucket"] }
+  }
+]

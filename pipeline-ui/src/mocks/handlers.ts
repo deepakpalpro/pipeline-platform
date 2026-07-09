@@ -208,4 +208,23 @@ export const serviceHandlers = [
   }),
 ]
 
-export const handlers = [...connectorHandlers, ...serviceHandlers]
+export const pipeletHandlers = [
+  http.get('/api/v1/pipelets', async () => {
+    const { PIPELET_FIXTURE } = await import('../features/pipelets/fixture')
+    return HttpResponse.json(PIPELET_FIXTURE)
+  }),
+
+  http.post('/api/v1/pipelets/register', async ({ request }) => {
+    const body = await request.json()
+    return HttpResponse.json(
+      { id: `plet-registered-${Date.now()}`, ...(body as object) },
+      { status: 201 },
+    )
+  }),
+]
+
+export const handlers = [
+  ...connectorHandlers,
+  ...serviceHandlers,
+  ...pipeletHandlers,
+]

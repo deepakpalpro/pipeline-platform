@@ -130,11 +130,11 @@ npm test -- catalogFilter PipeletsCatalog
 
 ### Checklist
 
-- [ ] Pipelet card grid with category sub-nav
-- [ ] `catalogFilter` unit tests green
-- [ ] Catalog component filter tests green
-- [ ] Admin register modal (stub backend OK)
-- [ ] KB documents fixture → live API swap
+- [x] Pipelet card grid with category sub-nav
+- [x] `catalogFilter` unit tests green
+- [x] Catalog component filter tests green
+- [x] Admin register modal (stub backend OK)
+- [x] KB documents fixture → live API swap
 
 ---
 

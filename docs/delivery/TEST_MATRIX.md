@@ -104,7 +104,7 @@ Wave TDD (stakeholders): [`tdd/README.md`](tdd/README.md)
 |----------|------|-------------|----------|------------|--------|-----|
 | W6-US01 | AuthContext.test, Shell.test | n/a | n/a | n/a | npm run dev shell smoke | [W6-US01-nav-shell](kb/W6-US01-nav-shell.md) |
 | W6-US02 | ConnectorForm, ServiceForm, ConnectorsList, ServiceDetail | n/a | MSW handlers | n/a | Create flows + secret mask | [W6-US02-connectors-services-ui](kb/W6-US02-connectors-services-ui.md) |
-| W6-US03 | | | | n/a | | |
+| W6-US03 | catalogFilter, PipeletsCatalog, RegisterPipeletModal | n/a | MSW register stub | n/a | Filter + admin modal | [W6-US03-pipelets-catalog](kb/W6-US03-pipelets-catalog.md) |
 | W6-US04 | | | | n/a | | |
 | W6-US05 | | | | n/a | | |
 | W6-US06 | | | n/a | n/a | | |
