@@ -272,13 +272,16 @@ flowchart LR
 - [x] W3-US04 Should rate limit 429 + broker 503
 - [x] WAVE_TRACKER / TEST_MATRIX / WAVE_3_TDD updated as Must stories complete
 - [x] Each story: merge → tag `W3-US##` → delete → next from `wave-3`
+- [x] Exit verified: all Must + Should Done; tags `W3-US01`–`W3-US07`
+- [ ] PR `wave-3` → `master`
+- [ ] Tag `wave-3-complete`
 
 ---
 
 ## Definition of Done (Wave 3)
 
-- All **Must** stories W3-US01–US03, US05–US07 Done; US04 Should completed or deferred with tracker note  
-- Exit criteria verified (202 + queue message + KB)  
+- [x] All **Must** stories W3-US01–US03, US05–US07 Done; US04 Should completed  
+- [x] Exit criteria verified (202 + queue message + KB suite)  
 - PR `wave-3` → `master` when exit criteria met  
 - Tag `wave-3-complete`
 
