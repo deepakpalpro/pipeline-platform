@@ -86,11 +86,29 @@ Guides: [`w3/`](w3/)
 Execution plan (full AC): [`../../waves/WAVE_3.md`](../../waves/WAVE_3.md).  
 Stakeholder wave TDD: [`../WAVE_3_TDD.md`](../WAVE_3_TDD.md).
 
-## Later waves (W4+)
+## Wave 4
 
-1. Create folder `docs/delivery/tdd/stories/wN/` (e.g. `w4/`).
+Guides: [`w4/`](w4/)
+
+| Story | Guide | Status |
+|-------|-------|--------|
+| W4-US01 Pipelet metrics emit | [`w4/W4-US01-tdd.md`](w4/W4-US01-tdd.md) | Done |
+| W4-US02 Completeness ratio | [`w4/W4-US02-tdd.md`](w4/W4-US02-tdd.md) | Done |
+| W4-US03 Heartbeat + errors | [`w4/W4-US03-tdd.md`](w4/W4-US03-tdd.md) | Done |
+| W4-US04 ELK log path | [`w4/W4-US04-tdd.md`](w4/W4-US04-tdd.md) | Done |
+| W4-US05 Observability REST | [`w4/W4-US05-tdd.md`](w4/W4-US05-tdd.md) | Done |
+| W4-US06 Grafana provision | [`w4/W4-US06-tdd.md`](w4/W4-US06-tdd.md) | Done |
+
+**Suggested order:** US01 → US02 → US03 → US04 → US05 (US06 Should can follow US02).
+
+Execution plan (full AC): [`../../waves/WAVE_4.md`](../../waves/WAVE_4.md).  
+Stakeholder wave TDD: [`../WAVE_4_TDD.md`](../WAVE_4_TDD.md).
+
+## Later waves (W5+)
+
+1. Create folder `docs/delivery/tdd/stories/wN/` (e.g. `w5/`).
 2. Copy [`TDD_STORY_TEMPLATE.md`](TDD_STORY_TEMPLATE.md) to `wN/W#-US##-tdd.md`.
 3. Fill all 12 sections **before** coding.
 4. Link from `waves/WAVE_N.md`, `tdd/WAVE_N_TDD.md`, the story KB, and this README.
 
-Use `w0/`–`w3/` guides as the pattern. Do **not** put new guides in the flat `stories/` root.
+Use `w0/`–`w4/` guides as the pattern. Do **not** put new guides in the flat `stories/` root.

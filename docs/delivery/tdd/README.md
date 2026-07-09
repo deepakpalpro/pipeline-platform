@@ -18,8 +18,8 @@ Not support playbooks — those live under [`../kb/`](../kb/).
 | 0 Foundation | [`WAVE_0_TDD.md`](WAVE_0_TDD.md) | Complete |
 | 1 Tenancy / Connectors | [`WAVE_1_TDD.md`](WAVE_1_TDD.md) | Draft |
 | 2 Pipelines / Execution | [`WAVE_2_TDD.md`](WAVE_2_TDD.md) | Complete |
-| 3 Webhook Ingress | [`WAVE_3_TDD.md`](WAVE_3_TDD.md) | In Progress |
-| 4 Observability | [`WAVE_4_TDD.md`](WAVE_4_TDD.md) | Draft |
+| 3 Webhook Ingress | [`WAVE_3_TDD.md`](WAVE_3_TDD.md) | Complete |
+| 4 Observability | [`WAVE_4_TDD.md`](WAVE_4_TDD.md) | Complete |
 | 5 Metering / PAYG | [`WAVE_5_TDD.md`](WAVE_5_TDD.md) | Draft |
 | 6 No-code UI | [`WAVE_6_TDD.md`](WAVE_6_TDD.md) | Draft |
 | 7 Hardening / Ops | [`WAVE_7_TDD.md`](WAVE_7_TDD.md) | Draft |

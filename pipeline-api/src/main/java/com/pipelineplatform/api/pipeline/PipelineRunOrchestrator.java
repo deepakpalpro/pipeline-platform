@@ -6,6 +6,8 @@ import com.pipelineplatform.api.messaging.PipelineTopology;
 import com.pipelineplatform.api.messaging.PipelineTopologyService;
 import com.pipelineplatform.api.messaging.QueueNaming;
 import com.pipelineplatform.api.messaging.RabbitMessagingConfig;
+import com.pipelineplatform.api.observability.CompletenessCalculator;
+import com.pipelineplatform.api.observability.CompletenessMetricsPublisher;
 import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
@@ -30,16 +32,19 @@ public class PipelineRunOrchestrator {
   private final PipelineTopologyService topologyService;
   private final RabbitTemplate rabbitTemplate;
   private final PipeletJobClient pipeletJobClient;
+  private final CompletenessMetricsPublisher completenessMetricsPublisher;
 
   public PipelineRunOrchestrator(
       PipelineExecutionRepository executionRepository,
       PipelineTopologyService topologyService,
       RabbitTemplate rabbitTemplate,
-      PipeletJobClient pipeletJobClient) {
+      PipeletJobClient pipeletJobClient,
+      CompletenessMetricsPublisher completenessMetricsPublisher) {
     this.executionRepository = executionRepository;
     this.topologyService = topologyService;
     this.rabbitTemplate = rabbitTemplate;
     this.pipeletJobClient = pipeletJobClient;
+    this.completenessMetricsPublisher = completenessMetricsPublisher;
   }
 
   @Transactional
@@ -126,11 +131,16 @@ public class PipelineRunOrchestrator {
               if (isTerminal(execution.getStatus())) {
                 return;
               }
+              CompletenessCalculator.Result completeness =
+                  CompletenessCalculator.calculate(recordsIn, recordsOut);
               execution.setStatus(ExecutionStatus.COMPLETED);
               execution.setCompletedAt(Instant.now());
-              execution.setRecordsIn(recordsIn);
-              execution.setRecordsOut(recordsOut);
+              execution.setRecordsIn(completeness.recordsIn());
+              execution.setRecordsOut(completeness.recordsOut());
+              execution.setCompletenessPct(completeness.percent());
               executionRepository.save(execution);
+              completenessMetricsPublisher.publish(
+                  execution.getTenantId(), execution.getPipelineId(), completeness.ratio());
             });
   }
 

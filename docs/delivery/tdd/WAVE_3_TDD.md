@@ -4,9 +4,9 @@
 |-------|--------|
 | **Wave** | W3 — Webhook Ingress + Queue |
 | **Audience** | Technical stakeholders |
-| **Status** | In Progress (W3-US01–US02 Done) |
+| **Status** | Complete (W3-US01–US07 Done; exit verified; PR #8 → master) |
 | **Architecture refs** | **§11**, §3.3 webhook APIs |
-| **Branch / tags** | `wave-3` · `W3-US##` |
+| **Branch / tags** | `wave-3` · `W3-US##` · `wave-3-complete` |
 | **Last updated** | 2026-07-09 |
 | **Template** | [`../TDD_WAVE_TEMPLATE.md`](../TDD_WAVE_TEMPLATE.md) |
 | **Catalog** | [`../../DELIVERY_PLAN.md`](../../DELIVERY_PLAN.md) § Wave 3 (includes fully worked W3-US01) |
@@ -193,3 +193,4 @@ Reference AC: DELIVERY_PLAN fully worked **W3-US01** (`WebhookIngressServiceTest
 | 2026-07-09 | W3-US06 implemented: queue depth poller + stub Job trigger |
 | 2026-07-09 | W3-US07 implemented: webhook usage metering (stub collector) |
 | 2026-07-09 | W3-US04 implemented: per-tenant 429 + broker publish 503 |
+| 2026-07-09 | Wave exit: all Must + Should Done; tagged `wave-3-complete`; merged PR #8 to master |

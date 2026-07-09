@@ -4,10 +4,12 @@
 |-------|--------|
 | **Wave** | W4 — Observability |
 | **Audience** | Technical stakeholders |
-| **Status** | Draft (planning) |
+| **Status** | Complete (W4-US01–US06 Done; `wave-4-complete`; PR #9 → master open) |
 | **Architecture refs** | §7, §3.6 |
-| **Branch / tags** | `wave-4` (planned) · `W4-US##` |
-| **Last updated** | 2026-07-08 |
+| **Branch / tags** | `wave-4` · `W4-US##` · `wave-4-complete` |
+| **Last updated** | 2026-07-09 |
+| **Execution plan** | [`../waves/WAVE_4.md`](../waves/WAVE_4.md) |
+| **Developer guides** | [`stories/README.md`](stories/README.md) § Wave 4 |
 | **Template** | [`../TDD_WAVE_TEMPLATE.md`](../TDD_WAVE_TEMPLATE.md) |
 | **Catalog** | [`../../DELIVERY_PLAN.md`](../../DELIVERY_PLAN.md) § Wave 4 |
 | **Depends on** | W0-US04 baseline; W2 fixture executions |
@@ -77,21 +79,31 @@ flowchart TB
 
 ### W4-US01 — Emit pipelet counters + histograms
 
+**Developer guide:** [`stories/w4/W4-US01-tdd.md`](stories/w4/W4-US01-tdd.md)
+
 | Step | Evidence |
 |------|----------|
 | **Red** | `PipeletMetricsEmitterTest` fail |
 | **Green** | records_in/out + processing timers |
 | **Refactor** | Shared Micrometer binders |
 
+**Status:** Done — `PipeletMetricsEmitter` + stub worker emit; no `execution_id` label.
+
 ### W4-US02 — Completeness ratio on fixture run
+
+**Developer guide:** [`stories/w4/W4-US02-tdd.md`](stories/w4/W4-US02-tdd.md)
 
 | Step | Evidence |
 |------|----------|
 | **Red** | `CompletenessCalculatorTest` / IT fail |
-| **Green** | `(out/in)*100` for fixture |
-| **Refactor** | Stage + pipeline aggregation |
+| **Green** | `(out/in)*100` for fixture; gauge + `completeness_pct` |
+| **Refactor** | Pure calculator; latest-per-pipeline gauge labels |
+
+**Status:** Done — `CompletenessCalculator` + `CompletenessMetricsPublisher`; stub `1/1` → 100%; fixture `98/100` → 0.98.
 
 ### W4-US03 — Heartbeat + critical error metrics
+
+**Developer guide:** [`stories/w4/W4-US03-tdd.md`](stories/w4/W4-US03-tdd.md)
 
 | Step | Evidence |
 |------|----------|
@@ -99,7 +111,11 @@ flowchart TB
 | **Green** | Gauges/counters registered |
 | **Refactor** | Label cardinality limits documented |
 
+**Status:** Done — `touchHeartbeat` + `recordCriticalError`; stub pod `stub-pipelet`; `PipeletErrorType` allowlist.
+
 ### W4-US04 — Logs → Logstash → ES → Kibana
+
+**Developer guide:** [`stories/w4/W4-US04-tdd.md`](stories/w4/W4-US04-tdd.md)
 
 | Step | Evidence |
 |------|----------|
@@ -107,21 +123,31 @@ flowchart TB
 | **Green** | Index pattern + sample doc for fixture |
 | **Refactor** | Index naming per architecture |
 
+**Status:** Done — `InMemoryPipelineLogIndexer` + `ElkLogSmokeTest`; optional compose `--profile elk`.
+
 ### W4-US05 — Observability REST APIs
+
+**Developer guide:** [`stories/w4/W4-US05-tdd.md`](stories/w4/W4-US05-tdd.md)
 
 | Step | Evidence |
 |------|----------|
 | **Red** | `ObservabilityControllerIT` fail |
-| **Green** | completeness/latency/errors/logs endpoints |
+| **Green** | Completeness + latency/heartbeat/errors/logs |
 | **Refactor** | Tenant auth checks |
 
+**Status:** Done — tenant-scoped `/api/v1/observability/...`; cross-tenant 404.
+
 ### W4-US06 — Grafana dashboards (Should)
+
+**Developer guide:** [`stories/w4/W4-US06-tdd.md`](stories/w4/W4-US06-tdd.md)
 
 | Step | Evidence |
 |------|----------|
 | **Red** | `GrafanaProvisionerTest` fail |
 | **Green** | Org/dashboard provision API |
 | **Refactor** | Template JSON fixtures |
+
+**Status:** Done — `StubGrafanaClient` + `GrafanaProvisioner` + optional `POST /tenants/{id}/grafana` (one Grafana; org per tenant — see KB / §7.2).
 
 ---
 
@@ -161,3 +187,11 @@ flowchart TB
 | Date | Change |
 |------|--------|
 | 2026-07-08 | Initial Draft for technical stakeholders |
+| 2026-07-09 | Linked execution plan + junior story TDD guides; wave-4 started |
+| 2026-07-09 | W4-US01 implemented: PipeletMetricsEmitter + stub worker emit |
+| 2026-07-09 | W4-US02 implemented: CompletenessCalculator + gauge + execution pct |
+| 2026-07-09 | W4-US03 implemented: heartbeat gauge + critical error counter |
+| 2026-07-09 | W4-US04 implemented: stub ELK indexer + optional compose profile |
+| 2026-07-09 | W4-US05 implemented: observability REST APIs + tenant isolation |
+| 2026-07-09 | W4-US06 implemented: Grafana provision stub; wave Must+Should complete |
+| 2026-07-09 | Wave exit: tags `W4-US01`–`W4-US06` + `wave-4-complete`; PR #9 opened |

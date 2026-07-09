@@ -909,7 +909,7 @@ Resolved config preview shown at bottom: merged view of `DefaultServiceConfig` +
 | Pipelet containers | Docker | Images stored in internal container registry |
 | Pipelet scheduling | Kubernetes Jobs | One Job per pipelet stage per execution |
 | Metrics collection | Prometheus | Micrometer Prometheus registry in Spring Boot + pipelet sidecar |
-| Metrics visualization | Grafana | Pre-built dashboards per tenant (Grafana org per tenant) |
+| Metrics visualization | Grafana | **One** Grafana; pre-built dashboards in a **Grafana org per tenant** |
 | Log shipping | Logstash | Filebeat sidecar in pipelet pods → Logstash → Elasticsearch |
 | Log search | Kibana | Index pattern: `pipeline-logs-{tenant_id}-*` |
 | Local cloud emulation | LocalStack | S3/SQS endpoints for Storage and MessageBus connectors in dev |
@@ -971,7 +971,7 @@ flowchart TB
 | **Platform message broker** | Tenant-prefixed destinations (e.g. RabbitMQ: `tenant.{tenant_id}.pipeline.{pipeline_id}.stage.{n}`); vhost/namespace per environment as applicable to the broker |
 | **Kubernetes** | Namespace `tenant-{tenant_id}`; ResourceQuota limits CPU/memory/pod count |
 | **Network** | NetworkPolicy: pods can only reach the configured broker, MySQL, and approved connector endpoints |
-| **Observability** | Prometheus labels `tenant_id`; Grafana org per tenant; Kibana space per tenant |
+| **Observability** | Prometheus labels `tenant_id`; **one** Grafana with **org per tenant**; Kibana space per tenant on shared ELK |
 | **LocalStack** | Separate S3 bucket prefix `tenant-{tenant_id}/` in dev |
 
 ### 6.2 Pay-as-You-Go Metering
@@ -1060,7 +1060,31 @@ Standard Micrometer metrics plus:
 | **Infrastructure** | Pod CPU/memory, queue depth, DLQ depth |
 | **Billing** | Cost by dimension, credit balance trend, quota utilization |
 
-Tenant isolation: each tenant gets a Grafana Organization with dashboards pre-provisioned via API on tenant creation.
+#### Deployment & tenant isolation
+
+**One Grafana instance** (shared platform infra). We do **not** run a separate Grafana server per tenant.
+
+Isolation model: **Grafana Organization per tenant**.
+
+| Concern | Approach |
+|---------|----------|
+| Shared stack | Single Grafana in `platform-infra` (or equivalent) |
+| Tenant boundary | Create a Grafana **Org** per tenant; provision baseline dashboards into that org via Admin API |
+| Login UX | Tenant users authenticate into Grafana and work inside **their org** only (users, dashboards, datasources, alert rules are org-scoped) |
+| Metrics | One Prometheus; series carry `tenant_id`. Org-scoped datasources / query policies keep tenants from browsing other tenants’ series |
+| Provisioning | On tenant creation (or admin `POST /api/v1/tenants/{id}/grafana`), create org + upsert template dashboards |
+
+**Why org-per-tenant (not one org + “only my dashboard”)?** Grafana Organizations are a hard isolation boundary. Folder/dashboard ACLs or a single dashboard with a `tenant_id` template variable are simpler for **internal** platform/support use, but are easier to misconfigure and leak data if **tenant customers** log into Grafana themselves. This platform assumes tenant-facing observability isolation, so org-per-tenant is the default.
+
+**Alternatives (not the default):**
+
+| Model | When it may be enough |
+|-------|------------------------|
+| One org + folder/dashboard ACLs per tenant | Soft isolation; internal operators only |
+| One org + Teams / RBAC | Flexible; still soft vs org boundary |
+| One dashboard + `tenant_id` variable | Best for support triage; **not** safe for tenant self-service login |
+
+Kibana follows the same spirit: **space per tenant** on a shared ELK stack (see §7.3), not a Kibana install per tenant.
 
 ### 7.3 Logging (ELK)
 

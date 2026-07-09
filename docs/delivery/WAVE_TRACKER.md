@@ -96,18 +96,20 @@ Abbreviations: **U** = Unit, **I** = Integration, **WM** = WireMock, **LS** = Lo
 
 ## Wave 4 — Observability
 
-**Wave goal:** Completeness % and logs visible for a known fixture execution.
+**Wave goal:** Completeness % and logs visible for a known fixture execution.  
+**Plan:** [`waves/WAVE_4.md`](waves/WAVE_4.md) · **TDD:** [`tdd/WAVE_4_TDD.md`](tdd/WAVE_4_TDD.md) · **Developer guides:** [`tdd/stories/README.md`](tdd/stories/README.md) § Wave 4  
+**Branch:** `wave-4` · **Tags:** `W4-US01`–`W4-US06`, `wave-4-complete` · **PR:** [#9](https://github.com/deepakpalpro/pipeline-platform/pull/9) → `master` (open)
 
 | Story ID | Feature / Epic | Title | Status | Owner | Test gate | Blockers |
 |----------|----------------|-------|--------|-------|-----------|----------|
-| W4-US01 | W4-F1 / W4-F1-E1 | Emit pipelet counters + histograms | Todo | | | |
-| W4-US02 | W4-F1 / W4-F1-E1 | Completeness metric on fixture run | Todo | | | |
-| W4-US03 | W4-F1 / W4-F1-E2 | Heartbeat + critical error metrics | Todo | | | |
-| W4-US04 | W4-F2 / W4-F2-E1 | Logstash → ES → Kibana index pattern | Todo | | | |
-| W4-US05 | W4-F2 / W4-F2-E2 | Observability REST APIs | Todo | | | |
-| W4-US06 | W4-F2 / W4-F2-E1 | Grafana dashboard provisioning (tenant) | Todo | | | |
+| W4-US01 | W4-F1 / W4-F1-E1 | Emit pipelet counters + histograms | Done | | U,I,M,KB | §7.1 names; no execution_id label |
+| W4-US02 | W4-F1 / W4-F1-E1 | Completeness metric on fixture run | Done | | U,I,M,KB | §7.4; gauge labels tenant+pipeline only |
+| W4-US03 | W4-F1 / W4-F1-E2 | Heartbeat + critical error metrics | Done | | U,M,KB | §7.5 epoch seconds; stub pod; error_type enum |
+| W4-US04 | W4-F2 / W4-F2-E1 | Logstash → ES → Kibana index pattern | Done | | U,M,KB | Stub indexer CI; compose --profile elk optional |
+| W4-US05 | W4-F2 / W4-F2-E2 | Observability REST APIs | Done | | U,I,M,KB | /api/v1/observability; cross-tenant 404 |
+| W4-US06 | W4-F2 / W4-F2-E1 | Grafana dashboard provisioning (tenant) | Done | | U,M,KB | Should; StubGrafanaClient + provisioner |
 
-**Wave exit criteria:** Support can locate completeness and error logs for fixture `exec-*`.
+**Wave exit criteria:** Support can locate completeness and error logs for fixture `exec-*`. **Met** (US02 completeness + US04/US05 logs; tag `wave-4-complete`).
 
 ---
 
