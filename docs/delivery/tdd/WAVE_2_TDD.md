@@ -18,9 +18,11 @@
 
 ## 1. Stakeholder summary
 
-Wave 2 proves a configurable Source → Processor → Destination pipeline can run asynchronously: RabbitMQ topology hands off between stages, execution status is persisted, poison messages land on stage DLQ, and a pipelet Job can be spawned (Kind or stub).
+Wave 2 proves a configurable Source → Processor → Destination pipeline can run asynchronously: the **platform message broker** (default RabbitMQ; pluggable per architecture §5.1) hands off between stages, execution status is persisted, poison messages land on stage DLQ, and a pipelet Job can be spawned (Kind or stub).
 
 **Mental model:** a **pipeline step** is not the pipelet itself — it is the *configuration* of which pipelet runs in this pipeline (order, config, connectors, queues, limits). At run time each step becomes a **Job/Pod**. The pipelet registry defines *what can run*; steps define *how it runs here*; Jobs are *the actual run*.
+
+**Broker:** logical stage destinations are broker-agnostic; Wave 2 verifies them on RabbitMQ. Kafka / SQS / Event Hubs / ActiveMQ are future adapters, not Wave 2 exit criteria.
 
 | Quality goal | How we prove it |
 |--------------|-----------------|

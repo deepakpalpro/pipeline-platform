@@ -1,4 +1,4 @@
-# KB: Inter-stage RabbitMQ topology (Wave 2)
+# KB: Inter-stage message broker topology (Wave 2)
 
 | Field | Value |
 |-------|--------|
@@ -8,11 +8,22 @@
 
 ## Prerequisites
 
-- Compose RabbitMQ (`docker compose up -d rabbitmq`) — AMQP `5672`, mgmt `15672` (`pipeline`/`pipeline`)
+- Compose RabbitMQ (`docker compose up -d rabbitmq`) — AMQP `5672`, mgmt `15672` (`pipeline`/`pipeline`) — **Wave 2 default broker**
 - Spring AMQP on `pipeline-api` (`spring-boot-starter-amqp`)
 - Local profile RabbitMQ settings in `application.yml`
 
-## Feature overview
+## Pluggable platform broker
+
+The platform’s inter-stage bus is **configurable** (architecture §5.1). Supported *targets* include RabbitMQ, Kafka, SQS, Azure Event Hubs, ActiveMQ, and similar technologies.
+
+| Concern | Wave 2 | Later |
+|---------|--------|-------|
+| Platform stage handoff / DLQ / ingress | **RabbitMQ** (this story) | Broker SPI adapters |
+| Tenant external bus | `message_bus` connector (SQS/LocalStack) | Other connector plugins |
+
+Logical names (`QueueNaming`, step `input_queue` / `output_queue`) stay the same; adapters map them to each product’s primitives.
+
+## Feature overview (RabbitMQ default)
 
 Tenant-prefixed stage topology (architecture appendix / §6.1 / §8.2):
 
@@ -25,12 +36,12 @@ RK:       stage.{n}
 
 | Type | Class | Role |
 |------|-------|------|
-| Naming | `QueueNaming` | Shared builder (also webhook helpers for W3) |
-| Declare | `PipelineTopologyService` | Idempotent exchange/queue/binding via `AmqpAdmin` |
+| Naming | `QueueNaming` | Shared logical builder (also webhook helpers for W3) |
+| Declare | `PipelineTopologyService` | Idempotent exchange/queue/binding via `AmqpAdmin` (RabbitMQ adapter) |
 
 When steps are saved without queue fields, `PipelineStepsService` fills `input_queue` / `output_queue` from `QueueNaming` (last stage has no platform output).
 
-**Out of scope here:** dead-letter *routing* policy (W2-US06); run orchestration (W2-US04); webhook declare (W3).
+**Out of scope here:** dead-letter *routing* policy (W2-US06); run orchestration (W2-US04); webhook declare (W3); non-RabbitMQ adapters.
 
 ## How to verify
 
@@ -57,5 +68,6 @@ docker compose up -d mysql rabbitmq
 
 ## Related
 
+- Architecture §5.1 pluggable broker
 - Developer TDD: [`../tdd/stories/W2-US03-tdd.md`](../tdd/stories/W2-US03-tdd.md)
 - Next: async run (W2-US04)

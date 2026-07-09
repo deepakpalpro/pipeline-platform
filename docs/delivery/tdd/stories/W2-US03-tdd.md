@@ -16,11 +16,11 @@
 
 ## What you are building
 
-Declare **tenant-prefixed** exchanges/queues for pipeline stages and prove publish → consume works against Compose/Testcontainers RabbitMQ.
+Declare **tenant-prefixed** stage destinations on the **platform message broker** and prove publish → consume works. Wave 2’s default broker is **RabbitMQ** (Compose/Testcontainers); architecture §5.1 makes the broker pluggable (Kafka, SQS, Event Hubs, ActiveMQ, …) via a future SPI — do not hard-wire product assumptions into pipeline/step APIs.
 
-**Done means:** `RabbitTopologyIT.declareAndPublish` green.
+**Done means:** `RabbitTopologyIT.declareAndPublish` green (RabbitMQ adapter).
 
-**Out of scope:** Full run orchestrator (US04); webhook queues (W3) — but share naming helpers.
+**Out of scope:** Full run orchestrator (US04); webhook queues (W3) — but share naming helpers; non-RabbitMQ adapters.
 
 ---
 

@@ -6,14 +6,14 @@
 **TDD (developers / juniors):** [`../tdd/stories/README.md`](../tdd/stories/README.md) § Wave 2  
 **Trackers:** [`../WAVE_TRACKER.md`](../WAVE_TRACKER.md) · [`../TEST_MATRIX.md`](../TEST_MATRIX.md)  
 **Story AC template:** [`../STORY_TEMPLATE.md`](../STORY_TEMPLATE.md)  
-**Architecture:** [`../../ARCHITECTURE.md`](../../ARCHITECTURE.md) §2 pipelines, §3.1–3.2, §8, §10.3  
+**Architecture:** [`../../ARCHITECTURE.md`](../../ARCHITECTURE.md) §2 pipelines, §3.1–3.2, §5.1 pluggable broker, §8, §10.3  
 **Depends on:** Wave 1 complete (`wave-1-complete`)
 
 ---
 
 ## Wave goal
 
-Configure a Source → Processor → Destination pipeline, run it **async** with RabbitMQ stage handoff, persist execution status, spawn a pipelet Job (Kind or stub), and prove a poison message lands on a stage DLQ.
+Configure a Source → Processor → Destination pipeline, run it **async** with **platform message-broker** stage handoff (Wave 2 default: **RabbitMQ**; broker is pluggable — see architecture §5.1), persist execution status, spawn a pipelet Job (Kind or stub), and prove a poison message lands on a stage DLQ.
 
 ### Core model (steps → pipelets → pods)
 
@@ -24,6 +24,17 @@ Configure a Source → Processor → Destination pipeline, run it **async** with
 | **Job / Pod** (§10.3) | Ephemeral runtime for one step of one execution — *the actual run* |
 
 At `POST .../run`, each step drives a Job named `exec-{execution_id}-stage-{step_order}` in namespace `tenant-{tenant_id}`. Wave 2 may stub the Job client; the step row is still the source of truth for what that pod would run.
+
+### Platform message broker (pluggable)
+
+Stage `input_queue` / `output_queue` are **logical destination names**. Wave 2 implements them on **RabbitMQ**. The same contracts should later adapt to Kafka, SQS, Azure Event Hubs, ActiveMQ, etc. without rewriting pipeline/step APIs.
+
+| Concern | Wave 2 | Later |
+|---------|--------|-------|
+| Platform inter-stage bus | RabbitMQ (Compose + Spring AMQP) | Message Broker SPI adapters |
+| Tenant external bus (`message_bus` connector) | SQS/LocalStack | Other connector plugins |
+
+Do **not** confuse the platform broker with the tenant `message_bus` connector — different purposes.
 
 | Exit criterion | How verified |
 |----------------|--------------|
@@ -173,11 +184,11 @@ flowchart LR
 | **Status** | Done |
 
 **As a** platform engineer  
-**I want** tenant-prefixed exchanges/queues declared for pipeline stages  
+**I want** tenant-prefixed stage destinations declared on the platform message broker  
 **so that** stages can publish/consume without colliding across tenants.
 
-**In scope:** Naming builder; declare topology; publish/consume IT against Compose/Testcontainers RabbitMQ.  
-**Out of scope:** Full orchestration (US04); webhook queues (W3).
+**In scope:** Naming builder; declare topology; publish/consume IT against Compose/Testcontainers **RabbitMQ** (Wave 2 default broker).  
+**Out of scope:** Full orchestration (US04); webhook queues (W3); Kafka/SQS/Event Hubs/ActiveMQ adapters (architecture §5.1 — later waves).
 
 #### Developer TDD guide
 

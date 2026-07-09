@@ -32,7 +32,7 @@ Step fields map to the future pod:
 | `step_order` | Stage sequence → Job name `…-stage-{n}` |
 | `config` | Pipelet-specific settings (vs pipelet `config_schema`) |
 | `connector_ids` / `service_ids` | Credentials/services injected into the pod |
-| `input_queue` / `output_queue` | RabbitMQ handoff between stages |
+| `input_queue` / `output_queue` | Logical stage destinations on the **platform message broker** (Wave 2: RabbitMQ; pluggable per architecture §5.1) |
 | `resource_limits` | CPU/memory limits on the Job |
 
 ### API
@@ -76,5 +76,5 @@ curl -s -X PUT "localhost:8080/api/v1/pipelines/$PIPE_ID/steps" \
 - Developer TDD: [`../tdd/stories/W2-US02-tdd.md`](../tdd/stories/W2-US02-tdd.md)
 - Execution plan: [`../waves/WAVE_2.md`](../waves/WAVE_2.md) § Core model
 - Job spawn from steps: [`W2-US05-pipelet-job.md`](W2-US05-pipelet-job.md)
-- Architecture: [`../../../ARCHITECTURE.md`](../../../ARCHITECTURE.md) §2 `pipeline_steps`, §10.3
-- Next: RabbitMQ topology (W2-US03)
+- Architecture: [`../../../ARCHITECTURE.md`](../../../ARCHITECTURE.md) §2 `pipeline_steps`, §5.1 pluggable broker, §10.3
+- Next: platform broker topology (W2-US03; RabbitMQ default)
