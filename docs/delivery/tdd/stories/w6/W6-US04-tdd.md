@@ -141,12 +141,12 @@ npm test -- pipelineGraphReducer PipelineBuilder.save
 
 ### Checklist
 
-- [ ] `pipelineGraphReducer` with add/connect/update actions
-- [ ] React Flow three-panel builder
-- [ ] Properties panel binds connectors/services
-- [ ] Save → `POST` pipeline + `PUT` steps (MSW)
-- [ ] `pipelineGraphReducer.test` green
-- [ ] Save mock integration test green
+- [x] `pipelineGraphReducer` with add/connect/update actions
+- [x] React Flow three-panel builder
+- [x] Properties panel binds connectors/services
+- [x] Save → `POST` pipeline + `PUT` steps (MSW)
+- [x] `pipelineGraphReducer.test` green
+- [x] Save mock integration test green
 
 ---
 
@@ -160,8 +160,8 @@ npm test -- pipelineGraphReducer PipelineBuilder.save
 
 ## 11. Docs & trackers
 
-- [ ] KB: builder layout, save sequence, `threeStage` fixture, screenshots
-- [ ] Tracker · TEST_MATRIX · `WAVE_6.md` Done
+- [x] KB: builder layout, save sequence, `threeStage` fixture, screenshots
+- [x] Tracker · TEST_MATRIX · `WAVE_6.md` Done
 
 ```text
 merge → tag W6-US04 → W6-US05

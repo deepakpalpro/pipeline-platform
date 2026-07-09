@@ -1,15 +1,16 @@
 import { Navigate, Route, Routes } from 'react-router-dom'
-import { PlaceholderPage } from '../features/PlaceholderPage'
 import { ConnectorsPage } from '../features/connectors/ConnectorsPage'
 import { ServicesPage } from '../features/services/ServicesPage'
 import { PipeletsCatalogPage } from '../features/pipelets/PipeletsCatalogPage'
+import { PipelineBuilderPage } from '../features/pipelines/builder/PipelineBuilderPage'
+import { PlaceholderPage } from '../features/PlaceholderPage'
 
 export function AppRoutes() {
   return (
     <Routes>
       <Route path="/" element={<Navigate to="/pipelets" replace />} />
       <Route path="/pipelets" element={<PipeletsCatalogPage />} />
-      <Route path="/pipelines" element={<PlaceholderPage title="Pipelines" />} />
+      <Route path="/pipelines" element={<PipelineBuilderPage />} />
       <Route path="/connectors" element={<ConnectorsPage />} />
       <Route path="/services" element={<ServicesPage />} />
       <Route

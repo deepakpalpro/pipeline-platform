@@ -481,3 +481,136 @@ button.linkish {
   margin: 0;
   font-size: 1.1rem;
 }
+
+.builder-page {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  min-height: 70vh;
+}
+
+.builder-title-row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.builder-title-row h1 {
+  margin: 0;
+}
+
+.inline-field input {
+  background: var(--surface);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 0.4rem 0.6rem;
+  min-width: 14rem;
+}
+
+.builder-layout {
+  display: grid;
+  grid-template-columns: 220px 1fr 240px;
+  gap: 0.75rem;
+  min-height: 520px;
+}
+
+.builder-palette,
+.builder-props {
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 0.85rem;
+  background: color-mix(in srgb, var(--surface) 90%, transparent);
+}
+
+.builder-palette h2,
+.builder-props h2 {
+  margin: 0 0 0.75rem;
+  font-size: 0.95rem;
+}
+
+.palette-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.palette-item {
+  width: 100%;
+  text-align: left;
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--text);
+  border-radius: 8px;
+  padding: 0.55rem 0.65rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.palette-item:hover {
+  background: var(--accent-soft);
+}
+
+.builder-canvas {
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  overflow: hidden;
+  background: #0b1016;
+  min-height: 520px;
+}
+
+.builder-props label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  margin-top: 0.75rem;
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+
+.builder-props select {
+  background: var(--bg);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 0.4rem 0.5rem;
+}
+
+.props-title {
+  margin: 0;
+  font-weight: 600;
+}
+
+.rf-step {
+  min-width: 140px;
+  padding: 0.55rem 0.7rem;
+  border-radius: 8px;
+  border: 1px solid #3a4a5c;
+  background: #1a2430;
+  color: #e8eef4;
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  font-size: 0.8rem;
+}
+
+.rf-step.selected {
+  border-color: #3d8bfd;
+  box-shadow: 0 0 0 1px #3d8bfd;
+}
+
+.rf-step-cat {
+  color: #8b9aab;
+  font-size: 0.7rem;
+}
+
+@media (max-width: 960px) {
+  .builder-layout {
+    grid-template-columns: 1fr;
+  }
+}

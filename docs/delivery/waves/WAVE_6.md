@@ -172,7 +172,7 @@ flowchart LR
 | **Priority** | Must |
 | **Dependencies** | W6-US03; W2 pipeline + steps APIs |
 | **Architecture refs** | §4.3 Pipeline builder |
-| **Status** | Todo |
+| **Status** | Done |
 
 **In scope:** React Flow canvas; add 3 stages; bind connectors/services; save via `PUT .../steps` (+ create pipeline).  
 **Out of scope:** Advanced layout auto-routing; collaborative editing.
@@ -181,9 +181,9 @@ flowchart LR
 
 [`../tdd/stories/w6/W6-US04-tdd.md`](../tdd/stories/w6/W6-US04-tdd.md)
 
-#### Support KB (create)
+#### Support KB
 
-`docs/delivery/kb/W6-US04-pipeline-builder.md`
+[`../kb/W6-US04-pipeline-builder.md`](../kb/W6-US04-pipeline-builder.md)
 
 ---
 
