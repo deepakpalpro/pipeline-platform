@@ -3,6 +3,7 @@
 **Branch:** `wave-0`  
 **Parent catalog:** [`../../DELIVERY_PLAN.md`](../../DELIVERY_PLAN.md)  
 **TDD (stakeholders):** [`../tdd/WAVE_0_TDD.md`](../tdd/WAVE_0_TDD.md)  
+**TDD (developers / juniors):** [`../tdd/stories/README.md`](../tdd/stories/README.md)  
 **Trackers:** [`../WAVE_TRACKER.md`](../WAVE_TRACKER.md) · [`../TEST_MATRIX.md`](../TEST_MATRIX.md)  
 **Story AC template:** [`../STORY_TEMPLATE.md`](../STORY_TEMPLATE.md)  
 **Architecture:** [`../../ARCHITECTURE.md`](../../ARCHITECTURE.md) §5, §10.6
@@ -149,6 +150,10 @@ Compose smoke may be **script + Manual** with IT optional later.
 
 See [`../kb/W0-US01-local-compose-stack.md`](../kb/W0-US01-local-compose-stack.md)
 
+#### Developer TDD guide
+
+See [`../tdd/stories/W0-US01-tdd.md`](../tdd/stories/W0-US01-tdd.md)
+
 ---
 
 ### W0-US02 — Spring Boot health + Testcontainers MySQL (fully worked)
@@ -217,6 +222,10 @@ Prefer IT for health; unit optional for pure helpers.
 
 See [`../kb/W0-US02-health-endpoint.md`](../kb/W0-US02-health-endpoint.md)
 
+#### Developer TDD guide
+
+See [`../tdd/stories/W0-US02-tdd.md`](../tdd/stories/W0-US02-tdd.md)
+
 ##### Dataflow (support)
 
 ```mermaid
@@ -268,7 +277,11 @@ n/a
 
 #### Support KB
 
-Short note in W0-US02 KB or `W0-US03-flyway-baseline.md`: how to check migrations applied.
+See [`../kb/W0-US03-flyway-baseline.md`](../kb/W0-US03-flyway-baseline.md)
+
+#### Developer TDD guide
+
+See [`../tdd/stories/W0-US03-tdd.md`](../tdd/stories/W0-US03-tdd.md)
 
 ---
 
@@ -303,6 +316,10 @@ Short note in W0-US02 KB or `W0-US03-flyway-baseline.md`: how to check migration
 #### Support KB
 
 See [`../kb/W0-US04-logging-prometheus.md`](../kb/W0-US04-logging-prometheus.md)
+
+#### Developer TDD guide
+
+See [`../tdd/stories/W0-US04-tdd.md`](../tdd/stories/W0-US04-tdd.md)
 
 ---
 
@@ -348,6 +365,10 @@ Run `./mvnw -pl pipeline-api test` — WireMock + fixture tests green.
 #### Support KB
 
 See [`../kb/W0-US05-mock-data-wiremock.md`](../kb/W0-US05-mock-data-wiremock.md)
+
+#### Developer TDD guide
+
+See [`../tdd/stories/W0-US05-tdd.md`](../tdd/stories/W0-US05-tdd.md)
 
 ---
 

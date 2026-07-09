@@ -10,6 +10,7 @@
 | **Last updated** | 2026-07-08 |
 | **Template** | [`../TDD_WAVE_TEMPLATE.md`](../TDD_WAVE_TEMPLATE.md) |
 | **Execution plan** | [`../waves/WAVE_0.md`](../waves/WAVE_0.md) |
+| **Developer story TDD** | [`stories/README.md`](stories/README.md) (junior playbooks W0-US01–US05) |
 | **Coverage** | [`../TEST_MATRIX.md`](../TEST_MATRIX.md) § Wave 0 |
 
 ---
@@ -79,7 +80,11 @@ flowchart TB
 
 ## 4. Story TDD backlog
 
+Junior step-by-step guides (how to complete each story): [`stories/README.md`](stories/README.md).
+
 ### W0-US01 — Compose stack + LocalStack healthy
+
+**Developer guide:** [`stories/W0-US01-tdd.md`](stories/W0-US01-tdd.md)
 
 | Field | Value |
 |-------|--------|
@@ -103,6 +108,8 @@ flowchart TB
 ---
 
 ### W0-US02 — Spring Boot health + Compose MySQL IT
+
+**Developer guide:** [`stories/W0-US02-tdd.md`](stories/W0-US02-tdd.md)
 
 | Field | Value |
 |-------|--------|
@@ -128,6 +135,8 @@ flowchart TB
 
 ### W0-US03 — Flyway baseline schema apply
 
+**Developer guide:** [`stories/W0-US03-tdd.md`](stories/W0-US03-tdd.md)
+
 | Field | Value |
 |-------|--------|
 | Priority | Must |
@@ -150,6 +159,8 @@ flowchart TB
 ---
 
 ### W0-US04 — Structured logging + Micrometer smoke
+
+**Developer guide:** [`stories/W0-US04-tdd.md`](stories/W0-US04-tdd.md)
 
 | Field | Value |
 |-------|--------|
@@ -174,6 +185,8 @@ flowchart TB
 ---
 
 ### W0-US05 — Mock-data factories + WireMock harness
+
+**Developer guide:** [`stories/W0-US05-tdd.md`](stories/W0-US05-tdd.md)
 
 | Field | Value |
 |-------|--------|

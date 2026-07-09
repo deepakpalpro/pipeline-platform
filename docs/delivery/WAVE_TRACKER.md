@@ -32,7 +32,8 @@ Abbreviations: **U** = Unit, **I** = Integration, **WM** = WireMock, **LS** = Lo
 
 ## Wave 1 — Tenancy, Services, Connectors
 
-**Wave goal:** Tenant + service config + Rest connector test against WireMock/LocalStack.
+**Wave goal:** Tenant + service config + Rest connector test against WireMock/LocalStack.  
+**TDD:** [`tdd/WAVE_1_TDD.md`](tdd/WAVE_1_TDD.md) · **Developer guides:** [`tdd/stories/README.md`](tdd/stories/README.md) § Wave 1
 
 | Story ID | Feature / Epic | Title | Status | Owner | Test gate | Blockers |
 |----------|----------------|-------|--------|-------|-----------|----------|
