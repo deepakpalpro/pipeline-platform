@@ -84,7 +84,7 @@ Junior step-by-step guides (how to complete each story): [`stories/README.md`](s
 
 ### W0-US01 — Compose stack + LocalStack healthy
 
-**Developer guide:** [`stories/W0-US01-tdd.md`](stories/W0-US01-tdd.md)
+**Developer guide:** [`stories/w0/W0-US01-tdd.md`](stories/w0/W0-US01-tdd.md)
 
 | Field | Value |
 |-------|--------|
@@ -109,7 +109,7 @@ Junior step-by-step guides (how to complete each story): [`stories/README.md`](s
 
 ### W0-US02 — Spring Boot health + Compose MySQL IT
 
-**Developer guide:** [`stories/W0-US02-tdd.md`](stories/W0-US02-tdd.md)
+**Developer guide:** [`stories/w0/W0-US02-tdd.md`](stories/w0/W0-US02-tdd.md)
 
 | Field | Value |
 |-------|--------|
@@ -135,7 +135,7 @@ Junior step-by-step guides (how to complete each story): [`stories/README.md`](s
 
 ### W0-US03 — Flyway baseline schema apply
 
-**Developer guide:** [`stories/W0-US03-tdd.md`](stories/W0-US03-tdd.md)
+**Developer guide:** [`stories/w0/W0-US03-tdd.md`](stories/w0/W0-US03-tdd.md)
 
 | Field | Value |
 |-------|--------|
@@ -160,7 +160,7 @@ Junior step-by-step guides (how to complete each story): [`stories/README.md`](s
 
 ### W0-US04 — Structured logging + Micrometer smoke
 
-**Developer guide:** [`stories/W0-US04-tdd.md`](stories/W0-US04-tdd.md)
+**Developer guide:** [`stories/w0/W0-US04-tdd.md`](stories/w0/W0-US04-tdd.md)
 
 | Field | Value |
 |-------|--------|
@@ -186,7 +186,7 @@ Junior step-by-step guides (how to complete each story): [`stories/README.md`](s
 
 ### W0-US05 — Mock-data factories + WireMock harness
 
-**Developer guide:** [`stories/W0-US05-tdd.md`](stories/W0-US05-tdd.md)
+**Developer guide:** [`stories/w0/W0-US05-tdd.md`](stories/w0/W0-US05-tdd.md)
 
 | Field | Value |
 |-------|--------|

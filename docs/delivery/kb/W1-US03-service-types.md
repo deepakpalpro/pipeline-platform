@@ -52,6 +52,6 @@ Expect `type: "auth"`, vendor `StubAuth`, and a `defaultConfig.issuer`.
 
 ## Related
 
-- Developer TDD: [`../tdd/stories/W1-US03-tdd.md`](../tdd/stories/W1-US03-tdd.md)
-- Next: [`../tdd/stories/W1-US04-tdd.md`](../tdd/stories/W1-US04-tdd.md)
+- Developer TDD: [`../tdd/stories/w1/W1-US03-tdd.md`](../tdd/stories/w1/W1-US03-tdd.md)
+- Next: [`../tdd/stories/w1/W1-US04-tdd.md`](../tdd/stories/w1/W1-US04-tdd.md)
 - Architecture §2 `service_types` / `service_defaults`, §3.4

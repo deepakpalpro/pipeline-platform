@@ -48,13 +48,13 @@ Wave TDD (stakeholders): [`tdd/README.md`](tdd/README.md)
 
 | Story ID | Unit | Integration | WireMock | LocalStack | Manual | KB |
 |----------|------|-------------|----------|------------|--------|-----|
-| W2-US01 | | | n/a | n/a | | |
-| W2-US02 | | | n/a | n/a | | |
-| W2-US03 | | | n/a | n/a | | |
-| W2-US04 | | | | n/a | | |
-| W2-US05 | | | n/a | n/a | | |
-| W2-US06 | | | n/a | n/a | | |
-| W2-US07 | | | n/a | n/a | | |
+| W2-US01 | x | x | n/a | n/a | x | x |
+| W2-US02 | x | x | n/a | n/a | x | x |
+| W2-US03 | x | x | n/a | n/a | x | x |
+| W2-US04 | x | x | n/a | n/a | x | x |
+| W2-US05 | x | x | n/a | n/a | x | x |
+| W2-US06 | x | x | n/a | n/a | x | x |
+| W2-US07 | x | x | n/a | n/a | x | x |
 
 ---
 

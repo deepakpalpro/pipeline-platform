@@ -65,7 +65,7 @@ pipeline-api/
 docs/delivery/
   waves/WAVE_1.md        # this file
   kb/W1-US01-…W1-US08-…
-  tdd/stories/W1-US01-…tdd.md
+  tdd/stories/w1/W1-US01-…tdd.md
 ```
 
 ---
@@ -136,7 +136,7 @@ flowchart LR
 
 #### Developer TDD guide
 
-[`../tdd/stories/W1-US01-tdd.md`](../tdd/stories/W1-US01-tdd.md)
+[`../tdd/stories/w1/W1-US01-tdd.md`](../tdd/stories/w1/W1-US01-tdd.md)
 
 ---
 
@@ -171,7 +171,7 @@ flowchart LR
 
 #### Developer TDD guide
 
-[`../tdd/stories/W1-US02-tdd.md`](../tdd/stories/W1-US02-tdd.md)
+[`../tdd/stories/w1/W1-US02-tdd.md`](../tdd/stories/w1/W1-US02-tdd.md)
 
 ---
 
@@ -198,7 +198,7 @@ flowchart LR
 
 #### Developer TDD guide
 
-[`../tdd/stories/W1-US03-tdd.md`](../tdd/stories/W1-US03-tdd.md)
+[`../tdd/stories/w1/W1-US03-tdd.md`](../tdd/stories/w1/W1-US03-tdd.md)
 
 ---
 
@@ -225,7 +225,7 @@ flowchart LR
 
 #### Developer TDD guide
 
-[`../tdd/stories/W1-US04-tdd.md`](../tdd/stories/W1-US04-tdd.md)
+[`../tdd/stories/w1/W1-US04-tdd.md`](../tdd/stories/w1/W1-US04-tdd.md)
 
 ---
 
@@ -252,7 +252,7 @@ flowchart LR
 
 #### Developer TDD guide
 
-[`../tdd/stories/W1-US05-tdd.md`](../tdd/stories/W1-US05-tdd.md)
+[`../tdd/stories/w1/W1-US05-tdd.md`](../tdd/stories/w1/W1-US05-tdd.md)
 
 ---
 
@@ -279,7 +279,7 @@ flowchart LR
 
 #### Developer TDD guide
 
-[`../tdd/stories/W1-US06-tdd.md`](../tdd/stories/W1-US06-tdd.md)
+[`../tdd/stories/w1/W1-US06-tdd.md`](../tdd/stories/w1/W1-US06-tdd.md)
 
 ---
 
@@ -306,7 +306,7 @@ flowchart LR
 
 #### Developer TDD guide
 
-[`../tdd/stories/W1-US07-tdd.md`](../tdd/stories/W1-US07-tdd.md)
+[`../tdd/stories/w1/W1-US07-tdd.md`](../tdd/stories/w1/W1-US07-tdd.md)
 
 ---
 
@@ -333,7 +333,7 @@ flowchart LR
 
 #### Developer TDD guide
 
-[`../tdd/stories/W1-US08-tdd.md`](../tdd/stories/W1-US08-tdd.md)
+[`../tdd/stories/w1/W1-US08-tdd.md`](../tdd/stories/w1/W1-US08-tdd.md)
 
 ---
 

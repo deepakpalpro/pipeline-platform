@@ -69,6 +69,6 @@ docker compose up -d mysql
 
 ## Related
 
-- Developer TDD: [`../tdd/stories/W1-US06-tdd.md`](../tdd/stories/W1-US06-tdd.md)
+- Developer TDD: [`../tdd/stories/w1/W1-US06-tdd.md`](../tdd/stories/w1/W1-US06-tdd.md)
 - SPI: [`W1-US05-connector-spi.md`](W1-US05-connector-spi.md)
 - W0 WireMock: [`W0-US05-mock-data-wiremock.md`](W0-US05-mock-data-wiremock.md)

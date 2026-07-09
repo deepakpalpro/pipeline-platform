@@ -54,19 +54,23 @@ Abbreviations: **U** = Unit, **I** = Integration, **WM** = WireMock, **LS** = Lo
 
 ## Wave 2 — Pipelines & Ephemeral Execution
 
-**Wave goal:** Source → Processor → Destination via RabbitMQ; execution status in MySQL.
+**Wave goal:** Source → Processor → Destination via RabbitMQ; execution status in MySQL.  
+**Plan:** [`waves/WAVE_2.md`](waves/WAVE_2.md) · **TDD:** [`tdd/WAVE_2_TDD.md`](tdd/WAVE_2_TDD.md) · **Developer guides:** [`tdd/stories/README.md`](tdd/stories/README.md) § Wave 2  
+**Branch:** `wave-2`  
+**KB:** [`kb/W2-US01-pipeline-crud.md`](kb/W2-US01-pipeline-crud.md) · [`kb/W2-US02-pipeline-steps.md`](kb/W2-US02-pipeline-steps.md) · [`kb/W2-US03-rabbit-topology.md`](kb/W2-US03-rabbit-topology.md) · [`kb/W2-US04-async-run.md`](kb/W2-US04-async-run.md) · [`kb/W2-US05-pipelet-job.md`](kb/W2-US05-pipelet-job.md) · [`kb/W2-US06-stage-dlq.md`](kb/W2-US06-stage-dlq.md) · [`kb/W2-US07-execution-status.md`](kb/W2-US07-execution-status.md)
 
 | Story ID | Feature / Epic | Title | Status | Owner | Test gate | Blockers |
 |----------|----------------|-------|--------|-------|-----------|----------|
-| W2-US01 | W2-F1 / W2-F1-E1 | Pipeline CRUD + visibility/mode | Todo | | | |
-| W2-US02 | W2-F1 / W2-F1-E1 | Pipeline steps config API | Todo | | | |
-| W2-US03 | W2-F2 / W2-F2-E1 | Inter-stage RabbitMQ topology | Todo | | | |
-| W2-US04 | W2-F2 / W2-F2-E2 | Async run orchestration | Todo | | | |
-| W2-US05 | W2-F2 / W2-F2-E2 | Pipelet Job spawn (Kind/stub) | Todo | | | |
-| W2-US06 | W2-F3 / W2-F3-E1 | Retries + per-stage DLQ | Todo | | | |
-| W2-US07 | W2-F1 / W2-F1-E2 | Execution status query API | Todo | | | |
+| W2-US01 | W2-F1 / W2-F1-E1 | Pipeline CRUD + visibility/mode | Done | | U,I,M,KB | DELETE archives (soft) |
+| W2-US02 | W2-F1 / W2-F1-E1 | Pipeline steps config API | Done | | U,I,M,KB | Full replace; empty rejected |
+| W2-US03 | W2-F2 / W2-F2-E1 | Inter-stage RabbitMQ topology | Done | | U,I,M,KB | Tenant-prefixed; idempotent declare |
+| W2-US04 | W2-F2 / W2-F2-E2 | Async run orchestration | Done | | U,I,M,KB | Stub worker completes stages |
+| W2-US05 | W2-F2 / W2-F2-E2 | Pipelet Job spawn (Kind/stub) | Done | | U,I,M,KB | Stub records creates; Kind optional |
+| W2-US06 | W2-F3 / W2-F3-E1 | Retries + per-stage DLQ | Done | | U,I,M,KB | DLX + RetryPolicy; poison IT |
+| W2-US07 | W2-F1 / W2-F1-E2 | Execution status query API | Done | | U,I,M,KB | List + detail; ExecutionStatusIT |
 
-**Wave exit criteria:** Fixture 3-stage pipeline completes; DLQ path exercised once.
+**Wave exit criteria:** Fixture 3-stage pipeline completes; DLQ path exercised once.  
+**Exit verified:** 2026-07-09 — `PipelineRunIT` + `ExecutionStatusIT` + `StageDlqIT` (+ topology/CRUD ITs) green. Tag `wave-2-complete`.
 
 ---
 

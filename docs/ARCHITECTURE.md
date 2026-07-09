@@ -12,7 +12,7 @@ This document is the full system design for a no-code, multi-tenant data process
 2. [Data Model](#2-data-model)
 3. [API Design](#3-api-design)
 4. [UI Wireframe Descriptions](#4-ui-wireframe-descriptions)
-5. [Technology Stack Mapping](#5-technology-stack-mapping)
+5. [Technology Stack Mapping](#5-technology-stack-mapping) (incl. [§5.1 pluggable broker](#51-platform-message-broker-pluggable))
 6. [Multi-Tenancy and Pay-as-You-Go](#6-multi-tenancy-and-pay-as-you-go)
 7. [Observability Implementation](#7-observability-implementation)
 8. [Error Handling and Retry](#8-error-handling-and-retry)
@@ -33,7 +33,7 @@ The platform consists of six logical layers:
 | **Presentation** | No-code React UI (pipeline builder, connector wizard, observability dashboards) |
 | **API / Orchestration** | Spring Boot services (Pipeline Manager, Pipelet Registry, Connector Manager, Service Manager, Usage Collector) |
 | **Execution** | Kubernetes Jobs/Pods running pipelet containers |
-| **Messaging** | RabbitMQ tenant-scoped exchanges and queues |
+| **Messaging** | Pluggable platform message broker (default: RabbitMQ); tenant-scoped destinations |
 | **Data** | MySQL 8 (metadata, usage, billing) |
 | **Observability** | Prometheus, Grafana, ELK Stack |
 
@@ -250,18 +250,26 @@ erDiagram
 
 #### `pipeline_steps`
 
+A **pipeline step** is the per-pipeline configuration of a **pipelet** that will run as an ephemeral Job/Pod at execution time (see [§10.3](#103-pipelet-execution-namespace-tenant-tenant_id)).
+
+| Concept | Role |
+|---------|------|
+| **Pipelet** | Reusable unit in the registry (image + `config_schema`) — *what can run* |
+| **Pipeline step** | Binding of a pipelet into *this* pipeline (`pipelet_id`, order, config, connectors, queues, limits) — *how it runs here* |
+| **Job / Pod** | Runtime for one step of one `pipeline_execution` — *the actual run* (`exec-{execution_id}-stage-{step_order}`) |
+
 | Column | Type | Notes |
 |--------|------|-------|
 | `id` | VARCHAR(36) PK | |
 | `pipeline_id` | VARCHAR(36) FK | |
-| `pipelet_id` | VARCHAR(36) FK | |
-| `step_order` | INT | 1-based sequence |
+| `pipelet_id` | VARCHAR(36) FK | Which pipelet image/type to spawn |
+| `step_order` | INT | 1-based sequence (Source → Processor → Destination) |
 | `config` | JSON | Pipelet-specific config (validated against `config_schema`) |
-| `connector_ids` | JSON | Array of connector instance IDs |
+| `connector_ids` | JSON | Array of connector instance IDs (injected into the pod) |
 | `service_ids` | JSON | Array of service instance IDs |
-| `input_queue` | VARCHAR(255) | RabbitMQ queue name |
-| `output_queue` | VARCHAR(255) | RabbitMQ queue name |
-| `resource_limits` | JSON | `{cpu, memory}` K8s limits |
+| `input_queue` | VARCHAR(255) | Stage input destination name (broker-agnostic logical name; e.g. RabbitMQ queue) |
+| `output_queue` | VARCHAR(255) | Stage output destination name (broker-agnostic logical name) |
+| `resource_limits` | JSON | `{cpu, memory}` K8s limits for the Job |
 
 Unique constraint: `(pipeline_id, step_order)`
 
@@ -893,10 +901,10 @@ Resolved config preview shown at bottom: merged view of `DefaultServiceConfig` +
 | REST API | Spring Boot 3.x (Java 21) | Spring Web MVC, Spring Security |
 | Pipeline orchestration | Spring Boot + Spring K8s Client | Fabric8 Kubernetes client for Job/Pod CRUD |
 | Metadata persistence | MySQL 8 | Spring Data JPA, Flyway migrations |
-| Inter-pipelet messaging | RabbitMQ | Spring AMQP, tenant-scoped exchange declarations |
+| Inter-pipelet messaging | **Pluggable broker** (default RabbitMQ) | Platform Message Broker SPI; Wave 2 implements RabbitMQ via Spring AMQP |
 | Connector SPI | Spring Boot + PF4J plugin framework | Plugin JARs loaded at runtime |
 | Service resolution | Spring Boot | Strategy pattern keyed by `ServiceType` + `Vendor` |
-| Usage collection | Spring Boot + RabbitMQ | Dedicated `usage.events` queue |
+| Usage collection | Spring Boot + platform broker | Dedicated `usage.events` destination on the configured broker |
 | Billing aggregation | Spring Boot `@Scheduled` | Hourly cron rollup jobs |
 | Pipelet containers | Docker | Images stored in internal container registry |
 | Pipelet scheduling | Kubernetes Jobs | One Job per pipelet stage per execution |
@@ -909,6 +917,30 @@ Resolved config preview shown at bottom: merged view of `DefaultServiceConfig` +
 | API documentation | SpringDoc OpenAPI | Auto-generated Swagger UI |
 | Frontend | React 18 + TypeScript | React Flow for pipeline canvas, TanStack Query for API |
 | CI/CD | GitHub Actions + Docker + K8s manifests | Build pipelet images, deploy platform services |
+
+### 5.1 Platform Message Broker (pluggable)
+
+Inter-stage handoff, webhook ingress queues, usage events, and DLQ are **broker-agnostic** at the platform layer. Operators (or later tenants, where productized) select a **platform message broker** technology; Wave 2 ships **RabbitMQ** as the default implementation.
+
+| Broker technology | Status | Notes |
+|-------------------|--------|-------|
+| **RabbitMQ** | **Default (Wave 2)** | Spring AMQP; exchanges/queues/DLX as in appendix |
+| **Apache Kafka** | Planned | Topics/partitions map to stage destinations; DLQ via dead-letter topic |
+| **Amazon SQS** (or LocalStack SQS) | Planned | Queue URLs; DLQ via redrive policy |
+| **Azure Event Hubs** | Planned | Event Hub + consumer groups |
+| **ActiveMQ / Artemis** | Planned | JMS or AMQP client behind the same SPI |
+| Other AMQP/JMS buses | Planned | Same SPI; adapter per product |
+
+**Two different “messaging” concepts:**
+
+| Concern | What it is | Configured how |
+|---------|------------|----------------|
+| **Platform broker** | Internal stage handoff, ingress, usage, DLQ | Platform (and later pipeline/env) broker setting + Message Broker SPI |
+| **`message_bus` connector** | Tenant’s *external* bus for pipelet I/O | Per-tenant connector instance (Wave 1 SQS/LocalStack today) |
+
+Logical destination names (`input_queue` / `output_queue` on `pipeline_steps`, `QueueNaming` helpers) stay **stable**; each broker adapter maps them to that product’s primitives (queue, topic, Event Hub name, etc.).
+
+SPI responsibilities (target shape): declare topology, publish, consume/ack, dead-letter, health. Wave 2 code paths may still say “RabbitMQ” in class names (`RabbitTopologyIT`); treat that as the first adapter, not a permanent lock-in.
 
 ---
 
@@ -936,9 +968,9 @@ flowchart TB
 |-------|-------------------|
 | **API** | JWT contains `tenant_id`; Spring Security filter rejects cross-tenant access |
 | **MySQL** | `tenant_id` column on all tenant-owned tables; JPA `@Filter` auto-applied |
-| **RabbitMQ** | Exchanges: `tenant.{tenant_id}.pipeline.{pipeline_id}.stage.{n}`; vhost per environment |
+| **Platform message broker** | Tenant-prefixed destinations (e.g. RabbitMQ: `tenant.{tenant_id}.pipeline.{pipeline_id}.stage.{n}`); vhost/namespace per environment as applicable to the broker |
 | **Kubernetes** | Namespace `tenant-{tenant_id}`; ResourceQuota limits CPU/memory/pod count |
-| **Network** | NetworkPolicy: pods can only reach RabbitMQ, MySQL, and approved connector endpoints |
+| **Network** | NetworkPolicy: pods can only reach the configured broker, MySQL, and approved connector endpoints |
 | **Observability** | Prometheus labels `tenant_id`; Grafana org per tenant; Kibana space per tenant |
 | **LocalStack** | Separate S3 bucket prefix `tenant-{tenant_id}/` in dev |
 
@@ -1094,24 +1126,26 @@ Pipeline-level `retry_config`:
 
 | Layer | Retry Behavior |
 |-------|---------------|
-| **RabbitMQ consumer** | Manual ack; on failure, nack with requeue up to `max_retries`; then route to DLQ |
+| **Platform broker consumer** | Manual ack (or equivalent); on failure, requeue/retry up to `max_retries`; then route to stage DLQ (RabbitMQ: nack → DLX; other brokers: adapter-specific) |
 | **K8s Job** | `backoffLimit` set to `max_retries`; new pod on failure |
 | **Connector calls** | Connector SPI applies exponential backoff internally for transient errors (5xx, timeouts) |
-| **Sync mode** | Orchestrator waits on response queue with `initial_delay_ms * backoff_multiplier^attempt` timeout |
+| **Sync mode** | Orchestrator waits on response destination with `initial_delay_ms * backoff_multiplier^attempt` timeout |
 
 ### 8.2 Dead Letter Queue (DLQ)
 
-Per pipeline stage, a DLQ is provisioned:
+Per pipeline stage, a DLQ (or broker-equivalent dead-letter destination) is provisioned. Logical name:
 
 ```
 tenant.{tenant_id}.pipeline.{pipeline_id}.stage.{n}.dlq
 ```
 
+(RabbitMQ default: bound via pipeline DLX; Kafka/SQS/Event Hubs adapters map this name to their DLQ mechanism.)
+
 | Event | Action |
 |-------|--------|
 | Message exceeds max retries | Routed to DLQ; `dlq_messages_total` incremented |
 | DLQ depth > threshold | Grafana alert → tenant Notification service |
-| Admin replay | UI button "Replay DLQ" re-publishes messages to input queue |
+| Admin replay | UI button "Replay DLQ" re-publishes messages to input destination |
 
 ### 8.3 Idempotency
 
@@ -1256,7 +1290,7 @@ Connectors are packaged as PF4J plugin JARs with a `META-INF/services/com.platfo
 | `rest` | `RestConnector` | HTTP/HTTPS APIs |
 | `grpc` | `GrpcConnector` | gRPC services |
 | `event_listener` | `EventListenerConnector` | Webhooks, SSE |
-| `message_bus` | `MessageBusConnector` | RabbitMQ, SQS (LocalStack) |
+| `message_bus` | `MessageBusConnector` | **External** buses tenants connect to (SQS/LocalStack today; RabbitMQ/Kafka/etc. as connector plugins) — distinct from the **platform** inter-stage broker |
 | `db` | `DatabaseConnector` | MySQL, PostgreSQL |
 | `storage` | `StorageConnector` | S3 (LocalStack / AWS) |
 
@@ -1287,7 +1321,7 @@ Connectors are packaged as PF4J plugin JARs with a `META-INF/services/com.platfo
 
 ### 10.3 Pipelet Execution (namespace: `tenant-{tenant_id}`)
 
-Each pipeline execution creates K8s Jobs:
+Each pipeline execution creates K8s Jobs — **one Job per pipeline step** for that run. The Job is materialized from the step’s pipelet binding (`pipelet_id`, queues, connectors, `resource_limits`); see [§2 `pipeline_steps`](#pipeline_steps).
 
 ```yaml
 apiVersion: batch/v1
@@ -1528,7 +1562,9 @@ Because the ingress already durably queued the event and returned `202`, the pro
 
 ---
 
-## Appendix: RabbitMQ Topology Example
+## Appendix: RabbitMQ Topology Example (default broker)
+
+Reference topology for the **default** platform broker (RabbitMQ). Other brokers implement the same logical stages via [§5.1](#51-platform-message-broker-pluggable).
 
 For tenant `T001`, pipeline `pipe-abc`, with 3 stages:
 

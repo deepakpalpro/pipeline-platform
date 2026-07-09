@@ -4,18 +4,25 @@
 |-------|--------|
 | **Wave** | W2 — Pipelines & Ephemeral Execution |
 | **Audience** | Technical stakeholders |
-| **Status** | Draft (planning) |
+| **Status** | Complete (W2-US01–US07 Done; exit verified) |
 | **Architecture refs** | §1.4, §2 pipeline tables, §3.1–3.2, §8, §10.3 |
-| **Branch / tags** | `wave-2` (planned) · `W2-US##` |
-| **Last updated** | 2026-07-08 |
+| **Branch / tags** | `wave-2` · `W2-US##` |
+| **Last updated** | 2026-07-09 |
 | **Template** | [`../TDD_WAVE_TEMPLATE.md`](../TDD_WAVE_TEMPLATE.md) |
 | **Catalog** | [`../../DELIVERY_PLAN.md`](../../DELIVERY_PLAN.md) § Wave 2 |
+| **Execution plan** | [`../waves/WAVE_2.md`](../waves/WAVE_2.md) |
+| **Developer story TDD** | [`stories/README.md`](stories/README.md) § Wave 2 |
+| **Coverage** | [`../TEST_MATRIX.md`](../TEST_MATRIX.md) § Wave 2 |
 
 ---
 
 ## 1. Stakeholder summary
 
-Wave 2 proves a configurable Source → Processor → Destination pipeline can run asynchronously: RabbitMQ topology hands off between stages, execution status is persisted, poison messages land on stage DLQ, and a pipelet Job can be spawned (Kind or stub).
+Wave 2 proves a configurable Source → Processor → Destination pipeline can run asynchronously: the **platform message broker** (default RabbitMQ; pluggable per architecture §5.1) hands off between stages, execution status is persisted, poison messages land on stage DLQ, and a pipelet Job can be spawned (Kind or stub).
+
+**Mental model:** a **pipeline step** is not the pipelet itself — it is the *configuration* of which pipelet runs in this pipeline (order, config, connectors, queues, limits). At run time each step becomes a **Job/Pod**. The pipelet registry defines *what can run*; steps define *how it runs here*; Jobs are *the actual run*.
+
+**Broker:** logical stage destinations are broker-agnostic; Wave 2 verifies them on RabbitMQ. Kafka / SQS / Event Hubs / ActiveMQ are future adapters, not Wave 2 exit criteria.
 
 | Quality goal | How we prove it |
 |--------------|-----------------|
@@ -75,7 +82,11 @@ flowchart TB
 
 ## 4. Story TDD backlog
 
+Junior step-by-step guides: [`stories/README.md`](stories/README.md) § Wave 2.
+
 ### W2-US01 — Pipeline CRUD (+ visibility/mode)
+
+**Developer guide:** [`stories/w2/W2-US01-tdd.md`](stories/w2/W2-US01-tdd.md)
 
 | Step | Evidence |
 |------|----------|
@@ -85,51 +96,75 @@ flowchart TB
 
 ### W2-US02 — Pipeline steps config API
 
+**Developer guide:** [`stories/w2/W2-US02-tdd.md`](stories/w2/W2-US02-tdd.md)
+
 | Step | Evidence |
 |------|----------|
-| **Red** | `PipelineStepsServiceTest` fail |
-| **Green** | Put steps with connector_ids / queue metadata |
-| **Refactor** | Step graph validation helper |
+| **Red** | `PipelineStepsServiceTest` / `PipelineStepsIT` |
+| **Green** | `PUT .../steps` full replace; GET returns ordered steps; version bump; empty rejected |
+| **Refactor** | Duplicate `step_order` validation; sorted insert |
+
+| Status | Done |
 
 ### W2-US03 — Inter-stage RabbitMQ topology
 
+**Developer guide:** [`stories/w2/W2-US03-tdd.md`](stories/w2/W2-US03-tdd.md)
+
 | Step | Evidence |
 |------|----------|
-| **Red** | `RabbitTopologyIT.declareAndPublish` fail |
-| **Green** | Tenant-prefixed exchanges/queues |
-| **Refactor** | Naming builder shared with W3 |
+| **Red** | `QueueNamingTest` / `RabbitTopologyIT` |
+| **Green** | Tenant-prefixed exchange/queues; idempotent declare; publish→consume |
+| **Refactor** | Shared `QueueNaming` (webhook helpers for W3) |
+
+| Status | Done |
 
 ### W2-US04 — Async run orchestration
 
+**Developer guide:** [`stories/w2/W2-US04-tdd.md`](stories/w2/W2-US04-tdd.md)
+
 | Step | Evidence |
 |------|----------|
-| **Red** | `PipelineRunOrchestratorTest` / run IT fail |
-| **Green** | `POST .../run` drives stages async |
-| **Refactor** | Clear separation orchestration vs Job client |
+| **Red** | `PipelineRunOrchestratorTest` / `PipelineRunIT` |
+| **Green** | `POST .../run` → 202 + execution id; stub worker → `completed` |
+| **Refactor** | Orchestrator vs stub worker separation |
+
+| Status | Done |
 
 ### W2-US05 — Pipelet Job spawn (Kind/stub)
 
+**Developer guide:** [`stories/w2/W2-US05-tdd.md`](stories/w2/W2-US05-tdd.md)
+
 | Step | Evidence |
 |------|----------|
-| **Red** | `PipeletJobClientTest` fail |
-| **Green** | Stub or Kind Job create |
-| **Refactor** | Interface for later prod client |
+| **Red** | `PipeletJobClientTest` / extended `PipelineRunIT` |
+| **Green** | Stub records creates with tenant/pipeline/execution; run path spawns per stage |
+| **Refactor** | Interface ready for Kind/Fabric8 swap |
+
+| Status | Done |
 
 ### W2-US06 — Retries + per-stage DLQ
 
+**Developer guide:** [`stories/w2/W2-US06-tdd.md`](stories/w2/W2-US06-tdd.md)
+
 | Step | Evidence |
 |------|----------|
-| **Red** | `StageDlqIT.poison_landsOnDlq` fail |
-| **Green** | Retry policy + DLQ bind |
-| **Refactor** | Shared error headers |
+| **Red** | `RetryPolicyTest` / `StageDlqIT.poison_landsOnDlq` |
+| **Green** | DLX on stage queues; retry then DLQ; error headers |
+| **Refactor** | `StageDeadLetterService` + `RetryPolicy` |
+
+| Status | Done |
 
 ### W2-US07 — Execution status query API
+
+**Developer guide:** [`stories/w2/W2-US07-tdd.md`](stories/w2/W2-US07-tdd.md)
 
 | Step | Evidence |
 |------|----------|
 | **Red** | `ExecutionStatusIT` fail |
-| **Green** | Status/detail endpoints for fixture run |
-| **Refactor** | Read models only |
+| **Green** | `GET .../executions` list + detail; cross-tenant 404 |
+| **Refactor** | Read models via `PipelineRunService.listExecutions` |
+
+| Status | Done |
 
 ---
 
@@ -169,3 +204,7 @@ flowchart TB
 | Date | Change |
 |------|--------|
 | 2026-07-08 | Initial Draft for technical stakeholders |
+| 2026-07-09 | Linked execution plan + junior story TDD guides; wave-2 started |
+| 2026-07-09 | W2-US01 implemented: pipeline CRUD + tenant isolation |
+| 2026-07-09 | W2-US07 implemented: execution list/detail + ExecutionStatusIT |
+| 2026-07-09 | Wave 2 exit verified; PR `wave-2` → `master`; tag `wave-2-complete` |

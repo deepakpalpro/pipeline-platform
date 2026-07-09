@@ -65,6 +65,6 @@ curl -s localhost:8080/api/v1/services/<SERVICE_ID> -H "X-Tenant-Id: $TENANT_ID"
 
 ## Related
 
-- Developer TDD: [`../tdd/stories/W1-US04-tdd.md`](../tdd/stories/W1-US04-tdd.md)
+- Developer TDD: [`../tdd/stories/w1/W1-US04-tdd.md`](../tdd/stories/w1/W1-US04-tdd.md)
 - Service types: [`W1-US03-service-types.md`](W1-US03-service-types.md)
 - Isolation: [`W1-US02-tenant-isolation.md`](W1-US02-tenant-isolation.md)
