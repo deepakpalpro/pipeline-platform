@@ -25,6 +25,11 @@ pipeline:
     queue-trigger:
       enabled: false
       poll-interval-ms: 500
+    rate-limit:
+      enabled: true
+      requests-per-window: 120
+      window-seconds: 60
+      retry-after-seconds: 60
 
 management:
   endpoints:

@@ -87,6 +87,17 @@ public class WebhookIdempotencyService {
     }
   }
 
+  /**
+   * Remove a claimed key after a failed publish so the sender can retry without being stuck on a
+   * phantom event id (W3-US04).
+   */
+  @Transactional
+  public void release(String tenantId, String connectorId, String idempotencyKey) {
+    repository
+        .findByScopeAndKey(tenantId, connectorId, idempotencyKey)
+        .ifPresent(repository::delete);
+  }
+
   static String sha256Hex(byte[] body) {
     try {
       MessageDigest digest = MessageDigest.getInstance("SHA-256");

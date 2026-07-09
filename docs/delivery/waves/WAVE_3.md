@@ -174,7 +174,7 @@ flowchart LR
 | **Priority** | Should |
 | **Dependencies** | W3-US01 |
 | **Architecture refs** | §11 limits |
-| **Status** | Todo |
+| **Status** | Done |
 
 **In scope:** `429` when rate exceeded; `503` when broker publish fails (sender retries).  
 **Out of scope:** Global multi-node rate store (document local/simple approach OK for Wave 3).
@@ -183,9 +183,9 @@ flowchart LR
 
 [`../tdd/stories/w3/W3-US04-tdd.md`](../tdd/stories/w3/W3-US04-tdd.md)
 
-#### Support KB (create)
+#### Support KB
 
-`docs/delivery/kb/W3-US04-webhook-rate-limit.md`
+[`../kb/W3-US04-webhook-limits.md`](../kb/W3-US04-webhook-limits.md)
 
 ---
 
@@ -269,9 +269,9 @@ flowchart LR
 - [x] W3-US05 Provision webhook URL (`pipeline.ingress.base-url`)
 - [x] W3-US06 On-demand queue depth trigger (poller + stub Job)
 - [x] W3-US07 Meter `platform.webhook_events` + `data.bytes_in`
+- [x] W3-US04 Should rate limit 429 + broker 503
 - [x] WAVE_TRACKER / TEST_MATRIX / WAVE_3_TDD updated as Must stories complete
-- [ ] W3-US04 Should (rate limit / 503) — optional before wave exit
-- [ ] Each story: merge → tag `W3-US##` → delete → next from `wave-3`
+- [x] Each story: merge → tag `W3-US##` → delete → next from `wave-3`
 
 ---
 
