@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.pipelineplatform.api.messaging.QueueNaming;
 import com.pipelineplatform.api.tenant.TenantContext;
 import com.pipelineplatform.api.tenant.TenantContextRequiredException;
 import com.pipelineplatform.api.tenant.TenantFilters;
@@ -58,18 +59,29 @@ public class PipelineStepsService {
             .sorted(java.util.Comparator.comparingInt(PipelineStepRequest::stepOrder))
             .toList();
 
+    int lastOrder = ordered.get(ordered.size() - 1).stepOrder();
     List<PipelineStep> saved = new ArrayList<>();
     for (PipelineStepRequest stepRequest : ordered) {
+      int order = stepRequest.stepOrder();
+      String inputQueue =
+          blankToNull(stepRequest.inputQueue()) != null
+              ? blankToNull(stepRequest.inputQueue())
+              : QueueNaming.stageInputQueue(tenantId, pipelineId, order);
+      String outputQueue = blankToNull(stepRequest.outputQueue());
+      if (outputQueue == null && order < lastOrder) {
+        outputQueue = QueueNaming.stageOutputQueue(tenantId, pipelineId, order);
+      }
+
       PipelineStep step = new PipelineStep();
       step.setId(UUID.randomUUID().toString());
       step.setPipelineId(pipelineId);
       step.setPipeletId(stepRequest.pipeletId().trim());
-      step.setStepOrder(stepRequest.stepOrder());
+      step.setStepOrder(order);
       step.setConfig(writeJson(stepRequest.config()));
       step.setConnectorIds(writeStringList(stepRequest.connectorIds()));
       step.setServiceIds(writeStringList(stepRequest.serviceIds()));
-      step.setInputQueue(blankToNull(stepRequest.inputQueue()));
-      step.setOutputQueue(blankToNull(stepRequest.outputQueue()));
+      step.setInputQueue(inputQueue);
+      step.setOutputQueue(outputQueue);
       step.setResourceLimits(writeJson(stepRequest.resourceLimits()));
       saved.add(pipelineStepRepository.save(step));
     }

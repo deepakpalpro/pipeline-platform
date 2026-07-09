@@ -158,7 +158,7 @@ flowchart LR
 | **Priority** | Must |
 | **Dependencies** | W2-US02 |
 | **Architecture refs** | §8 messaging; tenant-prefixed names |
-| **Status** | Todo |
+| **Status** | Done |
 
 **As a** platform engineer  
 **I want** tenant-prefixed exchanges/queues declared for pipeline stages  
@@ -292,6 +292,7 @@ flowchart LR
 - [x] `W2-US01` feature branch created
 - [x] W2-US01 Pipeline CRUD implemented (`V9__pipelines.sql`)
 - [x] W2-US02 Pipeline steps implemented (`V10__pipeline_steps.sql`)
+- [x] W2-US03 RabbitMQ topology (`QueueNaming` + `PipelineTopologyService`)
 - [ ] WAVE_TRACKER / TEST_MATRIX / WAVE_2_TDD updated as stories complete
 - [ ] Each story: merge → tag `W2-US##` → delete → next from `wave-2`
 

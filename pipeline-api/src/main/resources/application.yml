@@ -31,6 +31,9 @@ management:
   health:
     db:
       enabled: true
+    # Lazy AMQP; avoid failing actuator when broker is down during non-messaging ITs.
+    rabbit:
+      enabled: false
   metrics:
     tags:
       application: ${spring.application.name}
@@ -51,6 +54,11 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
     show-sql: false
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: pipeline
+    password: pipeline
 
 server:
   port: 8080
