@@ -1,5 +1,6 @@
 # Wave 0 local foundation stack (W0-US01)
 # Usage: docker compose up -d && ./scripts/smoke-localstack.sh
+# Optional Wave 4 ELK (W4-US04): docker compose --profile elk up -d
 
 name: pipeline-platform
 
@@ -61,7 +62,54 @@ services:
       retries: 20
       start_period: 15s
 
+  # Optional Wave 4 ELK (W4-US04). CI uses InMemoryPipelineLogIndexer; bring this up for manual Kibana.
+  elasticsearch:
+    profiles: ["elk"]
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.15.3
+    container_name: pp-elasticsearch
+    ports:
+      - "9200:9200"
+    environment:
+      discovery.type: single-node
+      xpack.security.enabled: "false"
+      ES_JAVA_OPTS: -Xms512m -Xmx512m
+    volumes:
+      - pp-es-data:/usr/share/elasticsearch/data
+    healthcheck:
+      test: ["CMD-SHELL", "curl -fsS http://127.0.0.1:9200/_cluster/health || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 20
+      start_period: 40s
+
+  kibana:
+    profiles: ["elk"]
+    image: docker.elastic.co/kibana/kibana:8.15.3
+    container_name: pp-kibana
+    ports:
+      - "5601:5601"
+    environment:
+      ELASTICSEARCH_HOSTS: http://elasticsearch:9200
+    depends_on:
+      elasticsearch:
+        condition: service_healthy
+
+  logstash:
+    profiles: ["elk"]
+    image: docker.elastic.co/logstash/logstash:8.15.3
+    container_name: pp-logstash
+    ports:
+      - "5044:5044"
+    volumes:
+      - ./deploy/elk/logstash/pipeline:/usr/share/logstash/pipeline:ro
+    depends_on:
+      elasticsearch:
+        condition: service_healthy
+    environment:
+      XPACK_MONITORING_ENABLED: "false"
+
 volumes:
   pp-mysql-data:
   pp-rabbitmq-data:
   pp-localstack-data:
+  pp-es-data:

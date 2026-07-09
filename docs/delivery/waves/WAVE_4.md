@@ -158,7 +158,7 @@ flowchart LR
 | **Priority** | Must |
 | **Dependencies** | W0 structured logs |
 | **Architecture refs** | §7.3 Logging (ELK) |
-| **Status** | Todo |
+| **Status** | Done |
 
 **In scope:** Index naming `pipeline-logs-{tenant}-{date}`; smoke that a fixture log is queryable (Compose ELK or documented stub).  
 **Out of scope:** Full Filebeat sidecar in Kind (document path).
@@ -167,9 +167,9 @@ flowchart LR
 
 [`../tdd/stories/w4/W4-US04-tdd.md`](../tdd/stories/w4/W4-US04-tdd.md)
 
-#### Support KB (create)
+#### Support KB
 
-`docs/delivery/kb/W4-US04-elk-logs.md`
+[`../kb/W4-US04-elk-logs.md`](../kb/W4-US04-elk-logs.md)
 
 ---
 
@@ -227,6 +227,7 @@ flowchart LR
 - [x] W4-US01 Pipelet metrics emit (`PipeletMetricsEmitter` + stub worker)
 - [x] W4-US02 Completeness calculator + gauge + `completeness_pct` on execution
 - [x] W4-US03 Heartbeat gauge + critical error counter (`PipeletErrorType`)
+- [x] W4-US04 ELK path (stub indexer + optional compose `--profile elk`)
 - [ ] WAVE_TRACKER / TEST_MATRIX / WAVE_4_TDD updated as stories complete
 - [ ] Each story: merge → tag `W4-US##` → delete → next from `wave-4`
 

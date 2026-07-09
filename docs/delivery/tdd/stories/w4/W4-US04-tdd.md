@@ -112,10 +112,10 @@ flowchart LR
 
 ### Checklist
 
-- [ ] Index naming matches architecture
-- [ ] Fixture `execution_id` queryable
-- [ ] KB documents ports + query
-- [ ] Smoke green (or labeled + unit shape)
+- [x] Index naming matches architecture
+- [x] Fixture `execution_id` queryable
+- [x] KB documents ports + query
+- [x] Smoke green (or labeled + unit shape)
 
 ---
 
@@ -128,8 +128,8 @@ flowchart LR
 
 ## 11. Docs & trackers
 
-- [ ] KB: how to find logs for `exec-*`
-- [ ] Tracker · TEST_MATRIX · `WAVE_4.md` Done
+- [x] KB: how to find logs for `exec-*`
+- [x] Tracker · TEST_MATRIX · `WAVE_4.md` Done
 
 ```text
 merge → tag W4-US04 → W4-US05

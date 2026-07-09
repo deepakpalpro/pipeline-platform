@@ -121,6 +121,8 @@ flowchart TB
 | **Green** | Index pattern + sample doc for fixture |
 | **Refactor** | Index naming per architecture |
 
+**Status:** Done — `InMemoryPipelineLogIndexer` + `ElkLogSmokeTest`; optional compose `--profile elk`.
+
 ### W4-US05 — Observability REST APIs
 
 **Developer guide:** [`stories/w4/W4-US05-tdd.md`](stories/w4/W4-US05-tdd.md)
@@ -183,3 +185,4 @@ flowchart TB
 | 2026-07-09 | W4-US01 implemented: PipeletMetricsEmitter + stub worker emit |
 | 2026-07-09 | W4-US02 implemented: CompletenessCalculator + gauge + execution pct |
 | 2026-07-09 | W4-US03 implemented: heartbeat gauge + critical error counter |
+| 2026-07-09 | W4-US04 implemented: stub ELK indexer + optional compose profile |
