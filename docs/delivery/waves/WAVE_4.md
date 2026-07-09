@@ -181,7 +181,7 @@ flowchart LR
 | **Priority** | Must |
 | **Dependencies** | W4-US02; W4-US04 preferred |
 | **Architecture refs** | §3.6 Observability Endpoints |
-| **Status** | Todo |
+| **Status** | Done |
 
 **In scope:** Tenant-scoped REST for completeness, latency, heartbeat, errors, execution logs.  
 **Out of scope:** UI panels (Wave 6).
@@ -190,9 +190,9 @@ flowchart LR
 
 [`../tdd/stories/w4/W4-US05-tdd.md`](../tdd/stories/w4/W4-US05-tdd.md)
 
-#### Support KB (create)
+#### Support KB
 
-`docs/delivery/kb/W4-US05-observability-api.md`
+[`../kb/W4-US05-observability-api.md`](../kb/W4-US05-observability-api.md)
 
 ---
 
@@ -228,6 +228,7 @@ flowchart LR
 - [x] W4-US02 Completeness calculator + gauge + `completeness_pct` on execution
 - [x] W4-US03 Heartbeat gauge + critical error counter (`PipeletErrorType`)
 - [x] W4-US04 ELK path (stub indexer + optional compose `--profile elk`)
+- [x] W4-US05 Observability REST (`/api/v1/observability/...`)
 - [ ] WAVE_TRACKER / TEST_MATRIX / WAVE_4_TDD updated as stories complete
 - [ ] Each story: merge → tag `W4-US##` → delete → next from `wave-4`
 
