@@ -19,11 +19,15 @@ public class PipelineController {
 
   private final PipelineService pipelineService;
   private final PipelineStepsService pipelineStepsService;
+  private final PipelineRunService pipelineRunService;
 
   public PipelineController(
-      PipelineService pipelineService, PipelineStepsService pipelineStepsService) {
+      PipelineService pipelineService,
+      PipelineStepsService pipelineStepsService,
+      PipelineRunService pipelineRunService) {
     this.pipelineService = pipelineService;
     this.pipelineStepsService = pipelineStepsService;
+    this.pipelineRunService = pipelineRunService;
   }
 
   @PostMapping
@@ -51,6 +55,17 @@ public class PipelineController {
   public PipelineResponse replaceSteps(
       @PathVariable String id, @Valid @RequestBody ReplacePipelineStepsRequest request) {
     return pipelineStepsService.replace(id, request);
+  }
+
+  @PostMapping("/{id}/run")
+  public ResponseEntity<PipelineRunResponse> run(@PathVariable String id) {
+    return ResponseEntity.status(HttpStatus.ACCEPTED).body(pipelineRunService.run(id));
+  }
+
+  @GetMapping("/{id}/executions/{executionId}")
+  public PipelineExecutionResponse getExecution(
+      @PathVariable String id, @PathVariable String executionId) {
+    return pipelineRunService.getExecution(id, executionId);
   }
 
   @DeleteMapping("/{id}")
