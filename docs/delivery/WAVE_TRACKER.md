@@ -33,8 +33,8 @@ Abbreviations: **U** = Unit, **I** = Integration, **WM** = WireMock, **LS** = Lo
 ## Wave 1 — Tenancy, Services, Connectors
 
 **Wave goal:** Tenant + service config + Rest connector test against WireMock/LocalStack.  
+**Plan:** [`waves/WAVE_1.md`](waves/WAVE_1.md) · **TDD:** [`tdd/WAVE_1_TDD.md`](tdd/WAVE_1_TDD.md) · **Developer guides:** [`tdd/stories/README.md`](tdd/stories/README.md) § Wave 1  
 **Branch:** `wave-1`  
-**TDD:** [`tdd/WAVE_1_TDD.md`](tdd/WAVE_1_TDD.md) · **Developer guides:** [`tdd/stories/README.md`](tdd/stories/README.md) § Wave 1  
 **KB:** [`kb/W1-US01-tenant-crud-context.md`](kb/W1-US01-tenant-crud-context.md) · [`kb/W1-US02-tenant-isolation.md`](kb/W1-US02-tenant-isolation.md) · [`kb/W1-US03-service-types.md`](kb/W1-US03-service-types.md) · [`kb/W1-US04-tenant-service-config.md`](kb/W1-US04-tenant-service-config.md) · [`kb/W1-US05-connector-spi.md`](kb/W1-US05-connector-spi.md) · [`kb/W1-US06-connector-test-wiremock.md`](kb/W1-US06-connector-test-wiremock.md) · [`kb/W1-US07-storage-localstack.md`](kb/W1-US07-storage-localstack.md) · [`kb/W1-US08-messagebus-sqs.md`](kb/W1-US08-messagebus-sqs.md)
 
 | Story ID | Feature / Epic | Title | Status | Owner | Test gate | Blockers |

@@ -8,6 +8,7 @@
 | **Timebox hint** | 1 day |
 | **You will touch** | connector CRUD (minimal), `POST .../test`, RestConnector HTTP call, WireMock IT |
 | **Stakeholder TDD** | [`../WAVE_1_TDD.md`](../WAVE_1_TDD.md) |
+| **AC source** | [`../../waves/WAVE_1.md`](../../waves/WAVE_1.md) § W1-US06 |
 | **Architecture** | §3.3 Test Connection response shape |
 | **KB (create)** | `docs/delivery/kb/W1-US06-connector-test-wiremock.md` |
 

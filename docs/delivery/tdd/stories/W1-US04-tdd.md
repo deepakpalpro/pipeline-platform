@@ -8,6 +8,7 @@
 | **Timebox hint** | 1–1.5 days |
 | **You will touch** | tenant service table, merge defaults+overrides, redaction, CRUD APIs |
 | **Stakeholder TDD** | [`../WAVE_1_TDD.md`](../WAVE_1_TDD.md) |
+| **AC source** | [`../../waves/WAVE_1.md`](../../waves/WAVE_1.md) § W1-US04 |
 | **Architecture** | §3.4, §9.3 `ServiceResolver` |
 | **KB (create)** | `docs/delivery/kb/W1-US04-tenant-service-config.md` |
 
