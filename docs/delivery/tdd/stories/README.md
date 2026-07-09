@@ -67,11 +67,30 @@ Guides: [`w2/`](w2/)
 Execution plan (full AC): [`../../waves/WAVE_2.md`](../../waves/WAVE_2.md).  
 Stakeholder wave TDD: [`../WAVE_2_TDD.md`](../WAVE_2_TDD.md).
 
-## Later waves (W3+)
+## Wave 3
 
-1. Create folder `docs/delivery/tdd/stories/wN/` (e.g. `w3/`).
+Guides: [`w3/`](w3/)
+
+| Story | Guide | Status |
+|-------|-------|--------|
+| W3-US01 Ingress accept + publish | [`w3/W3-US01-tdd.md`](w3/W3-US01-tdd.md) | Done |
+| W3-US02 Signature + Auth | [`w3/W3-US02-tdd.md`](w3/W3-US02-tdd.md) | Done |
+| W3-US03 Idempotency | [`w3/W3-US03-tdd.md`](w3/W3-US03-tdd.md) | Done |
+| W3-US04 Rate limit / 503 | [`w3/W3-US04-tdd.md`](w3/W3-US04-tdd.md) | Done |
+| W3-US05 Provision webhook URL | [`w3/W3-US05-tdd.md`](w3/W3-US05-tdd.md) | Done |
+| W3-US06 On-demand processor | [`w3/W3-US06-tdd.md`](w3/W3-US06-tdd.md) | Done |
+| W3-US07 Meter webhook events | [`w3/W3-US07-tdd.md`](w3/W3-US07-tdd.md) | Done |
+
+**Suggested order:** US01 → US02 → US03 → US05 → US06 → US07 (US04 Should can parallel after US01).
+
+Execution plan (full AC): [`../../waves/WAVE_3.md`](../../waves/WAVE_3.md).  
+Stakeholder wave TDD: [`../WAVE_3_TDD.md`](../WAVE_3_TDD.md).
+
+## Later waves (W4+)
+
+1. Create folder `docs/delivery/tdd/stories/wN/` (e.g. `w4/`).
 2. Copy [`TDD_STORY_TEMPLATE.md`](TDD_STORY_TEMPLATE.md) to `wN/W#-US##-tdd.md`.
 3. Fill all 12 sections **before** coding.
 4. Link from `waves/WAVE_N.md`, `tdd/WAVE_N_TDD.md`, the story KB, and this README.
 
-Use `w0/`–`w2/` guides as the pattern. Do **not** put new guides in the flat `stories/` root.
+Use `w0/`–`w3/` guides as the pattern. Do **not** put new guides in the flat `stories/` root.

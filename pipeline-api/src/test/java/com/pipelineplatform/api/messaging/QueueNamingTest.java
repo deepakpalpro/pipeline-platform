@@ -18,6 +18,10 @@ class QueueNamingTest {
     assertThat(input).contains("T001").isEqualTo("tenant.T001.pipeline.pipe-abc.stage.1.in");
     assertThat(dlq).contains("T001").endsWith(".stage.2.dlq");
     assertThat(webhook).contains("T001").isEqualTo("tenant.T001.webhook.conn-github.in");
+    assertThat(QueueNaming.webhookRoutingKey("conn-github")).isEqualTo("conn-github");
+    assertThat(QueueNaming.webhookExchange("T001")).isEqualTo("tenant.T001.webhook");
+    assertThat(QueueNaming.webhookDlq("T001", "conn-github"))
+        .isEqualTo("tenant.T001.webhook.conn-github.dlq");
     assertThat(QueueNaming.stageRoutingKey(3)).isEqualTo("stage.3");
     assertThat(QueueNaming.stageOutputQueue("T001", "pipe-abc", 1))
         .isEqualTo(QueueNaming.stageInputQueue("T001", "pipe-abc", 2));

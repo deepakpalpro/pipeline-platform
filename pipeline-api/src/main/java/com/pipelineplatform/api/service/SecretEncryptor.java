@@ -37,4 +37,30 @@ public class SecretEncryptor {
             });
     return copy;
   }
+
+  /** Strip stub {@code encrypted:} prefix for runtime use (ingress HMAC, connectors). */
+  public String decryptValue(String value) {
+    if (value == null) {
+      return null;
+    }
+    if (value.startsWith(PREFIX)) {
+      return value.substring(PREFIX.length());
+    }
+    return value;
+  }
+
+  public JsonNode decryptSecrets(JsonNode config) {
+    if (config == null || config.isNull() || !config.isObject()) {
+      return config == null ? objectMapper.createObjectNode() : config;
+    }
+    ObjectNode copy = ((ObjectNode) config).deepCopy();
+    copy.fieldNames()
+        .forEachRemaining(
+            name -> {
+              if (SecretRedactor.isSecretKey(name) && copy.get(name).isTextual()) {
+                copy.put(name, decryptValue(copy.get(name).asText()));
+              }
+            });
+    return copy;
+  }
 }

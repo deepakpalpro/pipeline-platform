@@ -16,9 +16,13 @@ import org.springframework.web.bind.annotation.RestController;
 public class TenantConnectorController {
 
   private final TenantConnectorService tenantConnectorService;
+  private final WebhookUrlProvisionService webhookUrlProvisionService;
 
-  public TenantConnectorController(TenantConnectorService tenantConnectorService) {
+  public TenantConnectorController(
+      TenantConnectorService tenantConnectorService,
+      WebhookUrlProvisionService webhookUrlProvisionService) {
     this.tenantConnectorService = tenantConnectorService;
+    this.webhookUrlProvisionService = webhookUrlProvisionService;
   }
 
   @PostMapping
@@ -40,5 +44,10 @@ public class TenantConnectorController {
   @PostMapping("/{id}/test")
   public ConnectionTestResponse test(@PathVariable String id) {
     return tenantConnectorService.test(id);
+  }
+
+  @PostMapping("/{id}/webhook-url")
+  public WebhookUrlProvisionResponse provisionWebhookUrl(@PathVariable String id) {
+    return webhookUrlProvisionService.provision(id);
   }
 }

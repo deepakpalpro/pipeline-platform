@@ -15,4 +15,18 @@ public interface TenantServiceConfigRepository extends JpaRepository<TenantServi
   List<TenantServiceConfig> findAllFiltered();
 
   boolean existsByTenantIdAndName(String tenantId, String name);
+
+  /** Public ingress / resolver lookup (no Hibernate tenant filter / no X-Tenant-Id). */
+  @Query(
+      """
+      select s from TenantServiceConfig s
+      where s.tenantId = :tenantId
+        and s.serviceTypeId = :serviceTypeId
+        and s.status = :status
+      order by s.createdAt asc
+      """)
+  List<TenantServiceConfig> findByTenantIdAndServiceTypeIdAndStatus(
+      @Param("tenantId") String tenantId,
+      @Param("serviceTypeId") String serviceTypeId,
+      @Param("status") ServiceInstanceStatus status);
 }

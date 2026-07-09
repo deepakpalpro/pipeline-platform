@@ -15,4 +15,9 @@ public interface TenantConnectorRepository extends JpaRepository<TenantConnector
   List<TenantConnector> findAllFiltered();
 
   boolean existsByTenantIdAndName(String tenantId, String name);
+
+  /** Public webhook ingress lookup (no Hibernate tenant filter / no X-Tenant-Id). */
+  @Query("select c from TenantConnector c where c.id = :id and c.tenantId = :tenantId")
+  Optional<TenantConnector> findByIdAndTenantId(
+      @Param("id") String id, @Param("tenantId") String tenantId);
 }
