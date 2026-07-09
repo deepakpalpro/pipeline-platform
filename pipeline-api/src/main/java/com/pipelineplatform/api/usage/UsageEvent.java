@@ -11,8 +11,33 @@ public record UsageEvent(
     double amount,
     String tenantId,
     String connectorId,
-    Instant occurredAt) {
+    Instant occurredAt,
+    String executionId,
+    String pipelineId,
+    String pipeletId,
+    String unit,
+    String idempotencyKey) {
 
   public static final String WEBHOOK_EVENTS = "platform.webhook_events";
   public static final String BYTES_IN = "data.bytes_in";
+
+  /** W3 webhook / simple emit shape. */
+  public UsageEvent(
+      String dimension, double amount, String tenantId, String connectorId, Instant occurredAt) {
+    this(dimension, amount, tenantId, connectorId, occurredAt, null, null, null, null, null);
+  }
+
+  public UsageEvent withIdempotencyKey(String key) {
+    return new UsageEvent(
+        dimension,
+        amount,
+        tenantId,
+        connectorId,
+        occurredAt,
+        executionId,
+        pipelineId,
+        pipeletId,
+        unit,
+        key);
+  }
 }

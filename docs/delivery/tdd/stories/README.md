@@ -110,7 +110,7 @@ Guides: [`w5/`](w5/)
 
 | Story | Guide | Status |
 |-------|-------|--------|
-| W5-US01 UsageEvent ingest | [`w5/W5-US01-tdd.md`](w5/W5-US01-tdd.md) | In Progress |
+| W5-US01 UsageEvent ingest | [`w5/W5-US01-tdd.md`](w5/W5-US01-tdd.md) | Done |
 | W5-US02 MeterAgent emit | [`w5/W5-US02-tdd.md`](w5/W5-US02-tdd.md) | Draft (planning) |
 | W5-US03 Hourly aggregates | [`w5/W5-US03-tdd.md`](w5/W5-US03-tdd.md) | Draft (planning) |
 | W5-US04 Quota + credits | [`w5/W5-US04-tdd.md`](w5/W5-US04-tdd.md) | Draft (planning) |

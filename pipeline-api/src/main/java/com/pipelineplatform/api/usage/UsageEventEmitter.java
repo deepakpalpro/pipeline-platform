@@ -25,10 +25,14 @@ public class UsageEventEmitter {
     Instant now = Instant.now();
     try {
       collector.collect(
-          new UsageEvent(UsageEvent.WEBHOOK_EVENTS, 1.0, tenantId, connectorId, now));
+          new UsageEvent(UsageEvent.WEBHOOK_EVENTS, 1.0, tenantId, connectorId, now)
+              .withIdempotencyKey(webhookKey(tenantId, connectorId, UsageEvent.WEBHOOK_EVENTS, now, 1.0)));
       collector.collect(
           new UsageEvent(
-              UsageEvent.BYTES_IN, Math.max(0L, bytesIn), tenantId, connectorId, now));
+                  UsageEvent.BYTES_IN, Math.max(0L, bytesIn), tenantId, connectorId, now)
+              .withIdempotencyKey(
+                  webhookKey(
+                      tenantId, connectorId, UsageEvent.BYTES_IN, now, Math.max(0L, bytesIn))));
     } catch (Exception ex) {
       log.warn(
           "Usage metering failed tenant={} connector={} (accept still succeeds): {}",
@@ -36,5 +40,19 @@ public class UsageEventEmitter {
           connectorId,
           ex.toString());
     }
+  }
+
+  private static String webhookKey(
+      String tenantId, String connectorId, String dimension, Instant when, double amount) {
+    return "webhook:"
+        + tenantId
+        + ":"
+        + connectorId
+        + ":"
+        + dimension
+        + ":"
+        + when.toEpochMilli()
+        + ":"
+        + amount;
   }
 }

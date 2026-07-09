@@ -4,10 +4,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
-import org.springframework.stereotype.Component;
 
-/** In-memory collector for Wave 3 metering tests and local inspection. */
-@Component
+/** In-memory collector for unit tests and local inspection (not a Spring bean). */
 public class StubUsageEventCollector implements UsageEventCollector {
 
   private final List<UsageEvent> events = new CopyOnWriteArrayList<>();
