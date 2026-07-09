@@ -126,7 +126,7 @@ flowchart LR
 | **Priority** | Must |
 | **Dependencies** | W6-US01; W1 connector/service APIs |
 | **Architecture refs** | §4.5 Connectors; §3.3–3.4 |
-| **Status** | Todo |
+| **Status** | Done |
 
 **In scope:** List + create/edit wizards for connectors and services against MSW or live API; secret fields never echoed.  
 **Out of scope:** Full ADLS/auth vendor matrix UI polish.
@@ -135,9 +135,9 @@ flowchart LR
 
 [`../tdd/stories/w6/W6-US02-tdd.md`](../tdd/stories/w6/W6-US02-tdd.md)
 
-#### Support KB (create)
+#### Support KB
 
-`docs/delivery/kb/W6-US02-connectors-services-ui.md`
+[`../kb/W6-US02-connectors-services-ui.md`](../kb/W6-US02-connectors-services-ui.md)
 
 ---
 
