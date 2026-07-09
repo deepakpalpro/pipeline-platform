@@ -206,8 +206,8 @@ flowchart LR
 | **Architecture refs** | §7.2 Grafana |
 | **Status** | Done |
 
-**In scope:** Provision tenant Grafana org/dashboard via API (stub OK).  
-**Out of scope:** Full multi-cluster Grafana ops.
+**In scope:** Provision tenant Grafana **org**/dashboard via API on the **shared** Grafana instance (stub OK).  
+**Out of scope:** Full multi-cluster Grafana ops; separate Grafana server per tenant (not the design — see §7.2 / KB).
 
 #### Developer TDD guide
 

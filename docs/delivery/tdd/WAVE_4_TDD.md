@@ -147,7 +147,7 @@ flowchart TB
 | **Green** | Org/dashboard provision API |
 | **Refactor** | Template JSON fixtures |
 
-**Status:** Done — `StubGrafanaClient` + `GrafanaProvisioner` + optional `POST /tenants/{id}/grafana`.
+**Status:** Done — `StubGrafanaClient` + `GrafanaProvisioner` + optional `POST /tenants/{id}/grafana` (one Grafana; org per tenant — see KB / §7.2).
 
 ---
 

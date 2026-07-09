@@ -7,8 +7,9 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Component;
 
 /**
- * Provisions a Grafana organization + baseline dashboard for a tenant (architecture §7.2). Uses
- * {@link GrafanaClient} (stub in Wave 4).
+ * Provisions a Grafana <em>organization</em> + baseline dashboard for a tenant on the shared Grafana
+ * instance (architecture §7.2). Does not deploy a Grafana server per tenant. Uses {@link
+ * GrafanaClient} (stub in Wave 4).
  */
 @Component
 public class GrafanaProvisioner {

@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-/** Optional admin hook to provision Grafana for a tenant (W4-US06 stub). */
+/** Optional admin hook to provision a Grafana <em>org</em> for a tenant on the shared instance (W4-US06 stub). */
 @RestController
 @RequestMapping("/api/v1/tenants")
 public class GrafanaProvisionController {

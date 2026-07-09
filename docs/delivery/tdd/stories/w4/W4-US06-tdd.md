@@ -16,11 +16,11 @@
 
 ## 1. Overview
 
-Provision a tenant Grafana Organization (and baseline dashboard) via API. **Stub client is OK** for Wave 4.
+Provision a tenant **Grafana Organization** (and baseline dashboard) via API on the **one shared Grafana** instance. This is **not** deploying a Grafana server per tenant — tenants log into the same Grafana and only see their org. **Stub client is OK** for Wave 4.
 
 **Done means:** `GrafanaProvisionerTest` green; provision call recorded for tenant.
 
-**Out of scope:** Full multi-cluster Grafana ops; UI embedding (Wave 6).
+**Out of scope:** Full multi-cluster Grafana ops; UI embedding (Wave 6); one-org + ACL-only isolation (architecture default is org-per-tenant; see KB / §7.2).
 
 ---
 
