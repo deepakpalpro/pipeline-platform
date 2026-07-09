@@ -185,7 +185,7 @@ flowchart LR
 | **Priority** | Must |
 | **Dependencies** | W5-US03 |
 | **Architecture refs** | §3.5 Usage and Billing Endpoints |
-| **Status** | Todo |
+| **Status** | Done |
 
 **In scope:** Tenant-scoped `GET .../usage`, events, quota (and billing periods stub if needed); summary within documented tolerance of fixture.  
 **Out of scope:** Invoice PDF / payment links.
@@ -194,9 +194,9 @@ flowchart LR
 
 [`../tdd/stories/w5/W5-US05-tdd.md`](../tdd/stories/w5/W5-US05-tdd.md)
 
-#### Support KB (create)
+#### Support KB
 
-`docs/delivery/kb/W5-US05-usage-billing-api.md`
+[`../kb/W5-US05-usage-billing-api.md`](../kb/W5-US05-usage-billing-api.md)
 
 ---
 

@@ -125,7 +125,7 @@ Abbreviations: **U** = Unit, **I** = Integration, **WM** = WireMock, **LS** = Lo
 | W5-US02 | W5-F1 / W5-F1-E1 | MeterAgent emit from pipelet sidecar/lib | Done | | U,I,M,KB | Stub records+vcpu; pipeline_runs on last stage |
 | W5-US03 | W5-F1 / W5-F1-E2 | Hourly aggregates job | Done | | U,I,M,KB | V15 usage_aggregates; UTC hourly upsert + stub cost |
 | W5-US04 | W5-F2 / W5-F2-E1 | Quota soft/hard + credit balance | Done | | U,I,M,KB | QuotaEvaluator; credit deduct on aggregate delta |
-| W5-US05 | W5-F2 / W5-F2-E1 | Usage and billing query APIs | Todo | | | |
+| W5-US05 | W5-F2 / W5-F2-E1 | Usage and billing query APIs | Done | | U,I,M,KB | §3.5 usage/events/quota/periods; cross-tenant 404 |
 | W5-US06 | W5-F2 / W5-F2-E2 | Block run on hard limit / zero credit (402) | Todo | | | |
 
 **Wave exit criteria:** Usage summary matches fixture meters within tolerance; KB for billing disputes drafted.

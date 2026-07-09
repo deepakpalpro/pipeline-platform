@@ -4,7 +4,7 @@
 |-------|--------|
 | **Wave** | W5 — Metering & Pay-as-you-go |
 | **Audience** | Technical stakeholders |
-| **Status** | In Progress (W5-US01–US04 Done) |
+| **Status** | In Progress (W5-US01–US05 Done) |
 | **Architecture refs** | §6.2, §3.5 |
 | **Branch / tags** | `wave-5` · `W5-US##` |
 | **Last updated** | 2026-07-09 |
@@ -133,6 +133,8 @@ flowchart TB
 | **Green** | Summary matches fixture ± tolerance |
 | **Refactor** | Pagination |
 
+**Status:** Done — §3.5 usage/events/quota/periods; cross-tenant 404; tolerance in KB.
+
 ### W5-US06 — Block run on hard limit / zero credit
 
 **Developer guide:** [`stories/w5/W5-US06-tdd.md`](stories/w5/W5-US06-tdd.md)
@@ -186,3 +188,4 @@ flowchart TB
 | 2026-07-09 | W5-US02 implemented: MeterAgent stub stage emit |
 | 2026-07-09 | W5-US03 implemented: hourly usage_aggregates job |
 | 2026-07-09 | W5-US04 implemented: QuotaEvaluator + credit deduct |
+| 2026-07-09 | W5-US05 implemented: usage/billing/quota query APIs |

@@ -93,7 +93,7 @@ Wave TDD (stakeholders): [`tdd/README.md`](tdd/README.md)
 | W5-US02 | x | x | n/a | n/a | x | x |
 | W5-US03 | x | x | n/a | n/a | x | x |
 | W5-US04 | x | x | n/a | n/a | x | x |
-| W5-US05 | | | n/a | n/a | | |
+| W5-US05 | x | x | n/a | n/a | x | x |
 | W5-US06 | | | n/a | n/a | | |
 
 ---
