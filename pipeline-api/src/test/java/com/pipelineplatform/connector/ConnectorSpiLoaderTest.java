@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
 import com.pipelineplatform.api.PipelineApiApplication;
 import com.pipelineplatform.connector.rest.RestConnector;
+import com.pipelineplatform.connector.storage.StorageConnector;
 import java.net.Socket;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -41,5 +42,15 @@ class ConnectorSpiLoaderTest {
         .get()
         .extracting(c -> c.getType(), c -> c.getSpiVersion())
         .containsExactly(RestConnector.TYPE, RestConnector.SPI_VERSION);
+  }
+
+  @Test
+  void loadsStorageConnector() {
+    assertThat(registry.hasType(StorageConnector.TYPE)).isTrue();
+    assertThat(registry.findByType(StorageConnector.TYPE))
+        .isPresent()
+        .get()
+        .extracting(c -> c.getType(), c -> c.getSpiVersion())
+        .containsExactly(StorageConnector.TYPE, StorageConnector.SPI_VERSION);
   }
 }
