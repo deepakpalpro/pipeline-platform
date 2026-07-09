@@ -103,7 +103,7 @@ flowchart LR
 | **Priority** | Must |
 | **Dependencies** | W1 `X-Tenant-Id` / tenant APIs |
 | **Architecture refs** | §4.1 Level-1 navigation |
-| **Status** | Todo |
+| **Status** | Done |
 
 **In scope:** App shell, primary nav (Pipelines, Connectors, Services, Pipelets, Observability), tenant session/context provider, route table.  
 **Out of scope:** Real IdP login (stub tenant picker / header OK).
@@ -112,9 +112,9 @@ flowchart LR
 
 [`../tdd/stories/w6/W6-US01-tdd.md`](../tdd/stories/w6/W6-US01-tdd.md)
 
-#### Support KB (create)
+#### Support KB
 
-`docs/delivery/kb/W6-US01-nav-shell.md`
+[`../kb/W6-US01-nav-shell.md`](../kb/W6-US01-nav-shell.md)
 
 ---
 
