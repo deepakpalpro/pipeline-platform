@@ -69,7 +69,8 @@ Abbreviations: **U** = Unit, **I** = Integration, **WM** = WireMock, **LS** = Lo
 | W2-US06 | W2-F3 / W2-F3-E1 | Retries + per-stage DLQ | Done | | U,I,M,KB | DLX + RetryPolicy; poison IT |
 | W2-US07 | W2-F1 / W2-F1-E2 | Execution status query API | Done | | U,I,M,KB | List + detail; ExecutionStatusIT |
 
-**Wave exit criteria:** Fixture 3-stage pipeline completes; DLQ path exercised once.
+**Wave exit criteria:** Fixture 3-stage pipeline completes; DLQ path exercised once.  
+**Exit verified:** 2026-07-09 — `PipelineRunIT` + `ExecutionStatusIT` + `StageDlqIT` (+ topology/CRUD ITs) green. Tag `wave-2-complete`.
 
 ---
 

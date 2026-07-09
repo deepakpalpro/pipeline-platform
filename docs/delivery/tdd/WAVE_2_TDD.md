@@ -4,7 +4,7 @@
 |-------|--------|
 | **Wave** | W2 — Pipelines & Ephemeral Execution |
 | **Audience** | Technical stakeholders |
-| **Status** | Complete (W2-US01–US07 Done) |
+| **Status** | Complete (W2-US01–US07 Done; exit verified) |
 | **Architecture refs** | §1.4, §2 pipeline tables, §3.1–3.2, §8, §10.3 |
 | **Branch / tags** | `wave-2` · `W2-US##` |
 | **Last updated** | 2026-07-09 |
@@ -207,3 +207,4 @@ Junior step-by-step guides: [`stories/README.md`](stories/README.md) § Wave 2.
 | 2026-07-09 | Linked execution plan + junior story TDD guides; wave-2 started |
 | 2026-07-09 | W2-US01 implemented: pipeline CRUD + tenant isolation |
 | 2026-07-09 | W2-US07 implemented: execution list/detail + ExecutionStatusIT |
+| 2026-07-09 | Wave 2 exit verified; PR `wave-2` → `master`; tag `wave-2-complete` |
