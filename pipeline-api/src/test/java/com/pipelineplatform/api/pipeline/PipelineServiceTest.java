@@ -29,6 +29,7 @@ import org.mockito.quality.Strictness;
 class PipelineServiceTest {
 
   @Mock private PipelineRepository pipelineRepository;
+  @Mock private PipelineStepsService pipelineStepsService;
   @Mock private EntityManager entityManager;
   @Mock private Session session;
   @Mock private Filter hibernateFilter;
@@ -37,10 +38,11 @@ class PipelineServiceTest {
 
   @BeforeEach
   void setUp() {
-    pipelineService = new PipelineService(pipelineRepository, entityManager);
+    pipelineService = new PipelineService(pipelineRepository, pipelineStepsService, entityManager);
     when(entityManager.unwrap(Session.class)).thenReturn(session);
     when(session.getEnabledFilter(TenantFilters.NAME)).thenReturn(null);
     when(session.enableFilter(TenantFilters.NAME)).thenReturn(hibernateFilter);
+    when(pipelineStepsService.loadSteps(anyString())).thenReturn(java.util.List.of());
   }
 
   @AfterEach

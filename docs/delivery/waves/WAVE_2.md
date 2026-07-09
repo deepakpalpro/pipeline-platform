@@ -131,7 +131,7 @@ flowchart LR
 | **Priority** | Must |
 | **Dependencies** | W2-US01 |
 | **Architecture refs** | §2 `pipeline_steps`, §3.1 `PUT .../steps` |
-| **Status** | Todo |
+| **Status** | Done |
 
 **As a** tenant admin  
 **I want** to replace the step sequence on a pipeline  
@@ -291,6 +291,7 @@ flowchart LR
 - [x] This execution plan + junior TDD guides committed
 - [x] `W2-US01` feature branch created
 - [x] W2-US01 Pipeline CRUD implemented (`V9__pipelines.sql`)
+- [x] W2-US02 Pipeline steps implemented (`V10__pipeline_steps.sql`)
 - [ ] WAVE_TRACKER / TEST_MATRIX / WAVE_2_TDD updated as stories complete
 - [ ] Each story: merge → tag `W2-US##` → delete → next from `wave-2`
 

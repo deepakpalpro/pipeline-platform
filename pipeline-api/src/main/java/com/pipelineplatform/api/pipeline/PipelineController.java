@@ -18,9 +18,12 @@ import org.springframework.web.bind.annotation.RestController;
 public class PipelineController {
 
   private final PipelineService pipelineService;
+  private final PipelineStepsService pipelineStepsService;
 
-  public PipelineController(PipelineService pipelineService) {
+  public PipelineController(
+      PipelineService pipelineService, PipelineStepsService pipelineStepsService) {
     this.pipelineService = pipelineService;
+    this.pipelineStepsService = pipelineStepsService;
   }
 
   @PostMapping
@@ -42,6 +45,12 @@ public class PipelineController {
   public PipelineResponse update(
       @PathVariable String id, @Valid @RequestBody UpdatePipelineRequest request) {
     return pipelineService.update(id, request);
+  }
+
+  @PutMapping("/{id}/steps")
+  public PipelineResponse replaceSteps(
+      @PathVariable String id, @Valid @RequestBody ReplacePipelineStepsRequest request) {
+    return pipelineStepsService.replace(id, request);
   }
 
   @DeleteMapping("/{id}")
