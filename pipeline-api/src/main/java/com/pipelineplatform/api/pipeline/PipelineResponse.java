@@ -15,9 +15,13 @@ public record PipelineResponse(
     PipelineStatus status,
     @JsonProperty("created_at") Instant createdAt,
     @JsonProperty("updated_at") Instant updatedAt,
-    List<Object> steps) {
+    List<PipelineStepResponse> steps) {
 
   static PipelineResponse from(Pipeline entity) {
+    return from(entity, List.of());
+  }
+
+  static PipelineResponse from(Pipeline entity, List<PipelineStepResponse> steps) {
     return new PipelineResponse(
         entity.getId(),
         entity.getTenantId(),
@@ -29,6 +33,6 @@ public record PipelineResponse(
         entity.getStatus(),
         entity.getCreatedAt(),
         entity.getUpdatedAt(),
-        List.of());
+        steps == null ? List.of() : List.copyOf(steps));
   }
 }

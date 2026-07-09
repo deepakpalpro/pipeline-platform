@@ -57,12 +57,12 @@ Abbreviations: **U** = Unit, **I** = Integration, **WM** = WireMock, **LS** = Lo
 **Wave goal:** Source → Processor → Destination via RabbitMQ; execution status in MySQL.  
 **Plan:** [`waves/WAVE_2.md`](waves/WAVE_2.md) · **TDD:** [`tdd/WAVE_2_TDD.md`](tdd/WAVE_2_TDD.md) · **Developer guides:** [`tdd/stories/README.md`](tdd/stories/README.md) § Wave 2  
 **Branch:** `wave-2`  
-**KB:** [`kb/W2-US01-pipeline-crud.md`](kb/W2-US01-pipeline-crud.md)
+**KB:** [`kb/W2-US01-pipeline-crud.md`](kb/W2-US01-pipeline-crud.md) · [`kb/W2-US02-pipeline-steps.md`](kb/W2-US02-pipeline-steps.md)
 
 | Story ID | Feature / Epic | Title | Status | Owner | Test gate | Blockers |
 |----------|----------------|-------|--------|-------|-----------|----------|
 | W2-US01 | W2-F1 / W2-F1-E1 | Pipeline CRUD + visibility/mode | Done | | U,I,M,KB | DELETE archives (soft) |
-| W2-US02 | W2-F1 / W2-F1-E1 | Pipeline steps config API | Todo | | | |
+| W2-US02 | W2-F1 / W2-F1-E1 | Pipeline steps config API | Done | | U,I,M,KB | Full replace; empty rejected |
 | W2-US03 | W2-F2 / W2-F2-E1 | Inter-stage RabbitMQ topology | Todo | | | |
 | W2-US04 | W2-F2 / W2-F2-E2 | Async run orchestration | Todo | | | |
 | W2-US05 | W2-F2 / W2-F2-E2 | Pipelet Job spawn (Kind/stub) | Todo | | | |

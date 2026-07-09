@@ -4,7 +4,7 @@
 |-------|--------|
 | **Wave** | W2 — Pipelines & Ephemeral Execution |
 | **Audience** | Technical stakeholders |
-| **Status** | In Progress (planning + W2-US01 branch) |
+| **Status** | In Progress (W2-US01–US02 Done) |
 | **Architecture refs** | §1.4, §2 pipeline tables, §3.1–3.2, §8, §10.3 |
 | **Branch / tags** | `wave-2` · `W2-US##` |
 | **Last updated** | 2026-07-09 |
@@ -96,9 +96,11 @@ Junior step-by-step guides: [`stories/README.md`](stories/README.md) § Wave 2.
 
 | Step | Evidence |
 |------|----------|
-| **Red** | `PipelineStepsServiceTest` fail |
-| **Green** | Put steps with connector_ids / queue metadata |
-| **Refactor** | Step graph validation helper |
+| **Red** | `PipelineStepsServiceTest` / `PipelineStepsIT` |
+| **Green** | `PUT .../steps` full replace; GET returns ordered steps; version bump; empty rejected |
+| **Refactor** | Duplicate `step_order` validation; sorted insert |
+
+| Status | Done |
 
 ### W2-US03 — Inter-stage RabbitMQ topology
 

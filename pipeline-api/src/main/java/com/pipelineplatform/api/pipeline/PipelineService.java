@@ -14,10 +14,15 @@ import org.springframework.transaction.annotation.Transactional;
 public class PipelineService {
 
   private final PipelineRepository pipelineRepository;
+  private final PipelineStepsService pipelineStepsService;
   private final EntityManager entityManager;
 
-  public PipelineService(PipelineRepository pipelineRepository, EntityManager entityManager) {
+  public PipelineService(
+      PipelineRepository pipelineRepository,
+      PipelineStepsService pipelineStepsService,
+      EntityManager entityManager) {
     this.pipelineRepository = pipelineRepository;
+    this.pipelineStepsService = pipelineStepsService;
     this.entityManager = entityManager;
   }
 
@@ -50,17 +55,20 @@ public class PipelineService {
   public PipelineResponse get(String id) {
     String tenantId = requireTenantId();
     enableTenantFilter(tenantId);
-    return pipelineRepository
-        .findFilteredById(id)
-        .map(PipelineResponse::from)
-        .orElseThrow(() -> new PipelineNotFoundException(id));
+    Pipeline pipeline =
+        pipelineRepository
+            .findFilteredById(id)
+            .orElseThrow(() -> new PipelineNotFoundException(id));
+    return PipelineResponse.from(pipeline, pipelineStepsService.loadSteps(id));
   }
 
   @Transactional(readOnly = true)
   public List<PipelineResponse> list() {
     String tenantId = requireTenantId();
     enableTenantFilter(tenantId);
-    return pipelineRepository.findAllFiltered().stream().map(PipelineResponse::from).toList();
+    return pipelineRepository.findAllFiltered().stream()
+        .map(p -> PipelineResponse.from(p, pipelineStepsService.loadSteps(p.getId())))
+        .toList();
   }
 
   @Transactional
@@ -93,7 +101,8 @@ public class PipelineService {
       pipeline.setStatus(request.status());
     }
     pipeline.setVersion(pipeline.getVersion() + 1);
-    return PipelineResponse.from(pipelineRepository.save(pipeline));
+    Pipeline saved = pipelineRepository.save(pipeline);
+    return PipelineResponse.from(saved, pipelineStepsService.loadSteps(id));
   }
 
   @Transactional
@@ -107,7 +116,8 @@ public class PipelineService {
             .orElseThrow(() -> new PipelineNotFoundException(id));
     pipeline.setStatus(PipelineStatus.ARCHIVED);
     pipeline.setVersion(pipeline.getVersion() + 1);
-    return PipelineResponse.from(pipelineRepository.save(pipeline));
+    Pipeline saved = pipelineRepository.save(pipeline);
+    return PipelineResponse.from(saved, pipelineStepsService.loadSteps(id));
   }
 
   private static String blankToNull(String value) {

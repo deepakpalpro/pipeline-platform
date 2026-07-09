@@ -19,7 +19,7 @@ Tenant-scoped pipelines under `/api/v1/pipelines`:
 |--------|------|-------|
 | `POST` | `/api/v1/pipelines` | Create (`draft`, default `private` + `async`) |
 | `GET` | `/api/v1/pipelines` | List current tenant |
-| `GET` | `/api/v1/pipelines/{id}` | Get (empty `steps` until W2-US02) |
+| `GET` | `/api/v1/pipelines/{id}` | Get (includes `steps` after W2-US02) |
 | `PUT` | `/api/v1/pipelines/{id}` | Update metadata; bumps `version` |
 | `DELETE` | `/api/v1/pipelines/{id}` | **Archive** (`status=archived`), does not hard-delete |
 
@@ -52,4 +52,4 @@ curl -s -X POST localhost:8080/api/v1/pipelines \
 
 - Developer TDD: [`../tdd/stories/W2-US01-tdd.md`](../tdd/stories/W2-US01-tdd.md)
 - Execution plan: [`../waves/WAVE_2.md`](../waves/WAVE_2.md)
-- Next: steps API (W2-US02)
+- Steps API: [`W2-US02-pipeline-steps.md`](W2-US02-pipeline-steps.md)
