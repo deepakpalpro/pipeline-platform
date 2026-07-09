@@ -154,6 +154,16 @@ merge → tag W1-US01 → delete → W1-US02 (isolation next — do not skip)
 
 ---
 
+## Reference shape (this repo)
+
+- `com.pipelineplatform.api.tenant.Tenant` + `TenantRepository` (JPA)
+- `TenantService` / `TenantController` (`/api/v1/tenants`)
+- `TenantContext` + `TenantContextFilter` (`X-Tenant-Id` stub)
+- Tests: `TenantContextTest`, `TenantServiceTest`, `TenantControllerIT`
+- KB: [`../../kb/W1-US01-tenant-crud-context.md`](../../kb/W1-US01-tenant-crud-context.md)
+
+---
+
 ## Help / escalate
 
 - Architecture §2.2 tenants table
