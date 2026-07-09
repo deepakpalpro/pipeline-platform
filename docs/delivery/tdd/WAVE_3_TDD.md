@@ -4,7 +4,7 @@
 |-------|--------|
 | **Wave** | W3 — Webhook Ingress + Queue |
 | **Audience** | Technical stakeholders |
-| **Status** | In Progress (wave-3 started) |
+| **Status** | In Progress (W3-US01 Done) |
 | **Architecture refs** | **§11**, §3.3 webhook APIs |
 | **Branch / tags** | `wave-3` · `W3-US##` |
 | **Last updated** | 2026-07-09 |
@@ -186,3 +186,4 @@ Reference AC: DELIVERY_PLAN fully worked **W3-US01** (`WebhookIngressServiceTest
 |------|--------|
 | 2026-07-08 | Initial Draft; mirrors W3-US01 worked example |
 | 2026-07-09 | Linked execution plan + junior story TDD guides; wave-3 started |
+| 2026-07-09 | W3-US01 implemented: webhook accept + RabbitMQ publish |

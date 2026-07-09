@@ -101,7 +101,7 @@ flowchart LR
 | **Priority** | Must |
 | **Dependencies** | W2-US03; W1 tenant/connectors |
 | **Architecture refs** | §11.2–11.5, §3.3 |
-| **Status** | Todo |
+| **Status** | Done |
 
 **As a** tenant integrator  
 **I want** to POST events to a stable platform webhook URL  
@@ -114,9 +114,9 @@ flowchart LR
 
 [`../tdd/stories/w3/W3-US01-tdd.md`](../tdd/stories/w3/W3-US01-tdd.md)
 
-#### Support KB (create)
+#### Support KB
 
-`docs/delivery/kb/W3-US01-webhook-ingress-accept.md`
+[`../kb/W3-US01-webhook-ingress-accept.md`](../kb/W3-US01-webhook-ingress-accept.md)
 
 ---
 
@@ -262,8 +262,8 @@ flowchart LR
 
 - [x] `wave-3` branched from `master` (post Wave 2 merge / `wave-2-complete`)
 - [x] This execution plan + junior TDD guides committed
-- [ ] `W3-US01` feature branch created
-- [ ] W3-US01 Ingress accept + publish implemented
+- [x] `W3-US01` feature branch created
+- [x] W3-US01 Ingress accept + publish implemented (`V12__event_listener_connector_type.sql`)
 - [ ] WAVE_TRACKER / TEST_MATRIX / WAVE_3_TDD updated as stories complete
 - [ ] Each story: merge → tag `W3-US##` → delete → next from `wave-3`
 
