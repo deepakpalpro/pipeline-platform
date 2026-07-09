@@ -1,5 +1,7 @@
 package com.pipelineplatform.api.pipeline;
 
+import com.pipelineplatform.api.k8s.PipeletJobClient;
+import com.pipelineplatform.api.k8s.PipeletJobRequest;
 import com.pipelineplatform.api.messaging.QueueNaming;
 import com.pipelineplatform.api.messaging.RabbitMessagingConfig;
 import org.slf4j.Logger;
@@ -9,8 +11,8 @@ import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.stereotype.Component;
 
 /**
- * Stub stage worker for Wave 2: consumes stage messages and either forwards to the next stage or
- * completes the execution. Replaced by real pipelet Jobs in W2-US05.
+ * Stub stage worker for Wave 2: advances stages over RabbitMQ. Spawns subsequent stage Jobs via
+ * {@link PipeletJobClient} (stage 1 is spawned by the orchestrator).
  */
 @Component
 public class StubStageWorker {
@@ -19,10 +21,18 @@ public class StubStageWorker {
 
   private final RabbitTemplate rabbitTemplate;
   private final PipelineRunOrchestrator orchestrator;
+  private final PipeletJobClient pipeletJobClient;
+  private final PipelineStepRepository pipelineStepRepository;
 
-  public StubStageWorker(RabbitTemplate rabbitTemplate, PipelineRunOrchestrator orchestrator) {
+  public StubStageWorker(
+      RabbitTemplate rabbitTemplate,
+      PipelineRunOrchestrator orchestrator,
+      PipeletJobClient pipeletJobClient,
+      PipelineStepRepository pipelineStepRepository) {
     this.rabbitTemplate = rabbitTemplate;
     this.orchestrator = orchestrator;
+    this.pipeletJobClient = pipeletJobClient;
+    this.pipelineStepRepository = pipelineStepRepository;
   }
 
   @RabbitListener(queues = RabbitMessagingConfig.STUB_STAGE_WORKER_QUEUE)
@@ -44,11 +54,40 @@ public class StubStageWorker {
     }
 
     int next = message.stageOrder() + 1;
+    PipelineStep nextStep =
+        pipelineStepRepository.findByPipelineIdOrdered(message.pipelineId()).stream()
+            .filter(s -> s.getStepOrder() == next)
+            .findFirst()
+            .orElse(null);
+    String nextPipeletId = nextStep != null ? nextStep.getPipeletId() : "unknown";
+    String inputQueue =
+        nextStep != null && nextStep.getInputQueue() != null
+            ? nextStep.getInputQueue()
+            : QueueNaming.stageInputQueue(message.tenantId(), message.pipelineId(), next);
+    String outputQueue =
+        nextStep != null && nextStep.getOutputQueue() != null
+            ? nextStep.getOutputQueue()
+            : (next < message.stageCount()
+                ? QueueNaming.stageOutputQueue(message.tenantId(), message.pipelineId(), next)
+                : null);
+
+    pipeletJobClient.create(
+        PipeletJobRequest.of(
+            message.tenantId(),
+            message.pipelineId(),
+            message.executionId(),
+            nextPipeletId,
+            next,
+            message.stageCount(),
+            inputQueue,
+            outputQueue));
+
     StageMessage nextMessage =
         new StageMessage(
             message.executionId(),
             message.pipelineId(),
             message.tenantId(),
+            nextPipeletId,
             next,
             message.stageCount(),
             message.payload());

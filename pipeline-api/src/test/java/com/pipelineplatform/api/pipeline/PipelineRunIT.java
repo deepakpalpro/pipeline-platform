@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.awaitility.Awaitility.await;
 import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
+import com.pipelineplatform.api.k8s.StubPipeletJobClient;
 import com.pipelineplatform.api.tenant.CreateTenantRequest;
 import com.pipelineplatform.api.tenant.TenantContextFilter;
 import com.pipelineplatform.api.tenant.TenantResponse;
@@ -14,6 +15,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -26,7 +28,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
 
-/** W2-US04: async run returns execution id; stub worker completes stages. */
+/** W2-US04/US05: async run returns execution id; stub Jobs + worker complete stages. */
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("local")
 class PipelineRunIT {
@@ -50,6 +52,12 @@ class PipelineRunIT {
   }
 
   @Autowired private TestRestTemplate restTemplate;
+  @Autowired private StubPipeletJobClient stubPipeletJobClient;
+
+  @BeforeEach
+  void clearJobCreates() {
+    stubPipeletJobClient.clear();
+  }
 
   @Test
   void run_returnsExecutionId() {
@@ -146,6 +154,26 @@ class PipelineRunIT {
               assertThat(fetched.getBody()).isNotNull();
               assertThat(fetched.getBody().status()).isEqualTo(ExecutionStatus.COMPLETED);
             });
+
+    await()
+        .atMost(Duration.ofSeconds(5))
+        .untilAsserted(
+            () ->
+                assertThat(stubPipeletJobClient.getCreated())
+                    .hasSize(3)
+                    .allSatisfy(
+                        req -> {
+                          assertThat(req.tenantId()).isEqualTo(tenantId);
+                          assertThat(req.pipelineId()).isEqualTo(created.id());
+                          assertThat(req.executionId()).isEqualTo(executionId);
+                          assertThat(req.namespace()).isEqualTo("tenant-" + tenantId);
+                        }));
+    assertThat(stubPipeletJobClient.getCreated())
+        .extracting(req -> req.stageOrder())
+        .containsExactly(1, 2, 3);
+    assertThat(stubPipeletJobClient.getCreated())
+        .extracting(req -> req.pipeletId())
+        .containsExactly("plet-source", "plet-proc", "plet-dest");
   }
 
   @Test

@@ -10,6 +10,9 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import com.pipelineplatform.api.k8s.PipeletJobClient;
+import com.pipelineplatform.api.k8s.PipeletJobHandle;
+import com.pipelineplatform.api.k8s.PipeletJobRequest;
 import com.pipelineplatform.api.messaging.PipelineStageTopology;
 import com.pipelineplatform.api.messaging.PipelineTopology;
 import com.pipelineplatform.api.messaging.PipelineTopologyService;
@@ -18,6 +21,7 @@ import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.junit.jupiter.MockitoSettings;
@@ -31,13 +35,15 @@ class PipelineRunOrchestratorTest {
   @Mock private PipelineExecutionRepository executionRepository;
   @Mock private PipelineTopologyService topologyService;
   @Mock private RabbitTemplate rabbitTemplate;
+  @Mock private PipeletJobClient pipeletJobClient;
 
   private PipelineRunOrchestrator orchestrator;
 
   @BeforeEach
   void setUp() {
     orchestrator =
-        new PipelineRunOrchestrator(executionRepository, topologyService, rabbitTemplate);
+        new PipelineRunOrchestrator(
+            executionRepository, topologyService, rabbitTemplate, pipeletJobClient);
     when(executionRepository.save(any(PipelineExecution.class)))
         .thenAnswer(inv -> inv.getArgument(0));
     when(topologyService.declare(anyString(), anyString(), anyInt()))
@@ -48,15 +54,16 @@ class PipelineRunOrchestratorTest {
                     inv.getArgument(1),
                     "tenant." + inv.getArgument(0) + ".pipeline." + inv.getArgument(1),
                     List.of(
-                        new PipelineStageTopology(
-                            1, "q1", "q2", "d1", "stage.1"),
+                        new PipelineStageTopology(1, "q1", "q2", "d1", "stage.1"),
                         new PipelineStageTopology(2, "q2", null, "d2", "stage.2"))));
+    when(pipeletJobClient.create(any(PipeletJobRequest.class)))
+        .thenAnswer(inv -> PipeletJobHandle.stubbed(inv.getArgument(0)));
   }
 
   @Test
   void start_createsExecution() {
     Pipeline pipeline = activePipeline();
-    List<PipelineStep> steps = List.of(step(1), step(2));
+    List<PipelineStep> steps = List.of(step(1, "plet-a"), step(2, "plet-b"));
 
     PipelineExecution execution =
         orchestrator.start(pipeline, steps, ExecutionTrigger.MANUAL);
@@ -71,6 +78,17 @@ class PipelineRunOrchestratorTest {
     verify(rabbitTemplate)
         .convertAndSend(eq(RabbitMessagingConfig.STUB_STAGE_WORKER_QUEUE), any(StageMessage.class));
     verify(executionRepository, org.mockito.Mockito.atLeast(2)).save(any(PipelineExecution.class));
+
+    ArgumentCaptor<PipeletJobRequest> jobCaptor = ArgumentCaptor.forClass(PipeletJobRequest.class);
+    verify(pipeletJobClient).create(jobCaptor.capture());
+    PipeletJobRequest job = jobCaptor.getValue();
+    assertThat(job.tenantId()).isEqualTo("tenant-a");
+    assertThat(job.pipelineId()).isEqualTo("p1");
+    assertThat(job.executionId()).isEqualTo(execution.getId());
+    assertThat(job.pipeletId()).isEqualTo("plet-a");
+    assertThat(job.stageOrder()).isEqualTo(1);
+    assertThat(job.jobName()).isEqualTo("exec-" + execution.getId() + "-stage-1");
+    assertThat(job.namespace()).isEqualTo("tenant-tenant-a");
   }
 
   @Test
@@ -79,11 +97,14 @@ class PipelineRunOrchestratorTest {
     pipeline.setStatus(PipelineStatus.ARCHIVED);
 
     assertThatThrownBy(
-            () -> orchestrator.start(pipeline, List.of(step(1)), ExecutionTrigger.MANUAL))
+            () ->
+                orchestrator.start(
+                    pipeline, List.of(step(1, "plet")), ExecutionTrigger.MANUAL))
         .isInstanceOf(PipelineValidationException.class)
         .hasMessageContaining("archived");
 
     verify(executionRepository, never()).save(any());
+    verify(pipeletJobClient, never()).create(any());
   }
 
   @Test
@@ -92,7 +113,9 @@ class PipelineRunOrchestratorTest {
     pipeline.setStatus(PipelineStatus.DRAFT);
 
     assertThatThrownBy(
-            () -> orchestrator.start(pipeline, List.of(step(1)), ExecutionTrigger.MANUAL))
+            () ->
+                orchestrator.start(
+                    pipeline, List.of(step(1, "plet")), ExecutionTrigger.MANUAL))
         .isInstanceOf(PipelineValidationException.class)
         .hasMessageContaining("active");
   }
@@ -117,11 +140,11 @@ class PipelineRunOrchestratorTest {
     return pipeline;
   }
 
-  private static PipelineStep step(int order) {
+  private static PipelineStep step(int order, String pipeletId) {
     PipelineStep step = new PipelineStep();
     step.setId("s" + order);
     step.setPipelineId("p1");
-    step.setPipeletId("plet-" + order);
+    step.setPipeletId(pipeletId);
     step.setStepOrder(order);
     return step;
   }
