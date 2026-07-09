@@ -11,12 +11,23 @@ import {
   MarkerType,
 } from '@xyflow/react'
 import '@xyflow/react/dist/style.css'
+import type { OverlayNodeState } from './executionOverlayReducer'
 import type { PipelineGraphEdge, PipelineGraphNode } from './pipelineGraphReducer'
 
 function StepNode({ data, selected }: NodeProps) {
-  const d = data as PipelineGraphNode['data']
+  const d = data as PipelineGraphNode['data'] & {
+    overlay?: OverlayNodeState
+  }
+  const overlay = d.overlay ?? 'idle'
   return (
-    <div className={selected ? 'rf-step selected' : 'rf-step'}>
+    <div
+      className={
+        selected
+          ? `rf-step selected overlay-${overlay}`
+          : `rf-step overlay-${overlay}`
+      }
+      data-overlay={overlay}
+    >
       <Handle type="target" position={Position.Left} />
       <strong>{d.name}</strong>
       <span className="rf-step-cat">{d.category}</span>
@@ -30,16 +41,23 @@ const nodeTypes = { step: StepNode }
 type Props = {
   nodes: PipelineGraphNode[]
   edges: PipelineGraphEdge[]
+  overlayByNodeId?: Record<string, OverlayNodeState>
   onSelect: (nodeId: string | null) => void
   onConnect: (source: string, target: string) => void
 }
 
-export function PipelineCanvas({ nodes, edges, onSelect, onConnect }: Props) {
+export function PipelineCanvas({
+  nodes,
+  edges,
+  overlayByNodeId = {},
+  onSelect,
+  onConnect,
+}: Props) {
   const rfNodes: Node[] = nodes.map((n) => ({
     id: n.id,
     type: 'step',
     position: n.position,
-    data: n.data,
+    data: { ...n.data, overlay: overlayByNodeId[n.id] ?? 'idle' },
   }))
 
   const rfEdges: Edge[] = edges.map((e) => ({

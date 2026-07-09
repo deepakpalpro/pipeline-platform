@@ -136,12 +136,12 @@ npm test -- executionOverlayReducer ExecutionOverlay RunControls.quota
 
 ### Checklist
 
-- [ ] Dry Run + Run buttons on builder bar
-- [ ] `useExecutionPoller` stops on terminal status
-- [ ] Node overlay colours driven by execution state
-- [ ] HTTP 402 shows clear quota/credit message
-- [ ] Overlay state tests green
-- [ ] Manual E2E script (or Playwright) documented and passing
+- [x] Dry Run + Run buttons on builder bar
+- [x] `useExecutionPoller` stops on terminal status
+- [x] Node overlay colours driven by execution state
+- [x] HTTP 402 shows clear quota/credit message
+- [x] Overlay state tests green
+- [x] Manual E2E script (or Playwright) documented and passing
 
 ---
 
@@ -155,8 +155,8 @@ npm test -- executionOverlayReducer ExecutionOverlay RunControls.quota
 
 ## 11. Docs & trackers
 
-- [ ] KB: run/dry-run steps, 402 troubleshooting, manual E2E script, screenshots
-- [ ] Tracker · TEST_MATRIX · `WAVE_6.md` Done
+- [x] KB: run/dry-run steps, 402 troubleshooting, manual E2E script, screenshots
+- [x] Tracker · TEST_MATRIX · `WAVE_6.md` Done
 
 ```text
 merge → tag W6-US05 → W6-US06

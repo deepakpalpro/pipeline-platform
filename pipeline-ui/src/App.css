@@ -609,6 +609,72 @@ button.linkish {
   font-size: 0.7rem;
 }
 
+.rf-step.overlay-running {
+  border-color: #3ddc97;
+  box-shadow: 0 0 0 1px #3ddc97;
+}
+
+.rf-step.overlay-completed {
+  border-color: #3d8bfd;
+}
+
+.rf-step.overlay-failed {
+  border-color: #f07178;
+}
+
+.rf-step.overlay-pending {
+  border-color: #6b7785;
+}
+
+.run-controls {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.quota-alert {
+  border: 1px solid #f07178;
+  background: rgba(240, 113, 120, 0.12);
+  border-radius: 8px;
+  padding: 0.75rem 0.9rem;
+}
+
+.quota-alert p {
+  margin: 0.35rem 0 0.5rem;
+}
+
+.overlay-summary {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  font-size: 0.8rem;
+  color: var(--muted);
+}
+
+.overlay-dot {
+  display: inline-block;
+  width: 0.55rem;
+  height: 0.55rem;
+  border-radius: 50%;
+  margin-right: 0.35rem;
+  background: #6b7785;
+}
+
+.overlay-dot.running {
+  background: #3ddc97;
+}
+
+.overlay-dot.completed {
+  background: #3d8bfd;
+}
+
+.overlay-dot.failed {
+  background: #f07178;
+}
+
 @media (max-width: 960px) {
   .builder-layout {
     grid-template-columns: 1fr;
