@@ -220,7 +220,7 @@ flowchart LR
 | **Priority** | Must |
 | **Dependencies** | W3-US01; W2-US04/US05 |
 | **Architecture refs** | §11 on-demand processing; §10.3 |
-| **Status** | Todo |
+| **Status** | Done |
 
 **In scope:** When webhook queue depth > 0, trigger processor Job (stub `PipeletJobClient` OK).  
 **Out of scope:** Full autoscaler / HPA.
@@ -229,9 +229,9 @@ flowchart LR
 
 [`../tdd/stories/w3/W3-US06-tdd.md`](../tdd/stories/w3/W3-US06-tdd.md)
 
-#### Support KB (create)
+#### Support KB
 
-`docs/delivery/kb/W3-US06-webhook-queue-trigger.md`
+[`../kb/W3-US06-webhook-queue-trigger.md`](../kb/W3-US06-webhook-queue-trigger.md)
 
 ---
 
@@ -267,6 +267,7 @@ flowchart LR
 - [x] W3-US02 HMAC signature verification
 - [x] W3-US03 Idempotency (`V13__webhook_idempotency.sql`)
 - [x] W3-US05 Provision webhook URL (`pipeline.ingress.base-url`)
+- [x] W3-US06 On-demand queue depth trigger (poller + stub Job)
 - [ ] WAVE_TRACKER / TEST_MATRIX / WAVE_3_TDD updated as stories complete
 - [ ] Each story: merge → tag `W3-US##` → delete → next from `wave-3`
 

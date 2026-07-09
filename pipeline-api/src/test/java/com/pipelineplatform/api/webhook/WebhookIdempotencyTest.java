@@ -37,6 +37,7 @@ class WebhookIdempotencyTest {
   @Mock private PipeletJobClient pipeletJobClient;
   @Mock private WebhookSignatureVerifier signatureVerifier;
   @Mock private WebhookIdempotencyService idempotencyService;
+  @Mock private WebhookQueueWatchRegistry queueWatchRegistry;
 
   private WebhookIngressService service;
   private final ObjectMapper objectMapper = new ObjectMapper();
@@ -52,6 +53,7 @@ class WebhookIdempotencyTest {
             pipeletJobClient,
             signatureVerifier,
             idempotencyService,
+            queueWatchRegistry,
             objectMapper);
   }
 

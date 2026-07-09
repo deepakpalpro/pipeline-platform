@@ -123,10 +123,10 @@ Auth stub: N/A for watcher; fixture tenant/connector from US01.
 
 ### Checklist
 
-- [ ] Depth > 0 → Job client invoked
-- [ ] Ingress accept still does not call Job client
-- [ ] Stub acceptable (no Kind required)
-- [ ] Tests green with MySQL + RabbitMQ up
+- [x] Depth > 0 → Job client invoked
+- [x] Ingress accept still does not call Job client
+- [x] Stub acceptable (no Kind required)
+- [x] Tests green with MySQL + RabbitMQ up
 
 ---
 
@@ -140,8 +140,8 @@ Auth stub: N/A for watcher; fixture tenant/connector from US01.
 
 ## 11. Docs & trackers
 
-- [ ] KB: how trigger works locally + stub vs Kind
-- [ ] Tracker · TEST_MATRIX · `WAVE_3.md` Done
+- [x] KB: how trigger works locally + stub vs Kind
+- [x] Tracker · TEST_MATRIX · `WAVE_3.md` Done
 
 | # | Action | Expected |
 |---|--------|----------|
