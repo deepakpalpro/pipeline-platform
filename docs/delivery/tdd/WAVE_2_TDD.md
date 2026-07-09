@@ -4,7 +4,7 @@
 |-------|--------|
 | **Wave** | W2 — Pipelines & Ephemeral Execution |
 | **Audience** | Technical stakeholders |
-| **Status** | In Progress (W2-US01–US02 Done) |
+| **Status** | In Progress (W2-US01–US03 Done) |
 | **Architecture refs** | §1.4, §2 pipeline tables, §3.1–3.2, §8, §10.3 |
 | **Branch / tags** | `wave-2` · `W2-US##` |
 | **Last updated** | 2026-07-09 |
@@ -108,9 +108,11 @@ Junior step-by-step guides: [`stories/README.md`](stories/README.md) § Wave 2.
 
 | Step | Evidence |
 |------|----------|
-| **Red** | `RabbitTopologyIT.declareAndPublish` fail |
-| **Green** | Tenant-prefixed exchanges/queues |
-| **Refactor** | Naming builder shared with W3 |
+| **Red** | `QueueNamingTest` / `RabbitTopologyIT` |
+| **Green** | Tenant-prefixed exchange/queues; idempotent declare; publish→consume |
+| **Refactor** | Shared `QueueNaming` (webhook helpers for W3) |
+
+| Status | Done |
 
 ### W2-US04 — Async run orchestration
 
