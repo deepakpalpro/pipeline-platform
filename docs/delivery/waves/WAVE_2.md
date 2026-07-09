@@ -289,7 +289,7 @@ flowchart LR
 | **Priority** | Must |
 | **Dependencies** | W2-US04 |
 | **Architecture refs** | §3.1 executions endpoints |
-| **Status** | Todo |
+| **Status** | Done |
 
 **As a** tenant operator  
 **I want** to list and get execution detail  
@@ -302,9 +302,9 @@ flowchart LR
 
 [`../tdd/stories/w2/W2-US07-tdd.md`](../tdd/stories/w2/W2-US07-tdd.md)
 
-#### Support KB (create)
+#### Support KB
 
-`docs/delivery/kb/W2-US07-execution-status.md`
+[`../kb/W2-US07-execution-status.md`](../kb/W2-US07-execution-status.md)
 
 ---
 
@@ -319,8 +319,9 @@ flowchart LR
 - [x] W2-US04 Async run (`V11__pipeline_executions.sql` + stub stage worker)
 - [x] W2-US05 PipeletJobClient stub wired into run path
 - [x] W2-US06 Retries + per-stage DLQ (`RetryPolicy` + DLX binds)
-- [ ] WAVE_TRACKER / TEST_MATRIX / WAVE_2_TDD updated as stories complete
-- [ ] Each story: merge → tag `W2-US##` → delete → next from `wave-2`
+- [x] W2-US07 Execution status list/detail (`ExecutionStatusIT`)
+- [x] WAVE_TRACKER / TEST_MATRIX / WAVE_2_TDD updated as stories complete
+- [x] Each story: merge → tag `W2-US##` → delete → next from `wave-2`
 
 ---
 

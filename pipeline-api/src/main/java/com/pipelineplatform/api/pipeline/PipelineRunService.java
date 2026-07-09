@@ -47,6 +47,20 @@ public class PipelineRunService {
   }
 
   @Transactional(readOnly = true)
+  public List<PipelineExecutionResponse> listExecutions(String pipelineId) {
+    String tenantId = requireTenantId();
+    enableTenantFilter(tenantId);
+
+    pipelineRepository
+        .findFilteredById(pipelineId)
+        .orElseThrow(() -> new PipelineNotFoundException(pipelineId));
+
+    return executionRepository.findFilteredByPipelineId(pipelineId).stream()
+        .map(PipelineExecutionResponse::from)
+        .toList();
+  }
+
+  @Transactional(readOnly = true)
   public PipelineExecutionResponse getExecution(String pipelineId, String executionId) {
     String tenantId = requireTenantId();
     enableTenantFilter(tenantId);

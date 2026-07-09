@@ -60,7 +60,7 @@ Guides: [`w2/`](w2/)
 | W2-US04 Async run | [`w2/W2-US04-tdd.md`](w2/W2-US04-tdd.md) | Done |
 | W2-US05 Pipelet Job spawn | [`w2/W2-US05-tdd.md`](w2/W2-US05-tdd.md) | Done |
 | W2-US06 Retries + DLQ | [`w2/W2-US06-tdd.md`](w2/W2-US06-tdd.md) | Done |
-| W2-US07 Execution status | [`w2/W2-US07-tdd.md`](w2/W2-US07-tdd.md) | Draft (planning) |
+| W2-US07 Execution status | [`w2/W2-US07-tdd.md`](w2/W2-US07-tdd.md) | Done |
 
 **Suggested order:** US01 → US02 → US03 → US04 → US05 → US06 → US07 (US06 can start after US03).
 
