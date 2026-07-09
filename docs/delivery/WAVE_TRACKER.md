@@ -35,13 +35,13 @@ Abbreviations: **U** = Unit, **I** = Integration, **WM** = WireMock, **LS** = Lo
 **Wave goal:** Tenant + service config + Rest connector test against WireMock/LocalStack.  
 **Branch:** `wave-1`  
 **TDD:** [`tdd/WAVE_1_TDD.md`](tdd/WAVE_1_TDD.md) · **Developer guides:** [`tdd/stories/README.md`](tdd/stories/README.md) § Wave 1  
-**KB:** [`kb/W1-US01-tenant-crud-context.md`](kb/W1-US01-tenant-crud-context.md) · [`kb/W1-US02-tenant-isolation.md`](kb/W1-US02-tenant-isolation.md)
+**KB:** [`kb/W1-US01-tenant-crud-context.md`](kb/W1-US01-tenant-crud-context.md) · [`kb/W1-US02-tenant-isolation.md`](kb/W1-US02-tenant-isolation.md) · [`kb/W1-US03-service-types.md`](kb/W1-US03-service-types.md)
 
 | Story ID | Feature / Epic | Title | Status | Owner | Test gate | Blockers |
 |----------|----------------|-------|--------|-------|-----------|----------|
 | W1-US01 | W1-F1 / W1-F1-E1 | Tenant CRUD + JWT tenant context | Done | | U,I,M,KB | Stub `X-Tenant-Id` (JWT later) |
 | W1-US02 | W1-F1 / W1-F1-E1 | Tenant isolation filters (JPA) | Done | | U,I,M,KB | Proven via `tenant_notes` + Hibernate filter |
-| W1-US03 | W1-F2 / W1-F2-E1 | Service types + defaults | Todo | | | |
+| W1-US03 | W1-F2 / W1-F2-E1 | Service types + defaults | Done | | U,I,M,KB | Seeded `StubAuth` via Flyway V3 |
 | W1-US04 | W1-F2 / W1-F2-E1 | Tenant service config (Auth pattern) | Todo | | | |
 | W1-US05 | W1-F3 / W1-F3-E1 | Connector SPI load + Rest plugin | Todo | | | |
 | W1-US06 | W1-F3 / W1-F3-E1 | Connector test vs WireMock | Todo | | | |
