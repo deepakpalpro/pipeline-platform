@@ -30,4 +30,4 @@ Update the matching `WAVE_N_TDD.md` when stories ship (red/green evidence, defer
 
 **Template:** [`stories/TDD_STORY_TEMPLATE.md`](stories/TDD_STORY_TEMPLATE.md) · **Index:** [`stories/README.md`](stories/README.md)
 
-Wave 0 has a full junior playbook per story (Red → Green → Refactor, commands, pitfalls, ship checklist). Use those as the pattern for W1+.
+Wave 0 (retro) and Wave 1 (planning) have junior playbooks per story (Red → Green → Refactor, commands, pitfalls, ship checklist). Use those as the pattern for W2+.

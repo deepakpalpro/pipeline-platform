@@ -10,6 +10,7 @@
 | **Last updated** | 2026-07-08 |
 | **Template** | [`../TDD_WAVE_TEMPLATE.md`](../TDD_WAVE_TEMPLATE.md) |
 | **Catalog** | [`../../DELIVERY_PLAN.md`](../../DELIVERY_PLAN.md) § Wave 1 |
+| **Developer story TDD** | [`stories/README.md`](stories/README.md) § Wave 1 |
 | **Coverage** | [`../TEST_MATRIX.md`](../TEST_MATRIX.md) § Wave 1 |
 
 ---
@@ -75,7 +76,11 @@ flowchart TB
 
 ## 4. Story TDD backlog
 
+Junior step-by-step guides: [`stories/README.md`](stories/README.md) § Wave 1.
+
 ### W1-US01 — Tenant CRUD + JWT tenant context
+
+**Developer guide:** [`stories/W1-US01-tdd.md`](stories/W1-US01-tdd.md)
 
 | Step | Evidence |
 |------|----------|
@@ -90,6 +95,8 @@ flowchart TB
 
 ### W1-US02 — JPA tenant isolation filters
 
+**Developer guide:** [`stories/W1-US02-tdd.md`](stories/W1-US02-tdd.md)
+
 | Step | Evidence |
 |------|----------|
 | **Red** | `TenantIsolationIT.tenantA_cannotReadTenantB` fails |
@@ -102,6 +109,8 @@ flowchart TB
 
 ### W1-US03 — Service types + platform defaults
 
+**Developer guide:** [`stories/W1-US03-tdd.md`](stories/W1-US03-tdd.md)
+
 | Step | Evidence |
 |------|----------|
 | **Red** | `ServiceTypeRepositoryTest` / catalog IT fail |
@@ -109,6 +118,8 @@ flowchart TB
 | **Refactor** | Fixture-driven seed |
 
 ### W1-US04 — Tenant service config (Auth pattern)
+
+**Developer guide:** [`stories/W1-US04-tdd.md`](stories/W1-US04-tdd.md)
 
 | Step | Evidence |
 |------|----------|
@@ -123,6 +134,8 @@ flowchart TB
 
 ### W1-US05 — Connector SPI load + Rest plugin
 
+**Developer guide:** [`stories/W1-US05-tdd.md`](stories/W1-US05-tdd.md)
+
 | Step | Evidence |
 |------|----------|
 | **Red** | `ConnectorSpiLoaderTest` fail |
@@ -130,6 +143,8 @@ flowchart TB
 | **Refactor** | Shared `ConnectorPlugin` interface |
 
 ### W1-US06 — Connector test vs WireMock
+
+**Developer guide:** [`stories/W1-US06-tdd.md`](stories/W1-US06-tdd.md)
 
 | Step | Evidence |
 |------|----------|
@@ -139,6 +154,8 @@ flowchart TB
 
 ### W1-US07 — Storage connector vs LocalStack S3
 
+**Developer guide:** [`stories/W1-US07-tdd.md`](stories/W1-US07-tdd.md)
+
 | Step | Evidence |
 |------|----------|
 | **Red** | `StorageConnectorIT.putGet_roundTrip` fail |
@@ -146,6 +163,8 @@ flowchart TB
 | **Refactor** | Shared LocalStack endpoint config |
 
 ### W1-US08 — MessageBus connector vs LocalStack SQS (Should)
+
+**Developer guide:** [`stories/W1-US08-tdd.md`](stories/W1-US08-tdd.md)
 
 | Step | Evidence |
 |------|----------|
@@ -192,3 +211,4 @@ flowchart TB
 | Date | Change |
 |------|--------|
 | 2026-07-08 | Initial Draft for technical stakeholders |
+| 2026-07-09 | Linked junior developer story TDD playbooks W1-US01–US08 |

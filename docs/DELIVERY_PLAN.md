@@ -134,12 +134,12 @@ Stories below list **title + intent**. Fill full AC from the story template when
 
 **Exit criteria:** Tenant A cannot read Tenant B connectors; Rest test and S3 round-trip succeed; KB for “how to add a connector” drafted.
 
-**Wave 1 TDD (stakeholders):** [`delivery/tdd/WAVE_1_TDD.md`](delivery/tdd/WAVE_1_TDD.md)
+**Wave 1 TDD (stakeholders):** [`delivery/tdd/WAVE_1_TDD.md`](delivery/tdd/WAVE_1_TDD.md)  
+**Wave 1 TDD (developers / juniors):** [`delivery/tdd/stories/README.md`](delivery/tdd/stories/README.md) § Wave 1
 
 ---
 
 ### Wave 2 — Pipelines & Ephemeral Execution
-
 **Goal:** Configure Source → Processor → Destination; run async with RabbitMQ handoff; persist execution status.
 
 #### Features
