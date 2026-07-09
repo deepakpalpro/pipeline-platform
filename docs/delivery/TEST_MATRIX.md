@@ -38,7 +38,7 @@ Wave TDD (stakeholders): [`tdd/README.md`](tdd/README.md)
 | W1-US03 | x | x | n/a | n/a | x | x |
 | W1-US04 | x | x | n/a | n/a | x | x |
 | W1-US05 | x | x | n/a | n/a | x | x |
-| W1-US06 | | | | n/a | | |
+| W1-US06 | x | x | x | n/a | x | x |
 | W1-US07 | | | n/a | | | |
 | W1-US08 | | | n/a | | | |
 
