@@ -216,3 +216,4 @@ Junior step-by-step guides: [`stories/README.md`](stories/README.md) § Wave 1.
 | 2026-07-09 | W1-US02 implemented: Hibernate tenant filter + TenantIsolationIT |
 | 2026-07-09 | W1-US03 implemented: service_types catalog + StubAuth defaults |
 | 2026-07-09 | W1-US04 implemented: tenant services CRUD, merge defaults, secret redaction |
+| 2026-07-09 | W1-US05 implemented: Connector SPI + Rest plugin + connector_types catalog |
