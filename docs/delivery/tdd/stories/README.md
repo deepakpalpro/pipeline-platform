@@ -75,7 +75,7 @@ Guides: [`w3/`](w3/)
 |-------|-------|--------|
 | W3-US01 Ingress accept + publish | [`w3/W3-US01-tdd.md`](w3/W3-US01-tdd.md) | Done |
 | W3-US02 Signature + Auth | [`w3/W3-US02-tdd.md`](w3/W3-US02-tdd.md) | Done |
-| W3-US03 Idempotency | [`w3/W3-US03-tdd.md`](w3/W3-US03-tdd.md) | Draft (planning) |
+| W3-US03 Idempotency | [`w3/W3-US03-tdd.md`](w3/W3-US03-tdd.md) | Done |
 | W3-US04 Rate limit / 503 | [`w3/W3-US04-tdd.md`](w3/W3-US04-tdd.md) | Draft (planning) |
 | W3-US05 Provision webhook URL | [`w3/W3-US05-tdd.md`](w3/W3-US05-tdd.md) | Draft (planning) |
 | W3-US06 On-demand processor | [`w3/W3-US06-tdd.md`](w3/W3-US06-tdd.md) | Draft (planning) |

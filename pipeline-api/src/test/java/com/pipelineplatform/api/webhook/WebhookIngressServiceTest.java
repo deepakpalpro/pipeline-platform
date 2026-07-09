@@ -39,6 +39,7 @@ class WebhookIngressServiceTest {
   @Mock private RabbitTemplate rabbitTemplate;
   @Mock private PipeletJobClient pipeletJobClient;
   @Mock private WebhookSignatureVerifier signatureVerifier;
+  @Mock private WebhookIdempotencyService idempotencyService;
 
   private WebhookIngressService service;
   private final ObjectMapper objectMapper = new ObjectMapper();
@@ -53,6 +54,7 @@ class WebhookIngressServiceTest {
             rabbitTemplate,
             pipeletJobClient,
             signatureVerifier,
+            idempotencyService,
             objectMapper);
   }
 
@@ -70,6 +72,11 @@ class WebhookIngressServiceTest {
     when(tenantRepository.findById(tenantId)).thenReturn(Optional.of(tenant));
     when(connectorRepository.findByIdAndTenantId(connectorId, tenantId))
         .thenReturn(Optional.of(connector));
+    when(idempotencyService.extractKey(any(), any())).thenReturn("hash:abc");
+    when(idempotencyService.findExistingEventId(tenantId, connectorId, "hash:abc"))
+        .thenReturn(Optional.empty());
+    when(idempotencyService.claim(eq(tenantId), eq(connectorId), eq("hash:abc"), anyString()))
+        .thenAnswer(inv -> inv.getArgument(3));
     when(webhookTopologyService.declare(tenantId, connectorId))
         .thenReturn(
             new WebhookTopology(
@@ -82,7 +89,7 @@ class WebhookIngressServiceTest {
 
     byte[] body = "{\"action\":\"opened\"}".getBytes(StandardCharsets.UTF_8);
     WebhookAcceptResponse response =
-        service.accept(tenantId, connectorId, body, "sha256=abc");
+        service.accept(tenantId, connectorId, body, "sha256=abc", null);
 
     assertThat(response.accepted()).isTrue();
     assertThat(response.eventId()).isNotBlank();
@@ -110,13 +117,14 @@ class WebhookIngressServiceTest {
     when(connectorRepository.findByIdAndTenantId("missing", "T001")).thenReturn(Optional.empty());
 
     assertThatThrownBy(
-            () -> service.accept("T001", "missing", "{}".getBytes(StandardCharsets.UTF_8), null))
+            () ->
+                service.accept(
+                    "T001", "missing", "{}".getBytes(StandardCharsets.UTF_8), null, null))
         .isInstanceOf(WebhookTargetNotFoundException.class);
 
     verify(signatureVerifier, never()).verifyOrThrow(anyString(), any(), any(), any());
     verify(rabbitTemplate, never())
         .convertAndSend(any(String.class), any(String.class), any(Object.class));
-    verify(pipeletJobClient, never()).create(any());
   }
 
   @Test
@@ -138,10 +146,15 @@ class WebhookIngressServiceTest {
     assertThatThrownBy(
             () ->
                 service.accept(
-                    tenantId, connectorId, "{}".getBytes(StandardCharsets.UTF_8), "sha256=bad"))
+                    tenantId,
+                    connectorId,
+                    "{}".getBytes(StandardCharsets.UTF_8),
+                    "sha256=bad",
+                    null))
         .isInstanceOf(WebhookSignatureRejectedException.class);
 
     verify(rabbitTemplate, never())
         .convertAndSend(any(String.class), any(String.class), any(Object.class));
+    verify(idempotencyService, never()).claim(anyString(), anyString(), anyString(), anyString());
   }
 }

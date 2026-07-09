@@ -30,8 +30,9 @@ public class WebhookController {
       HttpServletRequest request) {
     String headerName = signatureVerifier.resolveSignatureHeader(tenantId);
     String signature = request.getHeader(headerName);
+    String webhookId = request.getHeader(WebhookIdempotencyService.WEBHOOK_ID_HEADER);
     WebhookAcceptResponse response =
-        webhookIngressService.accept(tenantId, connectorId, rawBody, signature);
+        webhookIngressService.accept(tenantId, connectorId, rawBody, signature, webhookId);
     return ResponseEntity.status(HttpStatus.ACCEPTED).body(response);
   }
 }

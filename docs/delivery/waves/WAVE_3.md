@@ -151,7 +151,7 @@ flowchart LR
 | **Priority** | Must |
 | **Dependencies** | W3-US01 |
 | **Architecture refs** | §11 idempotency |
-| **Status** | Todo |
+| **Status** | Done |
 
 **In scope:** Deduplicate via `X-Webhook-Id` or payload hash; duplicate POST → same logical outcome.  
 **Out of scope:** Cross-region shared store (document TTL strategy).
@@ -160,9 +160,9 @@ flowchart LR
 
 [`../tdd/stories/w3/W3-US03-tdd.md`](../tdd/stories/w3/W3-US03-tdd.md)
 
-#### Support KB (create)
+#### Support KB
 
-`docs/delivery/kb/W3-US03-webhook-idempotency.md`
+[`../kb/W3-US03-webhook-idempotency.md`](../kb/W3-US03-webhook-idempotency.md)
 
 ---
 
@@ -264,6 +264,8 @@ flowchart LR
 - [x] This execution plan + junior TDD guides committed
 - [x] `W3-US01` feature branch created
 - [x] W3-US01 Ingress accept + publish implemented (`V12__event_listener_connector_type.sql`)
+- [x] W3-US02 HMAC signature verification
+- [x] W3-US03 Idempotency (`V13__webhook_idempotency.sql`)
 - [ ] WAVE_TRACKER / TEST_MATRIX / WAVE_3_TDD updated as stories complete
 - [ ] Each story: merge → tag `W3-US##` → delete → next from `wave-3`
 

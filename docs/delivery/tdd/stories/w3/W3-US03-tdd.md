@@ -125,16 +125,16 @@ Auth stub: public ingress — tenant from URL path.
 
 ### Checklist
 
-- [ ] Dup POST → single logical event
-- [ ] Distinct keys → distinct events
-- [ ] Key scoped by tenant + connector
-- [ ] Tests green with MySQL + RabbitMQ up
+- [x] Dup POST → single logical event
+- [x] Distinct keys → distinct events
+- [x] Key scoped by tenant + connector
+- [x] Tests green with MySQL + RabbitMQ up
 
 ---
 
 ## 10. REFACTOR
 
-- Document TTL / cleanup strategy
+- Document TTL / cleanup strategy (7-day `expires_at`; purge job deferred)
 - Keep extractor pure for unit tests
 - Align response shape with US01 (`accepted`, `event_id`, `queued_to` on first accept)
 
@@ -142,8 +142,8 @@ Auth stub: public ingress — tenant from URL path.
 
 ## 11. Docs & trackers
 
-- [ ] KB: `X-Webhook-Id` vs hash; how to verify single queue message
-- [ ] Tracker · TEST_MATRIX · `WAVE_3.md` Done
+- [x] KB: `X-Webhook-Id` vs hash; how to verify single queue message
+- [x] Tracker · TEST_MATRIX · `WAVE_3.md` Done
 
 | # | Action | Expected |
 |---|--------|----------|
