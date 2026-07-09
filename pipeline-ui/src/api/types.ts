@@ -95,3 +95,51 @@ export type PipelineResponse = {
   updated_at?: string
   steps?: unknown[]
 }
+
+export type PipelineRunResponse = {
+  execution_id: string
+  status: string
+  pipeline_id: string
+  started_at?: string
+}
+
+export type ExecutionStepStatusDto = {
+  step_order: number
+  node_id?: string
+  status: 'PENDING' | 'RUNNING' | 'COMPLETED' | 'FAILED'
+}
+
+export type PipelineExecutionDetail = {
+  id: string
+  pipeline_id: string
+  tenant_id?: string
+  status: string
+  started_at?: string
+  completed_at?: string | null
+  steps?: ExecutionStepStatusDto[]
+}
+
+export type DryRunResponse = {
+  valid: boolean
+  messages: string[]
+}
+
+export type QuotaBlockedBody = {
+  error: string
+  code: string
+  message: string
+  credit_balance?: number
+  breached_dimension?: string
+}
+
+export class ApiError extends Error {
+  status: number
+  body: unknown
+
+  constructor(status: number, body: unknown, message?: string) {
+    super(message ?? `HTTP ${status}`)
+    this.name = 'ApiError'
+    this.status = status
+    this.body = body
+  }
+}

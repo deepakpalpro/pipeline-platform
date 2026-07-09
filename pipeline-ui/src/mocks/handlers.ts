@@ -5,6 +5,7 @@ import type {
   CreateConnectorRequest,
   CreatePipelineRequest,
   CreateTenantServiceRequest,
+  PipelineExecutionDetail,
   PipelineResponse,
   ReplacePipelineStepsRequest,
   ServiceType,
@@ -55,11 +56,18 @@ export const mockDb = {
   pipelines: [] as PipelineResponse[],
   /** Last PUT steps body — asserted by save tests. */
   lastStepsPut: null as ReplacePipelineStepsRequest | null,
+  executions: {} as Record<string, PipelineExecutionDetail>,
+  executionPollCount: {} as Record<string, number>,
+  /** When true, POST .../run returns 402. */
+  blockRunsWith402: false,
 }
 
 export function resetMockDb() {
   mockDb.pipelines = []
   mockDb.lastStepsPut = null
+  mockDb.executions = {}
+  mockDb.executionPollCount = {}
+  mockDb.blockRunsWith402 = false
   mockDb.connectors = [
     {
       id: 'conn-1',
@@ -277,9 +285,102 @@ export const pipelineHandlers = [
       version: mockDb.pipelines[idx].version + 1,
       updated_at: nowIso(),
       steps: body.steps,
+      status: 'ACTIVE',
     }
     mockDb.pipelines[idx] = updated
     return HttpResponse.json(updated)
+  }),
+
+  http.post('/api/v1/pipelines/:id/dry-run', ({ params, request }) => {
+    const tid = tenantId(request)
+    const pipe = mockDb.pipelines.find(
+      (p) => p.id === params.id && p.tenantId === tid,
+    )
+    if (!pipe) {
+      return HttpResponse.json({ message: 'Not found' }, { status: 404 })
+    }
+    return HttpResponse.json({
+      valid: true,
+      messages: ['Dry-run OK (stub)'],
+    })
+  }),
+
+  http.post('/api/v1/pipelines/:id/run', ({ params, request }) => {
+    const tid = tenantId(request)
+    const pipe = mockDb.pipelines.find(
+      (p) => p.id === params.id && p.tenantId === tid,
+    )
+    if (!pipe) {
+      return HttpResponse.json({ message: 'Not found' }, { status: 404 })
+    }
+    if (mockDb.blockRunsWith402) {
+      return HttpResponse.json(
+        {
+          error: 'payment_required',
+          code: 'NO_CREDIT',
+          message: 'Credit balance is zero; top up to run pipelines.',
+          credit_balance: 0,
+        },
+        { status: 402 },
+      )
+    }
+    const executionId = id('exec')
+    mockDb.executions[executionId] = {
+      id: executionId,
+      pipeline_id: pipe.id,
+      tenant_id: tid,
+      status: 'RUNNING',
+      started_at: nowIso(),
+      completed_at: null,
+      steps: [
+        { step_order: 1, status: 'RUNNING' },
+        { step_order: 2, status: 'PENDING' },
+        { step_order: 3, status: 'PENDING' },
+      ],
+    }
+    mockDb.executionPollCount[executionId] = 0
+    return HttpResponse.json(
+      {
+        execution_id: executionId,
+        status: 'RUNNING',
+        pipeline_id: pipe.id,
+        started_at: nowIso(),
+      },
+      { status: 202 },
+    )
+  }),
+
+  http.get('/api/v1/pipelines/:id/executions/:executionId', ({ params }) => {
+    const executionId = String(params.executionId)
+    const current = mockDb.executions[executionId]
+    if (!current) {
+      return HttpResponse.json({ message: 'Not found' }, { status: 404 })
+    }
+    const count = (mockDb.executionPollCount[executionId] ?? 0) + 1
+    mockDb.executionPollCount[executionId] = count
+    if (count >= 2) {
+      mockDb.executions[executionId] = {
+        ...current,
+        status: 'COMPLETED',
+        completed_at: nowIso(),
+        steps: [
+          { step_order: 1, status: 'COMPLETED' },
+          { step_order: 2, status: 'COMPLETED' },
+          { step_order: 3, status: 'COMPLETED' },
+        ],
+      }
+    } else if (count === 1) {
+      mockDb.executions[executionId] = {
+        ...current,
+        status: 'RUNNING',
+        steps: [
+          { step_order: 1, status: 'COMPLETED' },
+          { step_order: 2, status: 'RUNNING' },
+          { step_order: 3, status: 'PENDING' },
+        ],
+      }
+    }
+    return HttpResponse.json(mockDb.executions[executionId])
   }),
 ]
 

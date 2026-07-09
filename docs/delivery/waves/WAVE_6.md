@@ -195,7 +195,7 @@ flowchart LR
 | **Priority** | Must |
 | **Dependencies** | W6-US04; W2-US04 run API; W5-US06 402 handling |
 | **Architecture refs** | §4.3 execution overlay |
-| **Status** | Todo |
+| **Status** | Done |
 
 **In scope:** Run / dry-run actions; poll execution status; overlay on canvas nodes; surface **402** quota errors clearly.  
 **Out of scope:** Full log tail UI (link to observability OK).
@@ -204,9 +204,9 @@ flowchart LR
 
 [`../tdd/stories/w6/W6-US05-tdd.md`](../tdd/stories/w6/W6-US05-tdd.md)
 
-#### Support KB (create)
+#### Support KB
 
-`docs/delivery/kb/W6-US05-run-overlay.md`
+[`../kb/W6-US05-run-overlay.md`](../kb/W6-US05-run-overlay.md)
 
 ---
 

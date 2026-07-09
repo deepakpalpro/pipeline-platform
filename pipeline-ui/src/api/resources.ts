@@ -4,18 +4,32 @@ import type {
   CreateConnectorRequest,
   CreatePipelineRequest,
   CreateTenantServiceRequest,
+  DryRunResponse,
+  PipelineExecutionDetail,
   PipelineResponse,
+  PipelineRunResponse,
   ReplacePipelineStepsRequest,
   ServiceType,
   TenantConnector,
   TenantService,
   UpdateTenantServiceRequest,
 } from './types'
+import { ApiError } from './types'
 
 async function readJson<T>(res: Response): Promise<T> {
   if (!res.ok) {
+    let body: unknown = null
     const text = await res.text()
-    throw new Error(text || `HTTP ${res.status}`)
+    try {
+      body = text ? JSON.parse(text) : null
+    } catch {
+      body = text
+    }
+    const message =
+      body && typeof body === 'object' && 'message' in body
+        ? String((body as { message: unknown }).message)
+        : text || `HTTP ${res.status}`
+    throw new ApiError(res.status, body, message)
   }
   return res.json() as Promise<T>
 }
@@ -103,4 +117,27 @@ export function listPipelines(tenantId: string) {
   return apiFetch('/api/v1/pipelines', tenantId).then((r) =>
     readJson<PipelineResponse[]>(r),
   )
+}
+
+export function runPipeline(tenantId: string, pipelineId: string) {
+  return apiFetch(`/api/v1/pipelines/${pipelineId}/run`, tenantId, {
+    method: 'POST',
+  }).then((r) => readJson<PipelineRunResponse>(r))
+}
+
+export function dryRunPipeline(tenantId: string, pipelineId: string) {
+  return apiFetch(`/api/v1/pipelines/${pipelineId}/dry-run`, tenantId, {
+    method: 'POST',
+  }).then((r) => readJson<DryRunResponse>(r))
+}
+
+export function getPipelineExecution(
+  tenantId: string,
+  pipelineId: string,
+  executionId: string,
+) {
+  return apiFetch(
+    `/api/v1/pipelines/${pipelineId}/executions/${executionId}`,
+    tenantId,
+  ).then((r) => readJson<PipelineExecutionDetail>(r))
 }

@@ -4,7 +4,7 @@
 |-------|--------|
 | **Wave** | W6 — No-code UI |
 | **Audience** | Technical stakeholders |
-| **Status** | In Progress (W6-US04 Done; W6-US05 next) |
+| **Status** | In Progress (W6-US05 Done; W6-US06 next) |
 | **Architecture refs** | §4 |
 | **Branch / tags** | `wave-6` · `W6-US##` |
 | **Last updated** | 2026-07-10 |
@@ -179,3 +179,4 @@ Per working agreements: UI stories require unit tests for reducers/hooks and Pla
 | 2026-07-10 | W6-US02 Done — connectors/services UI + MSW |
 | 2026-07-10 | W6-US03 Done — pipelets catalog + admin register modal |
 | 2026-07-10 | W6-US04 Done — React Flow builder + save to steps API |
+| 2026-07-10 | W6-US05 Done — run/dry-run overlay + 402 quota UI |
