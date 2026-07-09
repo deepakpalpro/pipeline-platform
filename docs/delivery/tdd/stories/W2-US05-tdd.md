@@ -16,9 +16,9 @@
 
 ## What you are building
 
-An interface the orchestrator calls to **spawn ephemeral work**. Default: in-process stub that records create requests. Optional: Kind Job if available.
+An interface the orchestrator calls to **spawn ephemeral work** for each **pipeline step** (the step’s pipelet config → one Job/Pod). Default: in-process stub that records create requests. Optional: Kind Job if available.
 
-**Done means:** `PipeletJobClientTest` proves create is invoked with tenant/pipeline/execution ids.
+**Done means:** `PipeletJobClientTest` proves create is invoked with tenant/pipeline/execution/pipelet ids from the step.
 
 **Out of scope:** Production cluster RBAC; full container images.
 

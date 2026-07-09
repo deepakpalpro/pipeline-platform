@@ -250,18 +250,26 @@ erDiagram
 
 #### `pipeline_steps`
 
+A **pipeline step** is the per-pipeline configuration of a **pipelet** that will run as an ephemeral Job/Pod at execution time (see [§10.3](#103-pipelet-execution-namespace-tenant-tenant_id)).
+
+| Concept | Role |
+|---------|------|
+| **Pipelet** | Reusable unit in the registry (image + `config_schema`) — *what can run* |
+| **Pipeline step** | Binding of a pipelet into *this* pipeline (`pipelet_id`, order, config, connectors, queues, limits) — *how it runs here* |
+| **Job / Pod** | Runtime for one step of one `pipeline_execution` — *the actual run* (`exec-{execution_id}-stage-{step_order}`) |
+
 | Column | Type | Notes |
 |--------|------|-------|
 | `id` | VARCHAR(36) PK | |
 | `pipeline_id` | VARCHAR(36) FK | |
-| `pipelet_id` | VARCHAR(36) FK | |
-| `step_order` | INT | 1-based sequence |
+| `pipelet_id` | VARCHAR(36) FK | Which pipelet image/type to spawn |
+| `step_order` | INT | 1-based sequence (Source → Processor → Destination) |
 | `config` | JSON | Pipelet-specific config (validated against `config_schema`) |
-| `connector_ids` | JSON | Array of connector instance IDs |
+| `connector_ids` | JSON | Array of connector instance IDs (injected into the pod) |
 | `service_ids` | JSON | Array of service instance IDs |
 | `input_queue` | VARCHAR(255) | RabbitMQ queue name |
 | `output_queue` | VARCHAR(255) | RabbitMQ queue name |
-| `resource_limits` | JSON | `{cpu, memory}` K8s limits |
+| `resource_limits` | JSON | `{cpu, memory}` K8s limits for the Job |
 
 Unique constraint: `(pipeline_id, step_order)`
 
@@ -1287,7 +1295,7 @@ Connectors are packaged as PF4J plugin JARs with a `META-INF/services/com.platfo
 
 ### 10.3 Pipelet Execution (namespace: `tenant-{tenant_id}`)
 
-Each pipeline execution creates K8s Jobs:
+Each pipeline execution creates K8s Jobs — **one Job per pipeline step** for that run. The Job is materialized from the step’s pipelet binding (`pipelet_id`, queues, connectors, `resource_limits`); see [§2 `pipeline_steps`](#pipeline_steps).
 
 ```yaml
 apiVersion: batch/v1

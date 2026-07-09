@@ -15,6 +15,16 @@
 
 Configure a Source → Processor → Destination pipeline, run it **async** with RabbitMQ stage handoff, persist execution status, spawn a pipelet Job (Kind or stub), and prove a poison message lands on a stage DLQ.
 
+### Core model (steps → pipelets → pods)
+
+| Concept | Role |
+|---------|------|
+| **Pipelet** | Reusable unit (image + schema) in the registry — *what can run* |
+| **Pipeline step** (`pipeline_steps`) | Per-pipeline binding: which pipelet, order, config, connectors, queues, resource limits — *how it runs in this pipeline* |
+| **Job / Pod** (§10.3) | Ephemeral runtime for one step of one execution — *the actual run* |
+
+At `POST .../run`, each step drives a Job named `exec-{execution_id}-stage-{step_order}` in namespace `tenant-{tenant_id}`. Wave 2 may stub the Job client; the step row is still the source of truth for what that pod would run.
+
 | Exit criterion | How verified |
 |----------------|--------------|
 | Pipeline CRUD + steps | `PipelineControllerIT` / steps IT; tenant isolation |
@@ -135,10 +145,12 @@ flowchart LR
 
 **As a** tenant admin  
 **I want** to replace the step sequence on a pipeline  
-**so that** Source → Processor → Destination is configured with connector/queue metadata.
+**so that** each stage’s pipelet is configured (order, config, connectors, queues, limits) for the Jobs/Pods that will run on `POST .../run`.
 
-**In scope:** `PUT /api/v1/pipelines/{id}/steps`; `step_order`, `connector_ids`, queue name fields (may be placeholders until US03).  
-**Out of scope:** Declaring RabbitMQ (US03); requiring real pipelet registry rows if stubbed.
+**In scope:** `PUT /api/v1/pipelines/{id}/steps`; `step_order`, `pipelet_id`, `config`, `connector_ids`, queue name fields (may be placeholders until US03).  
+**Out of scope:** Declaring RabbitMQ (US03); requiring real pipelet registry rows if stubbed; spawning Jobs (US05).
+
+**Model reminder:** step = pipelet config for this pipeline; Job/Pod = that step running for an execution (see wave goal § Core model).
 
 #### Developer TDD guide
 

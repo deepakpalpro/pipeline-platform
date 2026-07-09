@@ -14,6 +14,29 @@
 
 ## Feature overview
 
+### What a step is (important)
+
+A **pipeline step** is the per-pipeline **configuration of a pipelet** that will run as an ephemeral Job/Pod when the pipeline executes (architecture §2 `pipeline_steps`, §10.3).
+
+| Concept | Role |
+|---------|------|
+| **Pipelet** | Reusable unit (image + `config_schema`) — *what can run* |
+| **Pipeline step** | Binding into *this* pipeline — *how it runs here* |
+| **Job / Pod** | Runtime for one step of one execution — *the actual run* |
+
+Step fields map to the future pod:
+
+| Step field | Used for |
+|------------|----------|
+| `pipelet_id` | Which pipelet image/type to spawn |
+| `step_order` | Stage sequence → Job name `…-stage-{n}` |
+| `config` | Pipelet-specific settings (vs pipelet `config_schema`) |
+| `connector_ids` / `service_ids` | Credentials/services injected into the pod |
+| `input_queue` / `output_queue` | RabbitMQ handoff between stages |
+| `resource_limits` | CPU/memory limits on the Job |
+
+### API
+
 Full **replace** of a pipeline’s step sequence:
 
 | Method | Path | Notes |
@@ -21,9 +44,7 @@ Full **replace** of a pipeline’s step sequence:
 | `PUT` | `/api/v1/pipelines/{id}/steps` | Delete existing steps, insert new set; bumps pipeline `version` |
 | `GET` | `/api/v1/pipelines/{id}` | Returns ordered `steps` |
 
-Each step stores: `pipelet_id`, `step_order` (1-based, unique per pipeline), `config`, `connector_ids`, `service_ids`, `input_queue`, `output_queue`, `resource_limits`.
-
-**Empty `steps` array is rejected** (`@NotEmpty`) so a 3-stage fixture can be required later. Queue names may be placeholders until W2-US03 declares RabbitMQ. Pipelet registry FK is deferred — `pipelet_id` is an opaque string.
+**Empty `steps` array is rejected** (`@NotEmpty`) so a 3-stage fixture can be required later. Queue names may be placeholders until W2-US03 declares RabbitMQ. Pipelet registry FK is deferred in Wave 2 — `pipelet_id` is an opaque string until the pipelet catalog story lands.
 
 Isolation: filtered pipeline lookup — cross-tenant PUT → **404**.
 
@@ -53,5 +74,7 @@ curl -s -X PUT "localhost:8080/api/v1/pipelines/$PIPE_ID/steps" \
 ## Related
 
 - Developer TDD: [`../tdd/stories/W2-US02-tdd.md`](../tdd/stories/W2-US02-tdd.md)
-- Execution plan: [`../waves/WAVE_2.md`](../waves/WAVE_2.md)
+- Execution plan: [`../waves/WAVE_2.md`](../waves/WAVE_2.md) § Core model
+- Job spawn from steps: [`W2-US05-pipelet-job.md`](W2-US05-pipelet-job.md)
+- Architecture: [`../../../ARCHITECTURE.md`](../../../ARCHITECTURE.md) §2 `pipeline_steps`, §10.3
 - Next: RabbitMQ topology (W2-US03)

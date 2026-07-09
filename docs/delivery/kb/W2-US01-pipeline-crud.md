@@ -13,6 +13,8 @@
 
 ## Feature overview
 
+A **pipeline** owns an ordered list of **steps** (W2-US02). Each step configures a **pipelet** that will run as a Job/Pod on `POST .../run` — the pipeline row itself is metadata (`name`, `visibility`, `execution_mode`, `status`); the steps are the runtime graph.
+
 Tenant-scoped pipelines under `/api/v1/pipelines`:
 
 | Method | Path | Notes |

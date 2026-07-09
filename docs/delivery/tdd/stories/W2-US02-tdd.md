@@ -18,9 +18,11 @@
 
 Replace the full step sequence for a pipeline (Source → Processor → Destination). Store `step_order`, connector/service id arrays, and queue name fields (may be placeholders until US03 declares RabbitMQ).
 
+**Important:** a step is the **configuration of a pipelet** for this pipeline — not the pipelet registry row itself. At run time (US04/US05) each step becomes a Job/Pod (`pipelet_id` → image, `config` / connectors / queues / `resource_limits` → pod env and limits). See architecture §2 `pipeline_steps` and §10.3.
+
 **Done means:** `PipelineStepsServiceTest` + IT replace steps and GET pipeline returns them.
 
-**Out of scope:** Declaring Rabbit topology; running the pipeline.
+**Out of scope:** Declaring Rabbit topology; running the pipeline; validating `pipelet_id` against a registry FK.
 
 ---
 
