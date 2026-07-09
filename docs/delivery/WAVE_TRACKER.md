@@ -117,7 +117,7 @@ Abbreviations: **U** = Unit, **I** = Integration, **WM** = WireMock, **LS** = Lo
 
 **Wave goal:** Fixture run yields billable events across compute, records, connector calls, webhooks.  
 **Plan:** [`waves/WAVE_5.md`](waves/WAVE_5.md) · **TDD:** [`tdd/WAVE_5_TDD.md`](tdd/WAVE_5_TDD.md) · **Developer guides:** [`tdd/stories/README.md`](tdd/stories/README.md) § Wave 5  
-**Branch:** `wave-5` · **Tags:** `W5-US01`–`W5-US06`, `wave-5-complete` · **PR:** [#10](https://github.com/deepakpalpro/pipeline-platform/pull/10) → `master` (**open**)
+**Branch:** `wave-5` · **Tags:** `W5-US01`–`W5-US06`, `wave-5-complete` · **PR:** [#10](https://github.com/deepakpalpro/pipeline-platform/pull/10) → `master` (**merged**)
 
 | Story ID | Feature / Epic | Title | Status | Owner | Test gate | Blockers |
 |----------|----------------|-------|--------|-------|-----------|----------|
@@ -134,18 +134,21 @@ Abbreviations: **U** = Unit, **I** = Integration, **WM** = WireMock, **LS** = Lo
 
 ## Wave 6 — No-code UI
 
-**Wave goal:** Build and run a 3-step pipeline in UI without code.
+**Wave goal:** Build and run a 3-step pipeline in UI without code.  
+**Plan:** [`waves/WAVE_6.md`](waves/WAVE_6.md) · **TDD:** [`tdd/WAVE_6_TDD.md`](tdd/WAVE_6_TDD.md) · **Developer guides:** [`tdd/stories/README.md`](tdd/stories/README.md) § Wave 6  
+**Branch:** `wave-6`
 
 | Story ID | Feature / Epic | Title | Status | Owner | Test gate | Blockers |
 |----------|----------------|-------|--------|-------|-----------|----------|
-| W6-US01 | W6-F1 / W6-F1-E1 | Level-1 nav shell + auth context | Todo | | | |
-| W6-US02 | W6-F1 / W6-F1-E2 | Connectors / Services list+forms | Todo | | | |
-| W6-US03 | W6-F1 / W6-F1-E2 | Global Pipelets catalog + admin register | Todo | | | |
-| W6-US04 | W6-F2 / W6-F2-E1 | Drag-drop pipeline builder save | Todo | | | |
-| W6-US05 | W6-F2 / W6-F2-E1 | Run / dry-run / execution overlay | Todo | | | |
-| W6-US06 | W6-F2 / W6-F2-E2 | Observability panels in UI | Todo | | | |
+| W6-US01 | W6-F1 / W6-F1-E1 | Level-1 nav shell + auth context | Done | | AuthContext.test + Shell.test | Billing nav added |
+| W6-US02 | W6-F1 / W6-F1-E2 | Connectors / Services list+forms | Done | | ConnectorForm/ServiceForm + list/detail MSW + filter/pagination | Dual config + V18/V19 seed |
+| W6-US03 | W6-F1 / W6-F1-E2 | Global Pipelets catalog + admin register | Done | | catalogFilter + PipeletsCatalog | ~105 fixture + dual defaults |
+| W6-US04 | W6-F2 / W6-F2-E1 | Drag-drop pipeline builder save | Done | | pipelineGraphReducer + PipelineBuilder.save + list page | Searchable connector select |
+| W6-US05 | W6-F2 / W6-F2-E1 | Run / dry-run / execution overlay | Done | | executionOverlay + RunControls.quota | API dry-run endpoint |
+| W6-US06 | W6-F2 / W6-F2-E2 | Observability panels in UI | Done | | Completeness/Latency/Heartbeat panels | |
 
-**Wave exit criteria:** Manual E2E script passes without Postman for happy path.
+**Wave exit criteria:** Manual E2E script passes without Postman for happy path.  
+**Exit verified:** 2026-07-10 — UI suite green; dual-config + seed docs; PR `wave-6` → `master`. Tag `wave-6-complete`.
 
 ---
 

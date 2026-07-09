@@ -2,6 +2,7 @@ package com.pipelineplatform.api.service;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.pipelineplatform.api.common.DualConfigSupport;
 import com.pipelineplatform.api.tenant.TenantContext;
 import com.pipelineplatform.api.tenant.TenantContextRequiredException;
 import com.pipelineplatform.api.tenant.TenantFilters;
@@ -66,7 +67,14 @@ public class TenantServiceConfigService {
     }
 
     boolean inherits = request.inheritsDefault() == null || request.inheritsDefault();
-    JsonNode stored = secretEncryptor.encryptSecrets(request.tenantConfig());
+    JsonNode execution =
+        request.executionConfig() != null ? request.executionConfig() : request.tenantConfig();
+    JsonNode deployment =
+        request.deploymentConfig() != null
+            ? request.deploymentConfig()
+            : DualConfigSupport.empty(objectMapper);
+    JsonNode storedExecution = secretEncryptor.encryptSecrets(execution);
+    JsonNode storedDeployment = secretEncryptor.encryptSecrets(deployment);
 
     TenantServiceConfig entity = new TenantServiceConfig();
     entity.setId(UUID.randomUUID().toString());
@@ -74,7 +82,9 @@ public class TenantServiceConfigService {
     entity.setServiceTypeId(type.getId());
     entity.setVendor(request.vendor());
     entity.setName(name);
-    entity.setTenantConfig(writeJson(stored));
+    entity.setTenantConfig(writeJson(storedExecution));
+    entity.setExecutionConfig(writeJson(storedExecution));
+    entity.setDeploymentConfig(writeJson(storedDeployment));
     entity.setInheritsDefault(inherits);
     entity.setStatus(ServiceInstanceStatus.active);
 
@@ -107,8 +117,24 @@ public class TenantServiceConfigService {
         repository.findFilteredById(id).orElseThrow(() -> new TenantServiceNotFoundException(id));
 
     entity.setName(request.name().trim());
-    if (request.tenantConfig() != null) {
-      entity.setTenantConfig(writeJson(secretEncryptor.encryptSecrets(request.tenantConfig())));
+    if (request.tenantConfig() != null || request.executionConfig() != null) {
+      JsonNode incoming =
+          request.executionConfig() != null ? request.executionConfig() : request.tenantConfig();
+      JsonNode existingExec =
+          readJson(
+              entity.getExecutionConfig() != null && !entity.getExecutionConfig().isBlank()
+                  ? entity.getExecutionConfig()
+                  : entity.getTenantConfig());
+      JsonNode merged = DualConfigSupport.mergePreservingSecrets(objectMapper, existingExec, incoming);
+      JsonNode stored = secretEncryptor.encryptSecrets(merged);
+      entity.setTenantConfig(writeJson(stored));
+      entity.setExecutionConfig(writeJson(stored));
+    }
+    if (request.deploymentConfig() != null) {
+      JsonNode merged =
+          DualConfigSupport.mergePreservingSecrets(
+              objectMapper, readJson(entity.getDeploymentConfig()), request.deploymentConfig());
+      entity.setDeploymentConfig(writeJson(secretEncryptor.encryptSecrets(merged)));
     }
     if (request.inheritsDefault() != null) {
       entity.setInheritsDefault(request.inheritsDefault());
@@ -129,32 +155,57 @@ public class TenantServiceConfigService {
   }
 
   TenantServiceResponse toResponse(TenantServiceConfig entity) {
-    JsonNode defaults = loadDefaults(entity.getServiceTypeId(), entity.getVendor());
-    JsonNode overrides = readJson(entity.getTenantConfig());
-    JsonNode merged = configMerger.merge(defaults, overrides, entity.isInheritsDefault());
-    JsonNode redacted = secretRedactor.redact(merged);
+    ServiceDefault defaultsRow = loadDefaultsRow(entity.getServiceTypeId(), entity.getVendor());
+    JsonNode executionDefaults =
+        defaultsRow == null
+            ? DualConfigSupport.empty(objectMapper)
+            : readJson(
+                defaultsRow.getDefaultExecutionConfig() != null
+                        && !defaultsRow.getDefaultExecutionConfig().isBlank()
+                    ? defaultsRow.getDefaultExecutionConfig()
+                    : defaultsRow.getDefaultConfig());
+    JsonNode deploymentDefaults =
+        defaultsRow == null
+            ? DualConfigSupport.empty(objectMapper)
+            : readJson(defaultsRow.getDefaultDeploymentConfig());
+
+    JsonNode executionOverrides =
+        readJson(
+            entity.getExecutionConfig() != null && !entity.getExecutionConfig().isBlank()
+                ? entity.getExecutionConfig()
+                : entity.getTenantConfig());
+    JsonNode deploymentOverrides = readJson(entity.getDeploymentConfig());
+
+    JsonNode executionMerged =
+        configMerger.merge(executionDefaults, executionOverrides, entity.isInheritsDefault());
+    JsonNode deploymentMerged =
+        DualConfigSupport.mergeExtend(objectMapper, deploymentDefaults, deploymentOverrides);
+
+    JsonNode redactedExecution = secretRedactor.redact(executionMerged);
+    JsonNode redactedDeployment = secretRedactor.redact(deploymentMerged);
     return new TenantServiceResponse(
         entity.getId(),
         entity.getTenantId(),
         entity.getServiceTypeId(),
         entity.getVendor(),
         entity.getName(),
-        redacted,
+        redactedExecution,
+        redactedDeployment,
+        redactedExecution,
         entity.isInheritsDefault(),
         entity.getStatus(),
         entity.getCreatedAt());
   }
 
-  private JsonNode loadDefaults(String serviceTypeId, String vendor) {
+  private ServiceDefault loadDefaultsRow(String serviceTypeId, String vendor) {
     return serviceTypeRepository
         .findByIdWithDefaults(serviceTypeId)
         .flatMap(
             type ->
                 type.getDefaults().stream()
                     .filter(d -> d.getVendor().equals(vendor))
-                    .findFirst()
-                    .map(d -> readJson(d.getDefaultConfig())))
-        .orElseGet(objectMapper::createObjectNode);
+                    .findFirst())
+        .orElse(null);
   }
 
   private JsonNode readJson(String json) {

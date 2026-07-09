@@ -131,7 +131,7 @@ class RestConnectorTestIT {
             "/api/v1/connectors",
             HttpMethod.POST,
             new HttpEntity<>(
-                new CreateConnectorRequest(TenantConnectorService.REST_TYPE_ID, name, config),
+                new CreateConnectorRequest(TenantConnectorService.REST_TYPE_ID, name, config, null, null),
                 jsonTenantHeaders(tenantId)),
             TenantConnectorResponse.class);
 

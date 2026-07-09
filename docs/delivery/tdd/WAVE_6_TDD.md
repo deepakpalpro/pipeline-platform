@@ -4,13 +4,15 @@
 |-------|--------|
 | **Wave** | W6 — No-code UI |
 | **Audience** | Technical stakeholders |
-| **Status** | Draft (planning) |
+| **Status** | Complete (W6-US01–US06 Done; dual-config + seed follow-ups; PR merge) |
 | **Architecture refs** | §4 |
-| **Branch / tags** | `wave-6` (planned) · `W6-US##` |
-| **Last updated** | 2026-07-08 |
+| **Branch / tags** | `wave-6` · `W6-US##` · `wave-6-complete` |
+| **Last updated** | 2026-07-10 |
 | **Template** | [`../TDD_WAVE_TEMPLATE.md`](../TDD_WAVE_TEMPLATE.md) |
 | **Catalog** | [`../../DELIVERY_PLAN.md`](../../DELIVERY_PLAN.md) § Wave 6 |
-| **Depends on** | W1 APIs stable; W2 run APIs; W4 for observability panels |
+| **Execution plan** | [`../waves/WAVE_6.md`](../waves/WAVE_6.md) |
+| **Developer guides** | [`stories/README.md`](stories/README.md) § Wave 6 |
+| **Depends on** | W1 APIs stable; W2 run APIs; W5 complete (`wave-5-complete`); W4 for observability panels |
 
 ---
 
@@ -58,10 +60,12 @@ Per working agreements: UI stories require unit tests for reducers/hooks and Pla
 
 ## 3. Environments & fixtures
 
-| Fixture | Entity | Path (planned) |
-|---------|--------|----------------|
-| `T001` session | auth context | frontend fixtures |
-| `threeStage` pipeline JSON | canvas | mirror backend fixture |
+| Fixture | Entity | Path |
+|---------|--------|------|
+| `T001` / `T002` session | auth context | `TenantContext` stubs |
+| `threeStage` pipeline JSON | canvas / MSW | `src/mocks/handlers.ts` |
+| Pipelet catalog (~105) | palette + catalog | `src/fixtures/pipelets.json` |
+| Seed connectors / Auth services | MSW + Flyway V19 | `src/fixtures/seed-*.json`, `V19__…sql` |
 | MSW handlers | APIs | `src/mocks/` |
 
 **Real vs mocked**
@@ -78,6 +82,8 @@ Per working agreements: UI stories require unit tests for reducers/hooks and Pla
 
 ### W6-US01 — Level-1 nav shell + auth context
 
+**Developer guide:** [`stories/w6/W6-US01-tdd.md`](stories/w6/W6-US01-tdd.md)
+
 | Step | Evidence |
 |------|----------|
 | **Red** | `AuthContext.test`, shell render test fail |
@@ -85,6 +91,8 @@ Per working agreements: UI stories require unit tests for reducers/hooks and Pla
 | **Refactor** | Route table isolation |
 
 ### W6-US02 — Connectors / Services list+forms
+
+**Developer guide:** [`stories/w6/W6-US02-tdd.md`](stories/w6/W6-US02-tdd.md)
 
 | Step | Evidence |
 |------|----------|
@@ -94,6 +102,8 @@ Per working agreements: UI stories require unit tests for reducers/hooks and Pla
 
 ### W6-US03 — Global Pipelets catalog + admin register
 
+**Developer guide:** [`stories/w6/W6-US03-tdd.md`](stories/w6/W6-US03-tdd.md)
+
 | Step | Evidence |
 |------|----------|
 | **Red** | Catalog filter tests fail |
@@ -101,6 +111,8 @@ Per working agreements: UI stories require unit tests for reducers/hooks and Pla
 | **Refactor** | Role-gate helpers |
 
 ### W6-US04 — Drag-drop pipeline builder save
+
+**Developer guide:** [`stories/w6/W6-US04-tdd.md`](stories/w6/W6-US04-tdd.md)
 
 | Step | Evidence |
 |------|----------|
@@ -110,6 +122,8 @@ Per working agreements: UI stories require unit tests for reducers/hooks and Pla
 
 ### W6-US05 — Run / dry-run / execution overlay
 
+**Developer guide:** [`stories/w6/W6-US05-tdd.md`](stories/w6/W6-US05-tdd.md)
+
 | Step | Evidence |
 |------|----------|
 | **Red** | Overlay state tests / E2E fail |
@@ -117,6 +131,8 @@ Per working agreements: UI stories require unit tests for reducers/hooks and Pla
 | **Refactor** | Shared poller hook |
 
 ### W6-US06 — Observability panels (Should)
+
+**Developer guide:** [`stories/w6/W6-US06-tdd.md`](stories/w6/W6-US06-tdd.md)
 
 | Step | Evidence |
 |------|----------|
@@ -161,3 +177,11 @@ Per working agreements: UI stories require unit tests for reducers/hooks and Pla
 | Date | Change |
 |------|--------|
 | 2026-07-08 | Initial Draft for technical stakeholders |
+| 2026-07-10 | Linked execution plan + junior story guides; wave-6 started |
+| 2026-07-10 | W6-US02 Done — connectors/services UI + MSW |
+| 2026-07-10 | W6-US03 Done — pipelets catalog + admin register modal |
+| 2026-07-10 | W6-US04 Done — React Flow builder + save to steps API |
+| 2026-07-10 | W6-US05 Done — run/dry-run overlay + 402 quota UI |
+| 2026-07-10 | W6-US06 Done — observability panels; wave stories complete |
+| 2026-07-10 | Dual deployment/execution config (API V16–V17 + UI); Auth vendors V18; T001 connector seed V19 |
+| 2026-07-10 | Pipelines list, Billing nav, connector search/filter/pagination, searchable builder dropdowns |

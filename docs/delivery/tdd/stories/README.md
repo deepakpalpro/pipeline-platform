@@ -122,11 +122,29 @@ Guides: [`w5/`](w5/)
 Execution plan (full AC): [`../../waves/WAVE_5.md`](../../waves/WAVE_5.md).  
 Stakeholder wave TDD: [`../WAVE_5_TDD.md`](../WAVE_5_TDD.md).
 
-## Later waves (W6+)
+## Wave 6
 
-1. Create folder `docs/delivery/tdd/stories/wN/` (e.g. `w6/`).
+Guides: [`w6/`](w6/)
+
+| Story | Guide | Status |
+|-------|-------|--------|
+| W6-US01 Nav shell + tenant context | [`w6/W6-US01-tdd.md`](w6/W6-US01-tdd.md) | Done |
+| W6-US02 Connectors / Services UI | [`w6/W6-US02-tdd.md`](w6/W6-US02-tdd.md) | Done |
+| W6-US03 Pipelets catalog | [`w6/W6-US03-tdd.md`](w6/W6-US03-tdd.md) | Done |
+| W6-US04 Pipeline builder | [`w6/W6-US04-tdd.md`](w6/W6-US04-tdd.md) | Done |
+| W6-US05 Run / overlay | [`w6/W6-US05-tdd.md`](w6/W6-US05-tdd.md) | Done |
+| W6-US06 Observability panels | [`w6/W6-US06-tdd.md`](w6/W6-US06-tdd.md) | Done |
+
+**Suggested order:** US01 → US02 → US03 → US04 → US05 → US06 (US02 can parallel US03 after US01).
+
+Execution plan (full AC): [`../../waves/WAVE_6.md`](../../waves/WAVE_6.md).  
+Stakeholder wave TDD: [`../WAVE_6_TDD.md`](../WAVE_6_TDD.md).
+
+## Later waves (W7+)
+
+1. Create folder `docs/delivery/tdd/stories/wN/` (e.g. `w7/`).
 2. Copy [`TDD_STORY_TEMPLATE.md`](TDD_STORY_TEMPLATE.md) to `wN/W#-US##-tdd.md`.
 3. Fill all 12 sections **before** coding.
 4. Link from `waves/WAVE_N.md`, `tdd/WAVE_N_TDD.md`, the story KB, and this README.
 
-Use `w0/`–`w5/` guides as the pattern. Do **not** put new guides in the flat `stories/` root.
+Use `w0/`–`w6/` guides as the pattern. Do **not** put new guides in the flat `stories/` root.

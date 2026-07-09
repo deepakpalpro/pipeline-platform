@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.pipelineplatform.api.common.DualConfigSupport;
 import com.pipelineplatform.api.messaging.QueueNaming;
 import com.pipelineplatform.api.tenant.TenantContext;
 import com.pipelineplatform.api.tenant.TenantContextRequiredException;
@@ -77,7 +78,14 @@ public class PipelineStepsService {
       step.setPipelineId(pipelineId);
       step.setPipeletId(stepRequest.pipeletId().trim());
       step.setStepOrder(order);
-      step.setConfig(writeJson(stepRequest.config()));
+      JsonNode execution =
+          stepRequest.executionConfig() != null
+              ? stepRequest.executionConfig()
+              : stepRequest.config();
+      JsonNode deployment = stepRequest.deploymentConfig();
+      step.setConfig(writeJson(execution));
+      step.setExecutionConfig(writeJson(execution));
+      step.setDeploymentConfig(writeJson(deployment));
       step.setConnectorIds(writeStringList(stepRequest.connectorIds()));
       step.setServiceIds(writeStringList(stepRequest.serviceIds()));
       step.setInputQueue(inputQueue);
@@ -87,13 +95,34 @@ public class PipelineStepsService {
     }
 
     pipeline.setVersion(pipeline.getVersion() + 1);
+    // Saving a non-empty step graph activates the pipeline so Run works without a separate PUT.
+    if (pipeline.getStatus() == PipelineStatus.DRAFT) {
+      pipeline.setStatus(PipelineStatus.ACTIVE);
+    }
     pipelineRepository.save(pipeline);
 
-    return PipelineResponse.from(pipeline, toResponses(saved));
+    return PipelineResponse.from(
+        pipeline,
+        toResponses(saved),
+        DualConfigSupport.redactForResponse(
+            objectMapper, readJsonObject(pipeline.getDeploymentConfig())),
+        DualConfigSupport.redactForResponse(
+            objectMapper, readJsonObject(pipeline.getExecutionConfig())));
   }
 
   List<PipelineStepResponse> loadSteps(String pipelineId) {
     return toResponses(pipelineStepRepository.findByPipelineIdOrdered(pipelineId));
+  }
+
+  private JsonNode readJsonObject(String json) {
+    if (json == null || json.isBlank()) {
+      return DualConfigSupport.empty(objectMapper);
+    }
+    try {
+      return objectMapper.readTree(json);
+    } catch (JsonProcessingException ex) {
+      throw new IllegalStateException("Corrupt pipeline config JSON", ex);
+    }
   }
 
   private void validateStepOrders(List<PipelineStepRequest> steps) {
@@ -110,11 +139,19 @@ public class PipelineStepsService {
   }
 
   private PipelineStepResponse toResponse(PipelineStep step) {
+    JsonNode execution =
+        readJson(
+            step.getExecutionConfig() != null && !step.getExecutionConfig().isBlank()
+                ? step.getExecutionConfig()
+                : step.getConfig());
+    JsonNode deployment = readJson(step.getDeploymentConfig());
     return new PipelineStepResponse(
         step.getId(),
         step.getPipeletId(),
         step.getStepOrder(),
-        readJson(step.getConfig()),
+        execution,
+        deployment,
+        execution,
         readStringList(step.getConnectorIds()),
         readStringList(step.getServiceIds()),
         step.getInputQueue(),

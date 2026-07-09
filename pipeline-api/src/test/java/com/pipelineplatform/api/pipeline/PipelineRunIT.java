@@ -71,7 +71,7 @@ class PipelineRunIT {
                 "/api/v1/pipelines",
                 HttpMethod.POST,
                 new HttpEntity<>(
-                    new CreatePipelineRequest("async-run-" + suffix, null, null, null),
+                    new CreatePipelineRequest("async-run-" + suffix, null, null, null, null, null),
                     jsonTenantHeaders(tenantId)),
                 PipelineResponse.class)
             .getBody();
@@ -117,7 +117,7 @@ class PipelineRunIT {
 
     UpdatePipelineRequest activate =
         new UpdatePipelineRequest(
-            created.name(), created.description(), null, null, PipelineStatus.ACTIVE);
+            created.name(), created.description(), null, null, PipelineStatus.ACTIVE, null, null);
     restTemplate.exchange(
         "/api/v1/pipelines/" + created.id(),
         HttpMethod.PUT,
@@ -188,7 +188,7 @@ class PipelineRunIT {
                 "/api/v1/pipelines",
                 HttpMethod.POST,
                 new HttpEntity<>(
-                    new CreatePipelineRequest("owned-b-" + suffix, null, null, null),
+                    new CreatePipelineRequest("owned-b-" + suffix, null, null, null, null, null),
                     jsonTenantHeaders(tenantB.id())),
                 PipelineResponse.class)
             .getBody();
@@ -215,7 +215,7 @@ class PipelineRunIT {
                 "/api/v1/pipelines",
                 HttpMethod.POST,
                 new HttpEntity<>(
-                    new CreatePipelineRequest("still-draft-" + suffix, null, null, null),
+                    new CreatePipelineRequest("still-draft-" + suffix, null, null, null, null, null),
                     jsonTenantHeaders(tenant.id())),
                 PipelineResponse.class)
             .getBody();

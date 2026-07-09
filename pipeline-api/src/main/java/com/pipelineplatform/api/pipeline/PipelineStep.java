@@ -29,6 +29,14 @@ public class PipelineStep {
   private String config;
 
   @JdbcTypeCode(SqlTypes.JSON)
+  @Column(name = "deployment_config", columnDefinition = "json")
+  private String deploymentConfig;
+
+  @JdbcTypeCode(SqlTypes.JSON)
+  @Column(name = "execution_config", columnDefinition = "json")
+  private String executionConfig;
+
+  @JdbcTypeCode(SqlTypes.JSON)
   @Column(name = "connector_ids", columnDefinition = "json")
   private String connectorIds;
 
@@ -84,6 +92,22 @@ public class PipelineStep {
 
   public void setConfig(String config) {
     this.config = config;
+  }
+
+  public String getDeploymentConfig() {
+    return deploymentConfig;
+  }
+
+  public void setDeploymentConfig(String deploymentConfig) {
+    this.deploymentConfig = deploymentConfig;
+  }
+
+  public String getExecutionConfig() {
+    return executionConfig;
+  }
+
+  public void setExecutionConfig(String executionConfig) {
+    this.executionConfig = executionConfig;
   }
 
   public String getConnectorIds() {

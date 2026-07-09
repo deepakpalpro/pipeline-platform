@@ -33,6 +33,14 @@ public class ServiceDefault {
   private String defaultConfig;
 
   @JdbcTypeCode(SqlTypes.JSON)
+  @Column(name = "default_deployment_config", columnDefinition = "json")
+  private String defaultDeploymentConfig;
+
+  @JdbcTypeCode(SqlTypes.JSON)
+  @Column(name = "default_execution_config", columnDefinition = "json")
+  private String defaultExecutionConfig;
+
+  @JdbcTypeCode(SqlTypes.JSON)
   @Column(name = "config_schema", columnDefinition = "json")
   private String configSchema;
 
@@ -74,6 +82,22 @@ public class ServiceDefault {
 
   public void setDefaultConfig(String defaultConfig) {
     this.defaultConfig = defaultConfig;
+  }
+
+  public String getDefaultDeploymentConfig() {
+    return defaultDeploymentConfig;
+  }
+
+  public void setDefaultDeploymentConfig(String defaultDeploymentConfig) {
+    this.defaultDeploymentConfig = defaultDeploymentConfig;
+  }
+
+  public String getDefaultExecutionConfig() {
+    return defaultExecutionConfig;
+  }
+
+  public void setDefaultExecutionConfig(String defaultExecutionConfig) {
+    this.defaultExecutionConfig = defaultExecutionConfig;
   }
 
   public String getConfigSchema() {

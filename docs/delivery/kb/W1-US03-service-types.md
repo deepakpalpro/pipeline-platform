@@ -25,7 +25,20 @@ Wave 1 seeds:
 | `st-auth` | `auth` | — |
 | `sd-auth-stub` | — | `StubAuth` |
 
-Tenant-specific Auth config (secrets, overrides) is **W1-US04**.
+**Wave 6 follow-up (Flyway V18)** adds Auth vendor defaults under `st-auth`:
+
+| ID | Vendor |
+|----|--------|
+| `sd-auth-oauth` | OAuth |
+| `sd-auth-oidc` | OIDC |
+| `sd-auth-keycloak` | Keycloak |
+| `sd-auth-aad` | AAD |
+| `sd-auth-cognito` | AWSCognito |
+| `sd-auth-azure-mi` | AzureMI |
+| `sd-auth-cert` | CertBased |
+| `sd-auth-jwt` | JWT |
+
+Tenant-specific Auth config (secrets, overrides) is **W1-US04**. Dual deployment/execution maps: [`W6-dual-deployment-execution-config.md`](W6-dual-deployment-execution-config.md).
 
 ## How to verify
 

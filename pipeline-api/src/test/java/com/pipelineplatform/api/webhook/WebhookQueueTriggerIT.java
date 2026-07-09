@@ -125,7 +125,7 @@ class WebhookQueueTriggerIT {
             objectMapper
                 .createObjectNode()
                 .put("path_hint", "/hooks")
-                .put("signing_secret", SIGNING_SECRET));
+                .put("signing_secret", SIGNING_SECRET), null, null);
     ResponseEntity<TenantConnectorResponse> created =
         restTemplate.exchange(
             "/api/v1/connectors",

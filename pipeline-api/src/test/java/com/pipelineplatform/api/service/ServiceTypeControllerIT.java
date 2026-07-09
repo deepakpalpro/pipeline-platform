@@ -65,7 +65,18 @@ class ServiceTypeControllerIT {
     @SuppressWarnings("unchecked")
     List<Map<String, Object>> defaults = (List<Map<String, Object>>) auth.get("defaults");
     assertThat(defaults).isNotEmpty();
-    assertThat(defaults.getFirst().get("vendor")).isEqualTo("StubAuth");
+    assertThat(defaults)
+        .extracting(d -> String.valueOf(d.get("vendor")))
+        .contains(
+            "StubAuth",
+            "OAuth",
+            "OIDC",
+            "Keycloak",
+            "AAD",
+            "AWSCognito",
+            "AzureMI",
+            "CertBased",
+            "JWT");
     assertThat(defaults.getFirst().get("defaultConfig")).isInstanceOf(Map.class);
   }
 }

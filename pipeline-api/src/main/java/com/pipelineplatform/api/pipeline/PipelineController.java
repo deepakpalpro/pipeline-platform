@@ -20,14 +20,17 @@ public class PipelineController {
   private final PipelineService pipelineService;
   private final PipelineStepsService pipelineStepsService;
   private final PipelineRunService pipelineRunService;
+  private final PipelineDryRunService pipelineDryRunService;
 
   public PipelineController(
       PipelineService pipelineService,
       PipelineStepsService pipelineStepsService,
-      PipelineRunService pipelineRunService) {
+      PipelineRunService pipelineRunService,
+      PipelineDryRunService pipelineDryRunService) {
     this.pipelineService = pipelineService;
     this.pipelineStepsService = pipelineStepsService;
     this.pipelineRunService = pipelineRunService;
+    this.pipelineDryRunService = pipelineDryRunService;
   }
 
   @PostMapping
@@ -55,6 +58,11 @@ public class PipelineController {
   public PipelineResponse replaceSteps(
       @PathVariable String id, @Valid @RequestBody ReplacePipelineStepsRequest request) {
     return pipelineStepsService.replace(id, request);
+  }
+
+  @PostMapping("/{id}/dry-run")
+  public PipelineDryRunResponse dryRun(@PathVariable String id) {
+    return pipelineDryRunService.dryRun(id);
   }
 
   @PostMapping("/{id}/run")

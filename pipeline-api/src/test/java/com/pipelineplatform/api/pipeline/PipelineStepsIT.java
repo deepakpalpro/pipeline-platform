@@ -57,7 +57,7 @@ class PipelineStepsIT {
                 "/api/v1/pipelines",
                 HttpMethod.POST,
                 new HttpEntity<>(
-                    new CreatePipelineRequest("with-steps-" + suffix, null, null, null),
+                    new CreatePipelineRequest("with-steps-" + suffix, null, null, null, null, null),
                     jsonTenantHeaders(tenant.id())),
                 PipelineResponse.class)
             .getBody();
@@ -151,7 +151,7 @@ class PipelineStepsIT {
                 "/api/v1/pipelines",
                 HttpMethod.POST,
                 new HttpEntity<>(
-                    new CreatePipelineRequest("owned-by-b-" + suffix, null, null, null),
+                    new CreatePipelineRequest("owned-by-b-" + suffix, null, null, null, null, null),
                     jsonTenantHeaders(tenantB.id())),
                 PipelineResponse.class)
             .getBody();

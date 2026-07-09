@@ -21,7 +21,7 @@ Not support playbooks — those live under [`../kb/`](../kb/).
 | 3 Webhook Ingress | [`WAVE_3_TDD.md`](WAVE_3_TDD.md) | Complete |
 | 4 Observability | [`WAVE_4_TDD.md`](WAVE_4_TDD.md) | Complete |
 | 5 Metering / PAYG | [`WAVE_5_TDD.md`](WAVE_5_TDD.md) | Complete |
-| 6 No-code UI | [`WAVE_6_TDD.md`](WAVE_6_TDD.md) | Draft |
+| 6 No-code UI | [`WAVE_6_TDD.md`](WAVE_6_TDD.md) | In Progress |
 | 7 Hardening / Ops | [`WAVE_7_TDD.md`](WAVE_7_TDD.md) | Draft |
 
 Update the matching `WAVE_N_TDD.md` when stories ship (red/green evidence, deferrals, exit sign-off). Coverage checkboxes remain in [`../TEST_MATRIX.md`](../TEST_MATRIX.md).

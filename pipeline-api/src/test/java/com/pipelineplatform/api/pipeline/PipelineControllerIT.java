@@ -54,7 +54,7 @@ class PipelineControllerIT {
             "customer-sync-" + suffix,
             "Sync customers",
             PipelineVisibility.PRIVATE,
-            PipelineExecutionMode.ASYNC);
+            PipelineExecutionMode.ASYNC, null, null);
 
     ResponseEntity<PipelineResponse> created =
         restTemplate.exchange(
@@ -98,7 +98,7 @@ class PipelineControllerIT {
                 "/api/v1/pipelines",
                 HttpMethod.POST,
                 new HttpEntity<>(
-                    new CreatePipelineRequest("only-b-" + suffix, null, null, null),
+                    new CreatePipelineRequest("only-b-" + suffix, null, null, null, null, null),
                     jsonTenantHeaders(tenantB.id())),
                 PipelineResponse.class)
             .getBody();
@@ -125,7 +125,7 @@ class PipelineControllerIT {
                 "/api/v1/pipelines",
                 HttpMethod.POST,
                 new HttpEntity<>(
-                    new CreatePipelineRequest("to-archive-" + suffix, null, null, null),
+                    new CreatePipelineRequest("to-archive-" + suffix, null, null, null, null, null),
                     jsonTenantHeaders(tenant.id())),
                 PipelineResponse.class)
             .getBody();

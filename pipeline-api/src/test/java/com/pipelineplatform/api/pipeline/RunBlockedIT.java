@@ -153,7 +153,7 @@ class RunBlockedIT {
                 "/api/v1/pipelines",
                 HttpMethod.POST,
                 new HttpEntity<>(
-                    new CreatePipelineRequest(name, null, null, null), jsonTenantHeaders(tenantId)),
+                    new CreatePipelineRequest(name, null, null, null, null, null), jsonTenantHeaders(tenantId)),
                 PipelineResponse.class)
             .getBody();
     assertThat(created).isNotNull();
@@ -198,7 +198,7 @@ class RunBlockedIT {
 
     UpdatePipelineRequest activate =
         new UpdatePipelineRequest(
-            created.name(), created.description(), null, null, PipelineStatus.ACTIVE);
+            created.name(), created.description(), null, null, PipelineStatus.ACTIVE, null, null);
     restTemplate.exchange(
         "/api/v1/pipelines/" + created.id(),
         HttpMethod.PUT,
