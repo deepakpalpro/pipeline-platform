@@ -1,21 +1,29 @@
 package com.pipelineplatform.api.pipeline;
 
+import com.pipelineplatform.api.billing.QuotaDecision;
+import com.pipelineplatform.api.billing.QuotaService;
+import com.pipelineplatform.api.billing.RunBlockedException;
 import com.pipelineplatform.api.tenant.TenantContext;
 import com.pipelineplatform.api.tenant.TenantContextRequiredException;
 import com.pipelineplatform.api.tenant.TenantFilters;
 import jakarta.persistence.EntityManager;
 import java.util.List;
 import org.hibernate.Session;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class PipelineRunService {
 
+  private static final Logger log = LoggerFactory.getLogger(PipelineRunService.class);
+
   private final PipelineRepository pipelineRepository;
   private final PipelineStepRepository pipelineStepRepository;
   private final PipelineExecutionRepository executionRepository;
   private final PipelineRunOrchestrator orchestrator;
+  private final QuotaService quotaService;
   private final EntityManager entityManager;
 
   public PipelineRunService(
@@ -23,11 +31,13 @@ public class PipelineRunService {
       PipelineStepRepository pipelineStepRepository,
       PipelineExecutionRepository executionRepository,
       PipelineRunOrchestrator orchestrator,
+      QuotaService quotaService,
       EntityManager entityManager) {
     this.pipelineRepository = pipelineRepository;
     this.pipelineStepRepository = pipelineStepRepository;
     this.executionRepository = executionRepository;
     this.orchestrator = orchestrator;
+    this.quotaService = quotaService;
     this.entityManager = entityManager;
   }
 
@@ -41,8 +51,22 @@ public class PipelineRunService {
             .findFilteredById(pipelineId)
             .orElseThrow(() -> new PipelineNotFoundException(pipelineId));
 
+    QuotaDecision decision = quotaService.evaluateTenant(tenantId);
+    if (decision.blocksRun()) {
+      throw new RunBlockedException(decision);
+    }
+    if (!decision.allowed()) {
+      // defensive — blocksRun covers HARD/NO_CREDIT; soft is allowed
+      throw new RunBlockedException(decision);
+    }
+
     List<PipelineStep> steps = pipelineStepRepository.findByPipelineIdOrdered(pipelineId);
     PipelineExecution execution = orchestrator.start(pipeline, steps, ExecutionTrigger.MANUAL);
+    log.debug(
+        "pipeline run accepted pipelineId={} executionId={} quota={}",
+        pipelineId,
+        execution.getId(),
+        decision.code());
     return PipelineRunResponse.from(execution);
   }
 
