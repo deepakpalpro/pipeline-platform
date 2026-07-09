@@ -158,7 +158,7 @@ body {
 
 .split-page {
   display: grid;
-  grid-template-columns: minmax(220px, 280px) 1fr;
+  grid-template-columns: minmax(260px, 320px) 1fr;
   gap: 1.25rem;
   min-height: 60vh;
 }
@@ -180,6 +180,150 @@ body {
   display: flex;
   flex-direction: column;
   gap: 0.35rem;
+}
+
+.list-toolbar {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-bottom: 0.65rem;
+}
+
+.list-toolbar-search {
+  width: 100%;
+}
+
+.list-toolbar-search input {
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+}
+
+.list-filter select {
+  width: 100%;
+  background: var(--surface);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 0.4rem 0.65rem;
+}
+
+.list-count {
+  margin: 0 0 0.55rem;
+  font-size: 0.8rem;
+}
+
+.list-pagination {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  margin-top: 0.85rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid var(--border);
+}
+
+.list-pagination button {
+  padding: 0.35rem 0.65rem;
+}
+
+.searchable-select {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  margin-bottom: 0.85rem;
+}
+
+.searchable-select-label {
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+
+.searchable-select-trigger {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  width: 100%;
+  text-align: left;
+  background: var(--surface);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 0.45rem 0.65rem;
+  cursor: pointer;
+}
+
+.searchable-select-caret {
+  color: var(--muted);
+  font-size: 0.75rem;
+}
+
+.searchable-select-popover {
+  position: absolute;
+  z-index: 20;
+  top: calc(100% + 0.25rem);
+  left: 0;
+  right: 0;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  box-shadow: 0 8px 24px color-mix(in srgb, #000 35%, transparent);
+  padding: 0.45rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.searchable-select-search {
+  width: 100%;
+  box-sizing: border-box;
+  background: color-mix(in srgb, var(--bg) 70%, var(--surface));
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 0.4rem 0.55rem;
+}
+
+.searchable-select-options {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  max-height: 220px;
+  overflow: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.searchable-select-options button {
+  width: 100%;
+  text-align: left;
+  background: transparent;
+  border: 1px solid transparent;
+  color: var(--text);
+  border-radius: 6px;
+  padding: 0.45rem 0.55rem;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+}
+
+.searchable-select-options button:hover,
+.searchable-select-options button.active {
+  background: var(--accent-soft);
+  border-color: var(--accent);
+}
+
+.searchable-select-meta,
+.searchable-select-empty {
+  font-size: 0.75rem;
+}
+
+.searchable-select-empty {
+  padding: 0.5rem 0.55rem;
 }
 
 .list-item {
@@ -522,6 +666,19 @@ button.linkish {
   min-height: 70vh;
 }
 
+.builder-deployment {
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 0.85rem 1rem;
+  background: color-mix(in srgb, var(--surface) 90%, transparent);
+  max-width: 42rem;
+}
+
+.builder-deployment .config-editor h3 {
+  margin: 0 0 0.5rem;
+  font-size: 0.95rem;
+}
+
 .builder-title-row {
   display: flex;
   align-items: center;
@@ -531,6 +688,163 @@ button.linkish {
 
 .builder-title-row h1 {
   margin: 0;
+}
+
+.back-link {
+  color: var(--muted);
+  text-decoration: none;
+  font-size: 0.9rem;
+}
+
+.back-link:hover {
+  color: var(--text);
+}
+
+.button-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.button-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.4rem 0.75rem;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text);
+  text-decoration: none;
+  font-size: 0.875rem;
+  cursor: pointer;
+}
+
+.button-link:hover {
+  background: var(--accent-soft);
+}
+
+.button-link.primary {
+  background: var(--accent);
+  border-color: transparent;
+  color: #fff;
+}
+
+.detail-panel-inner h2 {
+  margin: 0;
+  font-size: 1.15rem;
+}
+
+.detail-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 0.75rem 1rem;
+  margin: 0 0 1rem;
+}
+
+.detail-grid dt {
+  margin: 0;
+  font-size: 0.75rem;
+  color: var(--muted);
+}
+
+.detail-grid dd {
+  margin: 0.15rem 0 0;
+  font-size: 0.9rem;
+}
+
+.detail-grid .detail-span {
+  grid-column: 1 / -1;
+}
+
+.steps-preview h3 {
+  margin: 0 0 0.5rem;
+  font-size: 0.9rem;
+}
+
+.step-cards {
+  list-style: none;
+  margin: 0 0 1rem;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.step-card {
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 0.75rem 0.85rem;
+  background: color-mix(in srgb, var(--surface) 92%, transparent);
+}
+
+.step-card-header {
+  display: flex;
+  gap: 0.65rem;
+  align-items: flex-start;
+}
+
+.step-order {
+  flex-shrink: 0;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--muted);
+  padding-top: 0.15rem;
+}
+
+.step-desc {
+  margin: 0.45rem 0 0;
+  font-size: 0.8rem;
+}
+
+.step-attrs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.45rem 0.75rem;
+  margin: 0.65rem 0 0;
+}
+
+.step-attrs dt {
+  margin: 0;
+  font-size: 0.7rem;
+  color: var(--muted);
+}
+
+.step-attrs dd {
+  margin: 0.1rem 0 0;
+  font-size: 0.8rem;
+  word-break: break-word;
+}
+
+.step-config {
+  margin-top: 0.65rem;
+}
+
+.step-config h4 {
+  margin: 0 0 0.35rem;
+  font-size: 0.8rem;
+  color: var(--muted);
+  font-weight: 600;
+}
+
+.deployment-kv {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  font-size: 0.8rem;
+}
+
+.steps-preview ol:not(.step-cards) {
+  margin: 0 0 1rem;
+  padding-left: 1.25rem;
+}
+
+.steps-preview li:not(.step-card) {
+  margin-bottom: 0.25rem;
 }
 
 .inline-field input {
@@ -614,6 +928,52 @@ button.linkish {
   gap: 0.35rem;
 }
 
+.palette-search {
+  display: block;
+  margin-bottom: 0.75rem;
+}
+
+.palette-search input {
+  width: 100%;
+  background: var(--surface);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 0.45rem 0.6rem;
+  font-size: 0.85rem;
+}
+
+.palette-categories {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+  max-height: calc(70vh - 6rem);
+  overflow: auto;
+  padding-right: 0.15rem;
+}
+
+.palette-category-header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.5rem;
+  margin-bottom: 0.4rem;
+}
+
+.palette-category-header h3 {
+  margin: 0;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--muted);
+  font-weight: 600;
+}
+
+.palette-count {
+  font-size: 0.75rem;
+  color: var(--muted);
+}
+
 .palette-list {
   list-style: none;
   margin: 0;
@@ -638,6 +998,17 @@ button.linkish {
 
 .palette-item:hover {
   background: var(--accent-soft);
+}
+
+.palette-more {
+  width: 100%;
+  margin-top: 0.4rem;
+  font-size: 0.8rem;
+}
+
+.palette-empty {
+  margin: 0 0 0.75rem;
+  font-size: 0.85rem;
 }
 
 .builder-canvas {
@@ -821,6 +1192,49 @@ button.linkish {
 .obs-warn {
   color: #f0c674;
   margin: 0 0 0.75rem;
+}
+
+.billing-page {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.billing-subtitle {
+  margin: 0.25rem 0 0;
+}
+
+.billing-summary-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 0.85rem;
+}
+
+.billing-card {
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 0.9rem 1rem;
+  background: color-mix(in srgb, var(--surface) 90%, transparent);
+}
+
+.billing-card h2 {
+  margin: 0;
+  font-size: 0.8rem;
+  color: var(--muted);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.billing-metric {
+  margin: 0.45rem 0 0.25rem;
+  font-size: 1.45rem;
+  font-weight: 700;
+}
+
+.billing-section h2 {
+  margin: 0 0 0.75rem;
+  font-size: 1.05rem;
 }
 
 @media (max-width: 960px) {

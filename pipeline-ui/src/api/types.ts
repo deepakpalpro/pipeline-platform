@@ -6,6 +6,8 @@ export type TenantConnector = {
   connectorTypeId: string
   name: string
   config: Record<string, unknown>
+  deployment_config?: Record<string, unknown> | null
+  execution_config?: Record<string, unknown> | null
   status: ConnectorInstanceStatus
   lastTestedAt: string | null
   createdAt: string
@@ -15,6 +17,8 @@ export type CreateConnectorRequest = {
   connectorTypeId: string
   name: string
   config: Record<string, unknown>
+  deployment_config?: Record<string, unknown>
+  execution_config?: Record<string, unknown>
 }
 
 export type ConnectorType = {
@@ -35,6 +39,8 @@ export type TenantService = {
   vendor: string
   name: string
   config: Record<string, unknown>
+  deployment_config?: Record<string, unknown> | null
+  execution_config?: Record<string, unknown> | null
   inheritsDefault: boolean
   status: ServiceInstanceStatus
   createdAt: string
@@ -45,25 +51,40 @@ export type CreateTenantServiceRequest = {
   vendor: string
   name: string
   tenantConfig: Record<string, unknown>
+  deployment_config?: Record<string, unknown>
+  execution_config?: Record<string, unknown>
   inheritsDefault?: boolean
 }
 
 export type UpdateTenantServiceRequest = {
   name: string
   tenantConfig?: Record<string, unknown>
+  deployment_config?: Record<string, unknown>
+  execution_config?: Record<string, unknown>
   inheritsDefault?: boolean
   status?: ServiceInstanceStatus
+}
+
+export type ServiceDefault = {
+  id: string
+  vendor: string
+  baseServiceClass?: string | null
+  defaultConfig?: Record<string, unknown> | null
+  configSchema?: Record<string, unknown> | null
 }
 
 export type ServiceType = {
   id: string
   type: string
   displayName: string
+  defaults?: ServiceDefault[]
 }
 
 export type UpdateConnectorRequest = {
   name: string
   config?: Record<string, unknown>
+  deployment_config?: Record<string, unknown>
+  execution_config?: Record<string, unknown>
   status?: ConnectorInstanceStatus
 }
 
@@ -72,12 +93,27 @@ export type CreatePipelineRequest = {
   description?: string
   visibility?: 'PRIVATE' | 'TENANT'
   executionMode?: 'ASYNC' | 'SYNC'
+  deployment_config?: Record<string, unknown>
+  execution_config?: Record<string, unknown>
+}
+
+export type UpdatePipelineRequest = {
+  name: string
+  description?: string | null
+  visibility?: 'PRIVATE' | 'TENANT'
+  executionMode?: 'ASYNC' | 'SYNC'
+  status?: string
+  deployment_config?: Record<string, unknown>
+  execution_config?: Record<string, unknown>
 }
 
 export type PipelineStepPayload = {
   pipelet_id: string
   step_order: number
+  /** Legacy alias of execution_config. */
   config: Record<string, unknown>
+  deployment_config?: Record<string, unknown>
+  execution_config?: Record<string, unknown>
   connector_ids: string[]
   service_ids: string[]
   input_queue: string | null
@@ -86,6 +122,19 @@ export type PipelineStepPayload = {
 
 export type ReplacePipelineStepsRequest = {
   steps: PipelineStepPayload[]
+}
+
+export type PipelineStepResponse = {
+  id?: string
+  pipelet_id: string
+  step_order: number
+  config?: Record<string, unknown> | null
+  deployment_config?: Record<string, unknown> | null
+  execution_config?: Record<string, unknown> | null
+  connector_ids?: string[]
+  service_ids?: string[]
+  input_queue?: string | null
+  output_queue?: string | null
 }
 
 export type PipelineResponse = {
@@ -97,9 +146,11 @@ export type PipelineResponse = {
   execution_mode?: string
   version: number
   status: string
+  deployment_config?: Record<string, unknown> | null
+  execution_config?: Record<string, unknown> | null
   created_at?: string
   updated_at?: string
-  steps?: unknown[]
+  steps?: PipelineStepResponse[]
 }
 
 export type PipelineRunResponse = {
@@ -179,3 +230,71 @@ export type HeartbeatResponse = {
 }
 
 export type TimeRange = '1h' | '24h' | '7d'
+
+export type DimensionUsage = {
+  quantity: number | string
+  cost: number | string
+}
+
+export type UsageSummaryResponse = {
+  tenant_id: string
+  period_start: string
+  period_end: string
+  dimensions: Record<string, DimensionUsage>
+  total_cost: number | string
+  credit_balance: number | string
+}
+
+export type UsageEventItem = {
+  id: string
+  dimension: string
+  quantity: number | string
+  unit: string
+  execution_id?: string | null
+  pipeline_id?: string | null
+  pipelet_id?: string | null
+  connector_id?: string | null
+  recorded_at: string
+  idempotency_key?: string | null
+}
+
+export type UsageEventsPageResponse = {
+  tenant_id: string
+  items: UsageEventItem[]
+  page: number
+  size: number
+  total_elements: number
+  total_pages: number
+}
+
+export type DimensionQuotaStatus = {
+  soft: number | string | null
+  hard: number | string | null
+  usage: number | string | null
+}
+
+export type QuotaStatusResponse = {
+  tenant_id: string
+  decision: string
+  message: string
+  allowed: boolean
+  credit_balance: number | string
+  breached_dimension?: string | null
+  soft_limit?: number | string | null
+  hard_limit?: number | string | null
+  current_usage?: number | string | null
+  dimensions?: Record<string, DimensionQuotaStatus>
+}
+
+export type BillingPeriodItem = {
+  id: string
+  period_start: string
+  period_end: string
+  total_cost: number | string
+  status: string
+}
+
+export type BillingPeriodsResponse = {
+  tenant_id: string
+  periods: BillingPeriodItem[]
+}

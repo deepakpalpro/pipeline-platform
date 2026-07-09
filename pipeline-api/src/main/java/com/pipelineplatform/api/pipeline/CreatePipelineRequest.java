@@ -1,5 +1,7 @@
 package com.pipelineplatform.api.pipeline;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.JsonNode;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
@@ -7,4 +9,6 @@ public record CreatePipelineRequest(
     @NotBlank @Size(max = 255) String name,
     String description,
     PipelineVisibility visibility,
-    PipelineExecutionMode executionMode) {}
+    PipelineExecutionMode executionMode,
+    @JsonProperty("deployment_config") JsonNode deploymentConfig,
+    @JsonProperty("execution_config") JsonNode executionConfig) {}

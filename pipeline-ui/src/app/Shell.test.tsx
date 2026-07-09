@@ -14,6 +14,7 @@ describe('AppShell', () => {
     expect(screen.getByRole('link', { name: 'Connectors' })).toBeInTheDocument()
     expect(screen.getByRole('link', { name: 'Services' })).toBeInTheDocument()
     expect(screen.getByRole('link', { name: 'Observability' })).toBeInTheDocument()
+    expect(screen.getByRole('link', { name: 'Billing' })).toBeInTheDocument()
   })
 
   it('highlights the active route and navigates to stub pages', async () => {
@@ -26,6 +27,10 @@ describe('AppShell', () => {
     await user.click(screen.getByRole('link', { name: 'Pipelines' }))
     expect(screen.getByRole('heading', { name: 'Pipelines' })).toBeInTheDocument()
     expect(screen.getByRole('link', { name: 'Pipelines' })).toHaveClass('active')
+
+    await user.click(screen.getByRole('link', { name: 'Billing' }))
+    expect(screen.getByRole('heading', { name: 'Billing' })).toBeInTheDocument()
+    expect(screen.getByRole('link', { name: 'Billing' })).toHaveClass('active')
   })
 
   it('shows tenant picker with stub tenants', () => {

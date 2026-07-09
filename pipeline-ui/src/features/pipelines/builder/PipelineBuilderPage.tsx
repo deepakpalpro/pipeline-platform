@@ -1,15 +1,20 @@
-import { useMutation, useQuery } from '@tanstack/react-query'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { useEffect, useMemo, useReducer, useState } from 'react'
+import { Link, useLocation, useNavigate, useParams } from 'react-router-dom'
 import {
   createPipeline,
   dryRunPipeline,
+  getPipeline,
   listConnectors,
   listServices,
   replacePipelineSteps,
   runPipeline,
+  updatePipeline,
 } from '../../../api/resources'
 import { ApiError, type QuotaBlockedBody } from '../../../api/types'
 import { useTenant } from '../../../contexts/TenantContext'
+import { KeyValueEditor } from '../../forms/KeyValueEditor'
+import { mergeExtendConfig } from '../../forms/mergeExtendConfig'
 import { PIPELET_FIXTURE } from '../../pipelets/fixture'
 import type { PipeletCatalogEntry } from '../../pipelets/catalogFilter'
 import { ExecutionOverlaySummary } from './ExecutionOverlaySummary'
@@ -27,6 +32,8 @@ import {
   initialPipelineGraph,
   orderedNodeIds,
   pipelineGraphReducer,
+  stepsToGraph,
+  type StepCategory,
 } from './pipelineGraphReducer'
 import { useExecutionPoller } from './useExecutionPoller'
 
@@ -35,15 +42,25 @@ type Props = {
 }
 
 export function PipelineBuilderPage({ catalog = PIPELET_FIXTURE }: Props) {
+  const { pipelineId: routePipelineId } = useParams<{ pipelineId?: string }>()
+  const isNew = !routePipelineId || routePipelineId === 'new'
+  const navigate = useNavigate()
+  const location = useLocation()
   const { tenantId } = useTenant()
+  const queryClient = useQueryClient()
   const [state, dispatch] = useReducer(pipelineGraphReducer, initialPipelineGraph)
   const [overlay, overlayDispatch] = useReducer(
     executionOverlayReducer,
     initialOverlayState,
   )
-  const [saveMessage, setSaveMessage] = useState<string | null>(null)
+  const [saveMessage, setSaveMessage] = useState<string | null>(() => {
+    const flash = (location.state as { saveMessage?: string } | null)?.saveMessage
+    return flash ?? null
+  })
   const [dryRunMessage, setDryRunMessage] = useState<string | null>(null)
-  const [pipelineId, setPipelineId] = useState<string | null>(null)
+  const [pipelineId, setPipelineId] = useState<string | null>(
+    isNew ? null : routePipelineId,
+  )
   const [executionId, setExecutionId] = useState<string | null>(null)
   const [quotaInfo, setQuotaInfo] = useState<{
     code: string
@@ -51,6 +68,64 @@ export function PipelineBuilderPage({ catalog = PIPELET_FIXTURE }: Props) {
   } | null>(null)
   const [nodeSeq, setNodeSeq] = useState(1)
   const [running, setRunning] = useState(false)
+  const [hydratedId, setHydratedId] = useState<string | null>(null)
+
+  const catalogById = useMemo(() => {
+    const map = new Map(catalog.map((c) => [c.id, c]))
+    return map
+  }, [catalog])
+
+  useEffect(() => {
+    const flash = (location.state as { saveMessage?: string } | null)?.saveMessage
+    if (flash) {
+      setSaveMessage(flash)
+      navigate(location.pathname, { replace: true, state: null })
+    }
+  }, [location.state, location.pathname, navigate])
+
+  const pipelineQuery = useQuery({
+    queryKey: ['pipeline', tenantId, routePipelineId],
+    queryFn: () => getPipeline(tenantId, routePipelineId!),
+    enabled: !isNew && Boolean(routePipelineId),
+  })
+
+  useEffect(() => {
+    if (isNew) {
+      if (hydratedId !== null) {
+        dispatch({ type: 'RESET' })
+        setPipelineId(null)
+        setHydratedId(null)
+        setNodeSeq(1)
+        setSaveMessage(null)
+        overlayDispatch({ type: 'RESET' })
+      }
+      return
+    }
+    const pipeline = pipelineQuery.data
+    if (!pipeline || hydratedId === pipeline.id) {
+      return
+    }
+    const graph = stepsToGraph(
+      pipeline.name,
+      pipeline.steps ?? [],
+      (pipeletId) => {
+        const entry = catalogById.get(pipeletId)
+        return {
+          name: entry?.name ?? pipeletId,
+          category: (entry?.category as StepCategory) ?? 'Processor',
+          deploymentConfiguration: entry?.deploymentConfiguration,
+          executionConfiguration: entry?.executionConfiguration,
+        }
+      },
+      pipeline.deployment_config ?? {},
+      pipeline.execution_config ?? {},
+    )
+    dispatch({ type: 'RESET', state: graph })
+    setPipelineId(pipeline.id)
+    setNodeSeq((pipeline.steps?.length ?? 0) + 1)
+    setHydratedId(pipeline.id)
+    overlayDispatch({ type: 'RESET' })
+  }, [isNew, pipelineQuery.data, hydratedId, catalogById])
 
   const connectorsQuery = useQuery({
     queryKey: ['connectors', tenantId],
@@ -106,6 +181,11 @@ export function PipelineBuilderPage({ catalog = PIPELET_FIXTURE }: Props) {
   const saveMutation = useMutation({
     mutationFn: async () => {
       if (pipelineId) {
+        await updatePipeline(tenantId, pipelineId, {
+          name: state.pipelineName,
+          deployment_config: state.deploymentConfig,
+          execution_config: state.executionConfig,
+        })
         const stepsBody = graphToStepsPayload(state)
         return replacePipelineSteps(tenantId, pipelineId, stepsBody)
       }
@@ -113,13 +193,27 @@ export function PipelineBuilderPage({ catalog = PIPELET_FIXTURE }: Props) {
         name: state.pipelineName,
         executionMode: 'ASYNC',
         visibility: 'PRIVATE',
+        deployment_config: state.deploymentConfig,
+        execution_config: state.executionConfig,
       })
       const stepsBody = graphToStepsPayload(state)
       return replacePipelineSteps(tenantId, created.id, stepsBody)
     },
     onSuccess: (pipeline) => {
+      const msg = `Saved ${pipeline.name} (${pipeline.id}) v${pipeline.version}`
       setPipelineId(pipeline.id)
-      setSaveMessage(`Saved ${pipeline.name} (${pipeline.id}) v${pipeline.version}`)
+      setHydratedId(pipeline.id)
+      setSaveMessage(msg)
+      void queryClient.invalidateQueries({ queryKey: ['pipelines', tenantId] })
+      void queryClient.invalidateQueries({
+        queryKey: ['pipeline', tenantId, pipeline.id],
+      })
+      if (isNew || routePipelineId !== pipeline.id) {
+        navigate(`/pipelines/${pipeline.id}`, {
+          replace: true,
+          state: { saveMessage: msg },
+        })
+      }
     },
     onError: (err: Error) => {
       setSaveMessage(`Save failed: ${err.message}`)
@@ -178,6 +272,11 @@ export function PipelineBuilderPage({ catalog = PIPELET_FIXTURE }: Props) {
   function addFromPalette(item: PipeletCatalogEntry) {
     const id = `n${nodeSeq}`
     setNodeSeq((n) => n + 1)
+    const deploymentConfig = mergeExtendConfig(
+      item.deploymentConfiguration,
+      {},
+    )
+    const executionConfig = mergeExtendConfig(item.executionConfiguration, {})
     dispatch({
       type: 'ADD_NODE',
       node: {
@@ -189,7 +288,9 @@ export function PipelineBuilderPage({ catalog = PIPELET_FIXTURE }: Props) {
           category: item.category,
           connectorIds: [],
           serviceIds: [],
-          config: {},
+          config: executionConfig,
+          deploymentConfig,
+          executionConfig,
         },
       },
     })
@@ -204,11 +305,36 @@ export function PipelineBuilderPage({ catalog = PIPELET_FIXTURE }: Props) {
     }
   }
 
+  if (!isNew && pipelineQuery.isLoading && hydratedId === null) {
+    return (
+      <section className="builder-page" aria-label="Pipeline builder">
+        <p className="muted">Loading pipeline…</p>
+        {saveMessage ? (
+          <p role="status" data-testid="save-status">
+            {saveMessage}
+          </p>
+        ) : null}
+      </section>
+    )
+  }
+
+  if (!isNew && pipelineQuery.isError) {
+    return (
+      <section className="builder-page" aria-label="Pipeline builder">
+        <p role="alert">Failed to load pipeline</p>
+        <Link to="/pipelines">Back to list</Link>
+      </section>
+    )
+  }
+
   return (
     <section className="builder-page" aria-label="Pipeline builder">
       <div className="panel-header">
         <div className="builder-title-row">
-          <h1>Pipelines</h1>
+          <Link className="back-link" to="/pipelines">
+            ← Pipelines
+          </Link>
+          <h1>{isNew ? 'New pipeline' : 'Edit pipeline'}</h1>
           <label className="inline-field">
             <span className="sr-only">Pipeline name</span>
             <input
@@ -249,6 +375,28 @@ export function PipelineBuilderPage({ catalog = PIPELET_FIXTURE }: Props) {
           {dryRunMessage}
         </p>
       ) : null}
+
+      <div className="builder-deployment" aria-label="Pipeline configuration">
+        <KeyValueEditor
+          title="Deployment configuration"
+          entries={state.deploymentConfig}
+          onChange={(deploymentConfig) =>
+            dispatch({ type: 'SET_DEPLOYMENT_CONFIG', deploymentConfig })
+          }
+        />
+        <KeyValueEditor
+          title="Execution configuration"
+          entries={state.executionConfig}
+          onChange={(executionConfig) =>
+            dispatch({ type: 'SET_EXECUTION_CONFIG', executionConfig })
+          }
+        />
+        <p className="muted props-hint">
+          Pipeline-level defaults. Steps inherit pipelet defaults and can
+          override or extend both maps. Examples: cloud, region, accessKey /
+          batchSize, parallelism.
+        </p>
+      </div>
 
       <ExecutionOverlaySummary
         byNodeId={overlay.byNodeId}

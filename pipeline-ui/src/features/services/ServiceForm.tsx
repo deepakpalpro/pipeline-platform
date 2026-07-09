@@ -1,4 +1,4 @@
-import { useState, type FormEvent } from 'react'
+import { useMemo, useState, type FormEvent } from 'react'
 import type { CreateTenantServiceRequest, ServiceType } from '../../api/types'
 import { KeyValueEditor } from '../forms/KeyValueEditor'
 import { validateServiceForm, type FieldErrors } from '../forms/validation'
@@ -11,13 +11,23 @@ type Props = {
 
 export function ServiceForm({ serviceTypes, onSubmit, onCancel }: Props) {
   const [serviceTypeId, setServiceTypeId] = useState(serviceTypes[0]?.id ?? '')
-  const [vendor, setVendor] = useState('')
+  const [vendor, setVendor] = useState(
+    serviceTypes[0]?.defaults?.[0]?.vendor ?? '',
+  )
   const [name, setName] = useState('')
   const [clientId, setClientId] = useState('')
   const [clientSecret, setClientSecret] = useState('')
   const [extraConfig, setExtraConfig] = useState<Record<string, unknown>>({})
+  const [deploymentConfig, setDeploymentConfig] = useState<
+    Record<string, unknown>
+  >({ cloud: 'aws', region: 'us-east-1' })
   const [errors, setErrors] = useState<FieldErrors>({})
   const [submitting, setSubmitting] = useState(false)
+
+  const vendors = useMemo(() => {
+    const selected = serviceTypes.find((t) => t.id === serviceTypeId)
+    return selected?.defaults?.map((d) => d.vendor) ?? []
+  }, [serviceTypes, serviceTypeId])
 
   async function handleSubmit(e: FormEvent) {
     e.preventDefault()
@@ -40,6 +50,8 @@ export function ServiceForm({ serviceTypes, onSubmit, onCancel }: Props) {
         vendor: vendor.trim(),
         name: name.trim(),
         tenantConfig,
+        deployment_config: deploymentConfig,
+        execution_config: tenantConfig,
       })
     } finally {
       setSubmitting(false)
@@ -55,7 +67,15 @@ export function ServiceForm({ serviceTypes, onSubmit, onCancel }: Props) {
         <select
           aria-label="Service type"
           value={serviceTypeId}
-          onChange={(e) => setServiceTypeId(e.target.value)}
+          onChange={(e) => {
+            const nextType = e.target.value
+            setServiceTypeId(nextType)
+            const nextVendors =
+              serviceTypes.find((t) => t.id === nextType)?.defaults?.map(
+                (d) => d.vendor,
+              ) ?? []
+            setVendor(nextVendors[0] ?? '')
+          }}
         >
           <option value="">Select type</option>
           {serviceTypes.map((t) => (
@@ -73,12 +93,27 @@ export function ServiceForm({ serviceTypes, onSubmit, onCancel }: Props) {
 
       <label>
         Vendor
-        <input
-          aria-label="Vendor"
-          value={vendor}
-          onChange={(e) => setVendor(e.target.value)}
-          placeholder="e.g. StubAuth"
-        />
+        {vendors.length > 0 ? (
+          <select
+            aria-label="Vendor"
+            value={vendor}
+            onChange={(e) => setVendor(e.target.value)}
+          >
+            <option value="">Select vendor</option>
+            {vendors.map((v) => (
+              <option key={v} value={v}>
+                {v}
+              </option>
+            ))}
+          </select>
+        ) : (
+          <input
+            aria-label="Vendor"
+            value={vendor}
+            onChange={(e) => setVendor(e.target.value)}
+            placeholder="e.g. OAuth, Keycloak, AAD"
+          />
+        )}
         {errors.vendor ? (
           <span role="alert" className="field-error">
             {errors.vendor}
@@ -108,7 +143,6 @@ export function ServiceForm({ serviceTypes, onSubmit, onCancel }: Props) {
           onChange={(e) => setClientId(e.target.value)}
         />
       </label>
-
       <label>
         Client secret
         <input
@@ -121,14 +155,19 @@ export function ServiceForm({ serviceTypes, onSubmit, onCancel }: Props) {
       </label>
 
       <KeyValueEditor
-        title="Additional config"
+        title="Deployment configuration"
+        entries={deploymentConfig}
+        onChange={setDeploymentConfig}
+      />
+      <KeyValueEditor
+        title="Execution configuration"
         entries={extraConfig}
         onChange={setExtraConfig}
       />
 
       <div className="form-actions">
         <button type="submit" disabled={submitting}>
-          {submitting ? 'Saving…' : 'Create'}
+          {submitting ? 'Creating…' : 'Create'}
         </button>
         {onCancel ? (
           <button type="button" className="secondary" onClick={onCancel}>

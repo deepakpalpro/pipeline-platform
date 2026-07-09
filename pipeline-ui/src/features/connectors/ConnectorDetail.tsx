@@ -28,6 +28,33 @@ function splitConnectorConfig(config: Record<string, unknown>) {
   }
 }
 
+function ConfigMap({
+  title,
+  entries,
+}: {
+  title: string
+  entries: Record<string, unknown>
+}) {
+  const rows = Object.entries(entries)
+  return (
+    <div>
+      <h3>{title}</h3>
+      {rows.length === 0 ? (
+        <p className="muted">No keys</p>
+      ) : (
+        <dl className="config-list">
+          {rows.map(([key, value]) => (
+            <div key={key}>
+              <dt>{key}</dt>
+              <dd data-testid={`config-${key}`}>{displayConfigValue(key, value)}</dd>
+            </div>
+          ))}
+        </dl>
+      )}
+    </div>
+  )
+}
+
 export function ConnectorDetail({
   connector,
   emptyLabel = 'Select a connector',
@@ -39,6 +66,7 @@ export function ConnectorDetail({
   const [apiKey, setApiKey] = useState('')
   const [hadApiKey, setHadApiKey] = useState(false)
   const [extra, setExtra] = useState<Record<string, unknown>>({})
+  const [deploymentConfig, setDeploymentConfig] = useState<Record<string, unknown>>({})
   const [message, setMessage] = useState<string | null>(null)
 
   useEffect(() => {
@@ -46,11 +74,14 @@ export function ConnectorDetail({
       return
     }
     setName(connector.name)
-    const split = splitConnectorConfig(connector.config)
+    const execution =
+      connector.execution_config ?? connector.config ?? {}
+    const split = splitConnectorConfig(execution)
     setBaseUrl(split.baseUrl)
     setApiKey(split.apiKey)
     setHadApiKey(split.hadApiKey)
     setExtra(split.extra)
+    setDeploymentConfig({ ...(connector.deployment_config ?? {}) })
     setMessage(null)
   }, [connector])
 
@@ -76,6 +107,8 @@ export function ConnectorDetail({
       await onSave(connector.id, {
         name: name.trim() || connector.name,
         config,
+        deployment_config: deploymentConfig,
+        execution_config: config,
       })
       setMessage('Saved')
     } catch (err) {
@@ -101,17 +134,14 @@ export function ConnectorDetail({
             <dd>{connector.status}</dd>
           </div>
         </dl>
-        <h3>Config</h3>
-        <dl className="config-list">
-          {Object.entries(connector.config).map(([key, value]) => (
-            <div key={key}>
-              <dt>{key}</dt>
-              <dd data-testid={`config-${key}`}>
-                {displayConfigValue(key, value)}
-              </dd>
-            </div>
-          ))}
-        </dl>
+        <ConfigMap
+          title="Deployment configuration"
+          entries={connector.deployment_config ?? {}}
+        />
+        <ConfigMap
+          title="Execution configuration"
+          entries={connector.execution_config ?? connector.config ?? {}}
+        />
       </article>
     )
   }
@@ -149,7 +179,16 @@ export function ConnectorDetail({
         />
       </label>
 
-      <KeyValueEditor title="Additional config" entries={extra} onChange={setExtra} />
+      <KeyValueEditor
+        title="Deployment configuration"
+        entries={deploymentConfig}
+        onChange={setDeploymentConfig}
+      />
+      <KeyValueEditor
+        title="Execution configuration"
+        entries={extra}
+        onChange={setExtra}
+      />
 
       <div className="form-actions">
         <button type="button" onClick={() => void handleSave()} disabled={saving}>

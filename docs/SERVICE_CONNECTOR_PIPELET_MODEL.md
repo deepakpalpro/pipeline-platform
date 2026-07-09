@@ -3,9 +3,9 @@
 | Field | Value |
 |-------|--------|
 | **Audience** | Architects, platform engineers, pipelet authors |
-| **Status** | Canonical design note (aligned with Waves 1–5) |
+| **Status** | Canonical design note (aligned with Waves 1–6) |
 | **Architecture** | [`ARCHITECTURE.md`](ARCHITECTURE.md) §1.5, §2.2, §7, §9, §10.3 |
-| **Last updated** | 2026-07-09 |
+| **Last updated** | 2026-07-10 |
 
 This note captures how **services**, **connectors**, and **pipeline steps / pipelets** are modeled, how a non-Java (e.g. Python) sink receives config, and how **pipelet telemetry** and **record completeness** are expected to appear in Prometheus / Grafana. It complements story KBs; if something conflicts with a shipped KB, prefer the KB for operational detail and update this note.
 
@@ -42,8 +42,18 @@ flowchart LR
 
 - Pipelets (any language) should **not** hard-code long-lived ADLS credentials.
 - **Auth modes** (Federated, Managed Identity, cert, AKV+cert) live on **services**, not inside the pipelet image.
-- **Endpoint / path / I/O retries** live on **connectors**.
-- **This-pipeline behavior** (mapping, filters, sometimes batch size) lives on **step `config`**.
+- **Endpoint / path / I/O retries** live on **connectors** (execution config).
+- **This-pipeline behavior** (mapping, filters, sometimes batch size) lives on **step execution config** (legacy field `config`).
+- **Placement** (cloud, region, replicas, access keys) lives on **deployment config** at type defaults and instance/pipeline/step overrides.
+
+### Dual configuration (Wave 6)
+
+| Kind | Field(s) | Defaults | Override / extend |
+|------|----------|----------|-------------------|
+| Deployment | `deployment_config` | pipelet / `connector_types` / `service_defaults` | pipeline, step, connector, service |
+| Execution | `execution_config` (+ legacy `config` / `tenant_config`) | same | same |
+
+Merge: `{ ...defaults, ...overrides }`. Secrets sent as `***` are preserved. See [`delivery/kb/W6-dual-deployment-execution-config.md`](delivery/kb/W6-dual-deployment-execution-config.md).
 
 ---
 
@@ -54,8 +64,8 @@ flowchart LR
 | Table | Role |
 |-------|------|
 | `service_types` | Catalog: `auth`, `notification`, `logging` |
-| `service_defaults` | Vendor templates + `default_config` / `config_schema` (e.g. StubAuth; later AADAuth) |
-| `services` | Tenant instance: `vendor`, `name`, `tenant_config` JSON, `inherits_default` |
+| `service_defaults` | Vendor templates + `default_config` / dual defaults / `config_schema` |
+| `services` | Tenant instance: `vendor`, `name`, `tenant_config` + dual configs, `inherits_default` |
 
 Resolution (implemented for Auth): merge defaults + tenant overrides → decrypt secrets (`DefaultServiceResolver`, `ConfigMerger`, `SecretEncryptor`). API responses redact secrets.
 
@@ -63,14 +73,14 @@ Resolution (implemented for Auth): merge defaults + tenant overrides → decrypt
 
 Under type `auth`, prefer **vendors** (or an explicit `auth_mode` in JSON) such as:
 
-| Mode | Typical `tenant_config` contents |
+| Mode | Typical `tenant_config` / execution contents |
 |------|----------------------------------|
 | Federated (OIDC / AAD app) | tenant/issuer, client id, secret or cert ref, scopes |
 | Managed Identity | identity type, client id (no shared secret) |
 | Cert-based | cert thumbprint / PEM reference |
 | AKV + cert | vault URI, secret/cert name; optional MI to reach Key Vault |
 
-All of these are **tenant-specific rows** in `services`. Wave 1 ships StubAuth only; other vendors are additive catalog rows + schemas.
+All of these are **tenant-specific rows** in `services`. Wave 1 ships StubAuth; **Flyway V18** seeds OAuth, OIDC, Keycloak, AAD, AWSCognito, AzureMI, CertBased, JWT vendor defaults.
 
 ### 2.3 Operational KB
 
@@ -85,8 +95,8 @@ All of these are **tenant-specific rows** in `services`. Wave 1 ships StubAuth o
 
 | Table | Role |
 |-------|------|
-| `connector_types` | Catalog + JSON Schema (`rest`, `storage`, `message_bus`, …) |
-| `connectors` | Tenant instance: `name`, `config` JSON (encrypt at rest), `status` |
+| `connector_types` | Catalog + JSON Schema (`rest`, `storage`, `message_bus`, …) + dual default configs |
+| `connectors` | Tenant instance: `name`, `config` / dual configs JSON (encrypt at rest), `status` |
 
 Platform-side plugins implement Java `Connector` SPI (`RestConnector`, `StorageConnector`, `MessageBusConnector`, …) for **test connection** and platform-mediated I/O. That SPI is **not** what a Python pipelet pod loads.
 
@@ -111,11 +121,11 @@ Architecture already shows the same pattern for Rest (`auth_service_id` on conne
 
 ### 3.3 What belongs on connector vs step
 
-| Prefer **connector** | Prefer **step `config`** |
-|----------------------|---------------------------|
-| Account URL, container, folder | Field mapping / filters for *this* pipeline |
-| Shared retries / timeouts | Pipeline-specific batch overrides |
-| Link to auth service | Pipelet-only knobs from `config_schema` |
+| Prefer **connector execution** | Prefer **step execution** | Prefer **deployment** |
+|-------------------------------|---------------------------|------------------------|
+| Account URL, container, folder | Field mapping / filters for *this* pipeline | Cloud, region, replicas |
+| Shared retries / timeouts | Pipeline-specific batch overrides | Access keys for placement |
+| Link to auth service | Pipelet-only knobs from `config_schema` | |
 
 ### 3.4 Operational KB
 
@@ -133,7 +143,8 @@ Architecture already shows the same pattern for Rest (`auth_service_id` on conne
 |--------|------|
 | `pipelet_id` | Which image/type to spawn (opaque id today; registry later) |
 | `step_order` | Stage sequence (source → processor → destination) |
-| `config` | Pipelet-specific JSON (validated against pipelet `config_schema` when registry exists) |
+| `config` / `execution_config` | Pipelet-specific runtime JSON (validated against pipelet `config_schema` when registry exists) |
+| `deployment_config` | Placement overrides for this step |
 | `connector_ids` | JSON array of connector instance UUIDs |
 | `service_ids` | JSON array of service instance UUIDs |
 | `input_queue` / `output_queue` | Platform broker destinations |

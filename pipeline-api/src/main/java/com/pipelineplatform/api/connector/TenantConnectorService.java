@@ -2,6 +2,7 @@ package com.pipelineplatform.api.connector;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.pipelineplatform.api.common.DualConfigSupport;
 import com.pipelineplatform.api.tenant.TenantContext;
 import com.pipelineplatform.api.tenant.TenantContextRequiredException;
 import com.pipelineplatform.api.tenant.TenantFilters;
@@ -68,7 +69,15 @@ public class TenantConnectorService {
     entity.setTenantId(tenantId);
     entity.setConnectorTypeId(type.getId());
     entity.setName(name);
-    entity.setConfig(writeJson(request.config()));
+    JsonNode execution =
+        request.executionConfig() != null ? request.executionConfig() : request.config();
+    JsonNode deployment =
+        request.deploymentConfig() != null
+            ? request.deploymentConfig()
+            : DualConfigSupport.empty(objectMapper);
+    entity.setConfig(writeJson(execution));
+    entity.setExecutionConfig(writeJson(execution));
+    entity.setDeploymentConfig(writeJson(deployment));
     entity.setStatus(ConnectorInstanceStatus.active);
     return toResponse(repository.save(entity));
   }
@@ -103,9 +112,23 @@ public class TenantConnectorService {
       throw new TenantConnectorConflictException("Connector name already exists: " + name);
     }
     entity.setName(name);
-    if (request.config() != null) {
-      JsonNode merged = mergePreservingSecrets(readJson(entity.getConfig()), request.config());
+    if (request.config() != null || request.executionConfig() != null) {
+      JsonNode incoming =
+          request.executionConfig() != null ? request.executionConfig() : request.config();
+      JsonNode existingExec =
+          readJson(
+              entity.getExecutionConfig() != null && !entity.getExecutionConfig().isBlank()
+                  ? entity.getExecutionConfig()
+                  : entity.getConfig());
+      JsonNode merged = DualConfigSupport.mergePreservingSecrets(objectMapper, existingExec, incoming);
       entity.setConfig(writeJson(merged));
+      entity.setExecutionConfig(writeJson(merged));
+    }
+    if (request.deploymentConfig() != null) {
+      JsonNode merged =
+          DualConfigSupport.mergePreservingSecrets(
+              objectMapper, readJson(entity.getDeploymentConfig()), request.deploymentConfig());
+      entity.setDeploymentConfig(writeJson(merged));
     }
     if (request.status() != null) {
       entity.setStatus(request.status());
@@ -237,12 +260,23 @@ public class TenantConnectorService {
   }
 
   private TenantConnectorResponse toResponse(TenantConnector entity) {
+    JsonNode execution =
+        DualConfigSupport.redactForResponse(
+            objectMapper,
+            readJson(
+                entity.getExecutionConfig() != null && !entity.getExecutionConfig().isBlank()
+                    ? entity.getExecutionConfig()
+                    : entity.getConfig()));
+    JsonNode deployment =
+        DualConfigSupport.redactForResponse(objectMapper, readJson(entity.getDeploymentConfig()));
     return new TenantConnectorResponse(
         entity.getId(),
         entity.getTenantId(),
         entity.getConnectorTypeId(),
         entity.getName(),
-        readJson(entity.getConfig()),
+        execution,
+        deployment,
+        execution,
         entity.getStatus(),
         entity.getLastTestedAt(),
         entity.getCreatedAt());

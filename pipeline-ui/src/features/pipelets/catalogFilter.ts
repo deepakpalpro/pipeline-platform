@@ -10,6 +10,10 @@ export type PipeletCatalogEntry = {
   runtime: PipeletRuntime | string
   description: string
   configSchemaPreview?: Record<string, unknown>
+  /** Defaults for where/how the pipelet is deployed; pipeline/step may override/extend. */
+  deploymentConfiguration?: Record<string, unknown>
+  /** Defaults for runtime behavior; pipeline/step may override/extend. */
+  executionConfiguration?: Record<string, unknown>
 }
 
 export type CatalogFilterInput = {

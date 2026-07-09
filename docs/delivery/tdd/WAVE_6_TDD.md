@@ -4,9 +4,9 @@
 |-------|--------|
 | **Wave** | W6 — No-code UI |
 | **Audience** | Technical stakeholders |
-| **Status** | Complete (W6-US01–US06 Done; ready for PR) |
+| **Status** | Complete (W6-US01–US06 Done; dual-config + seed follow-ups; PR merge) |
 | **Architecture refs** | §4 |
-| **Branch / tags** | `wave-6` · `W6-US##` |
+| **Branch / tags** | `wave-6` · `W6-US##` · `wave-6-complete` |
 | **Last updated** | 2026-07-10 |
 | **Template** | [`../TDD_WAVE_TEMPLATE.md`](../TDD_WAVE_TEMPLATE.md) |
 | **Catalog** | [`../../DELIVERY_PLAN.md`](../../DELIVERY_PLAN.md) § Wave 6 |
@@ -60,10 +60,12 @@ Per working agreements: UI stories require unit tests for reducers/hooks and Pla
 
 ## 3. Environments & fixtures
 
-| Fixture | Entity | Path (planned) |
-|---------|--------|----------------|
-| `T001` session | auth context | frontend fixtures |
-| `threeStage` pipeline JSON | canvas | mirror backend fixture |
+| Fixture | Entity | Path |
+|---------|--------|------|
+| `T001` / `T002` session | auth context | `TenantContext` stubs |
+| `threeStage` pipeline JSON | canvas / MSW | `src/mocks/handlers.ts` |
+| Pipelet catalog (~105) | palette + catalog | `src/fixtures/pipelets.json` |
+| Seed connectors / Auth services | MSW + Flyway V19 | `src/fixtures/seed-*.json`, `V19__…sql` |
 | MSW handlers | APIs | `src/mocks/` |
 
 **Real vs mocked**
@@ -181,3 +183,5 @@ Per working agreements: UI stories require unit tests for reducers/hooks and Pla
 | 2026-07-10 | W6-US04 Done — React Flow builder + save to steps API |
 | 2026-07-10 | W6-US05 Done — run/dry-run overlay + 402 quota UI |
 | 2026-07-10 | W6-US06 Done — observability panels; wave stories complete |
+| 2026-07-10 | Dual deployment/execution config (API V16–V17 + UI); Auth vendors V18; T001 connector seed V19 |
+| 2026-07-10 | Pipelines list, Billing nav, connector search/filter/pagination, searchable builder dropdowns |

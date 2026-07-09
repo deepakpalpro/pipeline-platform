@@ -53,6 +53,14 @@ public class Pipeline {
   @Column(name = "retry_config", columnDefinition = "json")
   private String retryConfig;
 
+  @JdbcTypeCode(SqlTypes.JSON)
+  @Column(name = "deployment_config", columnDefinition = "json")
+  private String deploymentConfig;
+
+  @JdbcTypeCode(SqlTypes.JSON)
+  @Column(name = "execution_config", columnDefinition = "json")
+  private String executionConfig;
+
   @Column(name = "created_at", nullable = false, insertable = false, updatable = false)
   private Instant createdAt;
 
@@ -137,6 +145,22 @@ public class Pipeline {
 
   public void setRetryConfig(String retryConfig) {
     this.retryConfig = retryConfig;
+  }
+
+  public String getDeploymentConfig() {
+    return deploymentConfig;
+  }
+
+  public void setDeploymentConfig(String deploymentConfig) {
+    this.deploymentConfig = deploymentConfig;
+  }
+
+  public String getExecutionConfig() {
+    return executionConfig;
+  }
+
+  public void setExecutionConfig(String executionConfig) {
+    this.executionConfig = executionConfig;
   }
 
   public Instant getCreatedAt() {

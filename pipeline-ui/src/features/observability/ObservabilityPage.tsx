@@ -1,5 +1,6 @@
 import { useQuery } from '@tanstack/react-query'
 import { useMemo, useState } from 'react'
+import { useSearchParams } from 'react-router-dom'
 import {
   getCompleteness,
   getHeartbeat,
@@ -23,8 +24,8 @@ const TABS: { id: Tab; label: string }[] = [
 
 export function ObservabilityPage() {
   const { tenantId } = useTenant()
+  const [searchParams, setSearchParams] = useSearchParams()
   const [tab, setTab] = useState<Tab>('completeness')
-  const [pipelineId, setPipelineId] = useState('')
   const [range, setRange] = useState<TimeRange>('24h')
 
   const pipelinesQuery = useQuery({
@@ -32,8 +33,17 @@ export function ObservabilityPage() {
     queryFn: () => listPipelines(tenantId),
   })
 
-  const pipelines = pipelinesQuery.data ?? []
-  const selectedId = pipelineId || pipelines[0]?.id || ''
+  const pipelines = (pipelinesQuery.data ?? []).filter(
+    (p) => p.status.toUpperCase() !== 'ARCHIVED',
+  )
+  const pipelineIdFromUrl = searchParams.get('pipelineId') ?? ''
+  const selectedId = pipelines.some((p) => p.id === pipelineIdFromUrl)
+    ? pipelineIdFromUrl
+    : (pipelines[0]?.id ?? '')
+
+  function selectPipeline(id: string) {
+    setSearchParams(id ? { pipelineId: id } : {}, { replace: true })
+  }
 
   const completenessQuery = useQuery({
     queryKey: ['obs-completeness', tenantId, selectedId, range],
@@ -59,7 +69,7 @@ export function ObservabilityPage() {
           <select
             aria-label="Pipeline"
             value={selectedId}
-            onChange={(e) => setPipelineId(e.target.value)}
+            onChange={(e) => selectPipeline(e.target.value)}
           >
             {pipelines.length === 0 ? (
               <option value="">No pipelines</option>

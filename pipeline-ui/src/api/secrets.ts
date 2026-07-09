@@ -14,8 +14,14 @@ export const MASK_DISPLAY = '••••••'
 
 export function isSecretKey(name: string): boolean {
   const key = name.toLowerCase()
+  const compact = key.replace(/[-_]/g, '')
   return (
-    SECRET_KEYS.has(key) || key.endsWith('_secret') || key.endsWith('_password')
+    SECRET_KEYS.has(key) ||
+    key.endsWith('_secret') ||
+    key.endsWith('_password') ||
+    compact.includes('accesskey') ||
+    compact.includes('secretkey') ||
+    compact === 'apikey'
   )
 }
 

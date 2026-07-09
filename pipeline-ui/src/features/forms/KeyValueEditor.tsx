@@ -10,11 +10,14 @@ type Props = {
 
 function isSecretKey(key: string): boolean {
   const k = key.toLowerCase()
+  const compact = k.replace(/[-_]/g, '')
   return (
     k.includes('secret') ||
     k.includes('password') ||
     k === 'api_key' ||
-    k.endsWith('_key')
+    k.endsWith('_key') ||
+    compact.includes('accesskey') ||
+    compact === 'apikey'
   )
 }
 

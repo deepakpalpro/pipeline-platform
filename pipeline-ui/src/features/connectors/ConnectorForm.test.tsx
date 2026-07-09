@@ -6,7 +6,7 @@ import { renderWithProviders } from '../../test/renderWithProviders'
 
 const types = [
   {
-    id: 'ctype-rest',
+    id: 'ct-rest',
     type: 'REST',
     displayName: 'REST',
     configSchema: null,
@@ -45,9 +45,14 @@ describe('ConnectorForm', () => {
     await user.click(screen.getByRole('button', { name: 'Create' }))
 
     expect(onSubmit).toHaveBeenCalledWith({
-      connectorTypeId: 'ctype-rest',
+      connectorTypeId: 'ct-rest',
       name: 'Billing REST',
       config: { baseUrl: 'https://api.example.com', api_key: 'temp-key' },
+      deployment_config: { cloud: 'aws', region: 'us-east-1' },
+      execution_config: {
+        baseUrl: 'https://api.example.com',
+        api_key: 'temp-key',
+      },
     })
   })
 })

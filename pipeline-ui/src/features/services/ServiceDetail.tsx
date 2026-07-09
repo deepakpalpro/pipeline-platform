@@ -19,9 +19,7 @@ function splitServiceConfig(config: Record<string, unknown>) {
       String(clientSecret) === '***'
         ? ''
         : String(clientSecret),
-    hadSecret:
-      clientSecret != null &&
-      String(clientSecret).length > 0,
+    hadSecret: clientSecret != null && String(clientSecret).length > 0,
     extra: Object.fromEntries(
       Object.entries(extra).map(([k, v]) => [
         k,
@@ -31,23 +29,53 @@ function splitServiceConfig(config: Record<string, unknown>) {
   }
 }
 
+function ConfigMap({
+  title,
+  entries,
+}: {
+  title: string
+  entries: Record<string, unknown>
+}) {
+  const rows = Object.entries(entries)
+  return (
+    <div>
+      <h3>{title}</h3>
+      {rows.length === 0 ? (
+        <p className="muted">No keys</p>
+      ) : (
+        <dl className="config-list">
+          {rows.map(([key, value]) => (
+            <div key={key}>
+              <dt>{key}</dt>
+              <dd data-testid={`config-${key}`}>{displayConfigValue(key, value)}</dd>
+            </div>
+          ))}
+        </dl>
+      )}
+    </div>
+  )
+}
+
 export function ServiceDetail({ service, onSave, saving }: Props) {
   const [name, setName] = useState(service.name)
   const [clientId, setClientId] = useState('')
   const [clientSecret, setClientSecret] = useState('')
   const [hadSecret, setHadSecret] = useState(false)
   const [extra, setExtra] = useState<Record<string, unknown>>({})
+  const [deploymentConfig, setDeploymentConfig] = useState<Record<string, unknown>>({})
   const [message, setMessage] = useState<string | null>(null)
 
   useEffect(() => {
     setName(service.name)
-    const split = splitServiceConfig(service.config)
+    const execution = service.execution_config ?? service.config ?? {}
+    const split = splitServiceConfig(execution)
     setClientId(split.clientId)
     setClientSecret(split.clientSecret)
     setHadSecret(split.hadSecret)
     setExtra(split.extra)
+    setDeploymentConfig({ ...(service.deployment_config ?? {}) })
     setMessage(null)
-  }, [service.id, service.name, service.config])
+  }, [service.id, service.name, service.config, service.deployment_config, service.execution_config])
 
   async function handleSave() {
     if (!onSave) {
@@ -60,7 +88,6 @@ export function ServiceDetail({ service, onSave, saving }: Props) {
     if (clientSecret.trim()) {
       tenantConfig.client_secret = clientSecret.trim()
     } else if (hadSecret) {
-      // Signal server/MSW to keep existing secret
       tenantConfig.client_secret = REDACTED
     }
     setMessage(null)
@@ -68,6 +95,8 @@ export function ServiceDetail({ service, onSave, saving }: Props) {
       await onSave(service.id, {
         name: name.trim() || service.name,
         tenantConfig,
+        deployment_config: deploymentConfig,
+        execution_config: tenantConfig,
       })
       setMessage('Saved')
     } catch (err) {
@@ -97,17 +126,14 @@ export function ServiceDetail({ service, onSave, saving }: Props) {
             <dd>{service.status}</dd>
           </div>
         </dl>
-        <h3>Config</h3>
-        <dl className="config-list">
-          {Object.entries(service.config).map(([key, value]) => (
-            <div key={key}>
-              <dt>{key}</dt>
-              <dd data-testid={`config-${key}`}>
-                {displayConfigValue(key, value)}
-              </dd>
-            </div>
-          ))}
-        </dl>
+        <ConfigMap
+          title="Deployment configuration"
+          entries={service.deployment_config ?? {}}
+        />
+        <ConfigMap
+          title="Execution configuration"
+          entries={service.execution_config ?? service.config ?? {}}
+        />
       </article>
     )
   }
@@ -147,7 +173,16 @@ export function ServiceDetail({ service, onSave, saving }: Props) {
         />
       </label>
 
-      <KeyValueEditor title="Additional config" entries={extra} onChange={setExtra} />
+      <KeyValueEditor
+        title="Deployment configuration"
+        entries={deploymentConfig}
+        onChange={setDeploymentConfig}
+      />
+      <KeyValueEditor
+        title="Execution configuration"
+        entries={extra}
+        onChange={setExtra}
+      />
 
       <div className="form-actions">
         <button type="button" onClick={() => void handleSave()} disabled={saving}>

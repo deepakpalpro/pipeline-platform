@@ -41,7 +41,7 @@ A tenant user can navigate the app, manage connectors/services/pipelets, build a
 - Pixel-perfect design-system maturity
 - Multi-browser matrix beyond primary target
 - Mobile-first layouts
-- Billing UI pages (beyond linking to existing APIs if needed later)
+- Full multi-browser / mobile-first polish (Billing page is included as a Wave 5 API consumer)
 
 ---
 
@@ -128,8 +128,8 @@ flowchart LR
 | **Architecture refs** | §4.5 Connectors; §3.3–3.4 |
 | **Status** | Done |
 
-**In scope:** List + create/edit wizards for connectors and services against MSW or live API; secret fields never echoed.  
-**Out of scope:** Full ADLS/auth vendor matrix UI polish.
+**In scope:** List + create/edit wizards for connectors and services against MSW or live API; secret fields never echoed; dual deployment/execution editors; connector search/filter/pagination; Auth vendor catalog (V18) + seeded instances (V19).  
+**Out of scope:** Per-vendor specialized form layouts beyond KeyValue + common fields.
 
 #### Developer TDD guide
 
@@ -174,7 +174,7 @@ flowchart LR
 | **Architecture refs** | §4.3 Pipeline builder |
 | **Status** | Done |
 
-**In scope:** React Flow canvas; add 3 stages; bind connectors/services; save via `PUT .../steps` (+ create pipeline).  
+**In scope:** React Flow canvas; add 3 stages; searchable connector/service binding; dual config at pipeline + step; pipelines list/edit/archive; save via `PUT .../steps` (+ create pipeline).  
 **Out of scope:** Advanced layout auto-routing; collaborative editing.
 
 #### Developer TDD guide
@@ -248,9 +248,18 @@ flowchart LR
 
 - All **Must** stories W6-US01–US05 Done; US06 Should completed or deferred with tracker note  
 - Exit criteria verified (manual E2E or Playwright happy path without Postman)  
-- UI KB with screenshot placeholders  
+- UI KB with screenshot placeholders (+ dual-config / seed KB)  
 - PR `wave-6` → `master` when exit criteria met  
 - Tag `wave-6-complete`
+
+### Follow-ups landed on `wave-6` (post-story)
+
+| Item | Notes |
+|------|-------|
+| Dual config | V16–V17 + UI KeyValue editors; see `kb/W6-dual-deployment-execution-config.md` |
+| Auth vendors | V18 catalog; V19 tenant Auth instances |
+| Connector seed | One T001 connector per pipelet fixture entry |
+| UX | Connector list search/filter/pagination; searchable builder dropdowns; Billing page |
 
 ---
 

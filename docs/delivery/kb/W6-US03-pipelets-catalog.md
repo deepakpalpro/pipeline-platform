@@ -13,14 +13,15 @@
 
 ## Feature overview
 
-`/pipelets` shows a global catalog of Source / Processor / Destination cards with search and category tabs.
+`/pipelets` shows a global catalog of Source / Processor / Destination cards with search and category tabs (~105 fixture entries).
 
 | Piece | Role |
 |-------|------|
-| `src/fixtures/pipelets.json` | Static catalog (opaque W2-style ids) |
+| `src/fixtures/pipelets.json` | Static catalog (opaque W2-style ids) with `deploymentConfiguration` + `executionConfiguration` defaults |
 | `catalogFilter` | Pure category + text filter |
 | `RegisterPipeletModal` | Admin tabs: Image Path / Image URL / Runtime Binary |
 | `roleGate` / `AuthContext.isAdmin` | Register button for Operator/Admin stub names |
+| Builder palette | Same fixture; grouped categories with search + “Show more” |
 
 ### Fixture → live API swap
 

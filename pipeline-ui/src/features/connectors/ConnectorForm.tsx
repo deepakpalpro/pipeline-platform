@@ -17,6 +17,7 @@ export function ConnectorForm({ connectorTypes, onSubmit, onCancel }: Props) {
   const [baseUrl, setBaseUrl] = useState('')
   const [apiKey, setApiKey] = useState('')
   const [extraConfig, setExtraConfig] = useState<Record<string, unknown>>({})
+  const [deploymentConfig, setDeploymentConfig] = useState<Record<string, unknown>>({ cloud: 'aws', region: 'us-east-1' })
   const [errors, setErrors] = useState<FieldErrors>({})
   const [submitting, setSubmitting] = useState(false)
 
@@ -40,6 +41,8 @@ export function ConnectorForm({ connectorTypes, onSubmit, onCancel }: Props) {
         connectorTypeId,
         name: name.trim(),
         config,
+        deployment_config: deploymentConfig,
+        execution_config: config,
       })
     } finally {
       setSubmitting(false)
@@ -111,7 +114,12 @@ export function ConnectorForm({ connectorTypes, onSubmit, onCancel }: Props) {
       </label>
 
       <KeyValueEditor
-        title="Additional config"
+        title="Deployment configuration"
+        entries={deploymentConfig}
+        onChange={setDeploymentConfig}
+      />
+      <KeyValueEditor
+        title="Execution configuration"
         entries={extraConfig}
         onChange={setExtraConfig}
       />

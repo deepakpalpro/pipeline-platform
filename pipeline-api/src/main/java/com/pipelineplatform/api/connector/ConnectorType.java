@@ -28,6 +28,14 @@ public class ConnectorType {
   @Column(name = "config_schema", columnDefinition = "json")
   private String configSchema;
 
+  @JdbcTypeCode(SqlTypes.JSON)
+  @Column(name = "default_deployment_config", columnDefinition = "json")
+  private String defaultDeploymentConfig;
+
+  @JdbcTypeCode(SqlTypes.JSON)
+  @Column(name = "default_execution_config", columnDefinition = "json")
+  private String defaultExecutionConfig;
+
   @Column(name = "spi_class", nullable = false, length = 512)
   private String spiClass;
 
@@ -48,6 +56,14 @@ public class ConnectorType {
 
   public String getConfigSchema() {
     return configSchema;
+  }
+
+  public String getDefaultDeploymentConfig() {
+    return defaultDeploymentConfig;
+  }
+
+  public String getDefaultExecutionConfig() {
+    return defaultExecutionConfig;
   }
 
   public String getSpiClass() {

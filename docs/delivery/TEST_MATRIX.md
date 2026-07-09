@@ -103,10 +103,10 @@ Wave TDD (stakeholders): [`tdd/README.md`](tdd/README.md)
 | Story ID | Unit | Integration | WireMock | LocalStack | Manual | KB |
 |----------|------|-------------|----------|------------|--------|-----|
 | W6-US01 | AuthContext.test, Shell.test | n/a | n/a | n/a | npm run dev shell smoke | [W6-US01-nav-shell](kb/W6-US01-nav-shell.md) |
-| W6-US02 | ConnectorForm, ServiceForm, ConnectorsList, ServiceDetail | n/a | MSW handlers | n/a | Create flows + secret mask | [W6-US02-connectors-services-ui](kb/W6-US02-connectors-services-ui.md) |
+| W6-US02 | ConnectorForm, ServiceForm, ConnectorsList, ServiceDetail, connectorListFilter, SearchableSelect | n/a | MSW handlers + seed fixtures | n/a | Create flows + secret mask + list filters | [W6-US02-connectors-services-ui](kb/W6-US02-connectors-services-ui.md) · [dual-config](kb/W6-dual-deployment-execution-config.md) |
 | W6-US03 | catalogFilter, PipeletsCatalog, RegisterPipeletModal | n/a | MSW register stub | n/a | Filter + admin modal | [W6-US03-pipelets-catalog](kb/W6-US03-pipelets-catalog.md) |
-| W6-US04 | pipelineGraphReducer, PipelineBuilder.save | n/a | MSW POST/PUT pipelines | n/a | 3-stage save smoke | [W6-US04-pipeline-builder](kb/W6-US04-pipeline-builder.md) |
-| W6-US05 | executionOverlayReducer, ExecutionOverlay, RunControls.quota | n/a | MSW run/poll/402 | n/a | Manual E2E in KB | [W6-US05-run-overlay](kb/W6-US05-run-overlay.md) |
+| W6-US04 | pipelineGraphReducer, PipelineBuilder.save, StepPropertiesPanel, PipeletPalette, PipelinesListPage | n/a | MSW POST/PUT pipelines | n/a | 3-stage save smoke | [W6-US04-pipeline-builder](kb/W6-US04-pipeline-builder.md) |
+| W6-US05 | executionOverlayReducer, ExecutionOverlay, RunControls.quota | PipelineDryRunIT | MSW run/poll/402/dry-run | n/a | Manual E2E in KB | [W6-US05-run-overlay](kb/W6-US05-run-overlay.md) |
 | W6-US06 | CompletenessPanel, LatencyPanel, HeartbeatPanel | n/a | MSW obs series | n/a | Tab smoke | [W6-US06-observability-panels](kb/W6-US06-observability-panels.md) |
 
 ---

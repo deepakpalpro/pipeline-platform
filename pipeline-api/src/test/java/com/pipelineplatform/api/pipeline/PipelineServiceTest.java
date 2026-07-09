@@ -8,6 +8,7 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.pipelineplatform.api.tenant.TenantContext;
 import com.pipelineplatform.api.tenant.TenantContextRequiredException;
 import com.pipelineplatform.api.tenant.TenantFilters;
@@ -38,7 +39,9 @@ class PipelineServiceTest {
 
   @BeforeEach
   void setUp() {
-    pipelineService = new PipelineService(pipelineRepository, pipelineStepsService, entityManager);
+    pipelineService =
+        new PipelineService(
+            pipelineRepository, pipelineStepsService, entityManager, new ObjectMapper());
     when(entityManager.unwrap(Session.class)).thenReturn(session);
     when(session.getEnabledFilter(TenantFilters.NAME)).thenReturn(null);
     when(session.enableFilter(TenantFilters.NAME)).thenReturn(hibernateFilter);
@@ -57,7 +60,7 @@ class PipelineServiceTest {
     when(pipelineRepository.save(any(Pipeline.class))).thenAnswer(inv -> inv.getArgument(0));
 
     PipelineResponse response =
-        pipelineService.create(new CreatePipelineRequest("customer-sync", null, null, null));
+        pipelineService.create(new CreatePipelineRequest("customer-sync", null, null, null, null, null));
 
     ArgumentCaptor<Pipeline> captor = ArgumentCaptor.forClass(Pipeline.class);
     verify(pipelineRepository).save(captor.capture());
@@ -78,7 +81,7 @@ class PipelineServiceTest {
     assertThatThrownBy(
             () ->
                 pipelineService.create(
-                    new CreatePipelineRequest("x", null, PipelineVisibility.PRIVATE, null)))
+                    new CreatePipelineRequest("x", null, PipelineVisibility.PRIVATE, null, null, null)))
         .isInstanceOf(TenantContextRequiredException.class);
 
     verify(pipelineRepository, never()).save(any());
@@ -92,7 +95,7 @@ class PipelineServiceTest {
     assertThatThrownBy(
             () ->
                 pipelineService.create(
-                    new CreatePipelineRequest("dup", null, null, PipelineExecutionMode.ASYNC)))
+                    new CreatePipelineRequest("dup", null, null, PipelineExecutionMode.ASYNC, null, null)))
         .isInstanceOf(PipelineConflictException.class);
 
     verify(pipelineRepository, never()).save(any());

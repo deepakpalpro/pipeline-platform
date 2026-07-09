@@ -4,7 +4,17 @@ import userEvent from '@testing-library/user-event'
 import { ServiceForm } from './ServiceForm'
 import { renderWithProviders } from '../../test/renderWithProviders'
 
-const types = [{ id: 'stype-auth', type: 'AUTH', displayName: 'Auth' }]
+const types = [
+  {
+    id: 'st-auth',
+    type: 'AUTH',
+    displayName: 'Auth',
+    defaults: [
+      { id: 'sd-auth-stub', vendor: 'StubAuth' },
+      { id: 'sd-auth-oauth', vendor: 'OAuth' },
+    ],
+  },
+]
 
 describe('ServiceForm', () => {
   it('blocks submit without vendor', async () => {
@@ -14,6 +24,7 @@ describe('ServiceForm', () => {
       <ServiceForm serviceTypes={types} onSubmit={onSubmit} />,
     )
 
+    await user.selectOptions(screen.getByLabelText('Vendor'), '')
     await user.type(screen.getByLabelText('Service name'), 'Auth A')
     await user.click(screen.getByRole('button', { name: 'Create' }))
 
@@ -28,15 +39,17 @@ describe('ServiceForm', () => {
       <ServiceForm serviceTypes={types} onSubmit={onSubmit} />,
     )
 
-    await user.type(screen.getByLabelText('Vendor'), 'StubAuth')
+    await user.selectOptions(screen.getByLabelText('Vendor'), 'OAuth')
     await user.type(screen.getByLabelText('Service name'), 'Auth A')
     await user.click(screen.getByRole('button', { name: 'Create' }))
 
     expect(onSubmit).toHaveBeenCalledWith({
-      serviceTypeId: 'stype-auth',
-      vendor: 'StubAuth',
+      serviceTypeId: 'st-auth',
+      vendor: 'OAuth',
       name: 'Auth A',
       tenantConfig: {},
+      deployment_config: { cloud: 'aws', region: 'us-east-1' },
+      execution_config: {},
     })
   })
 })

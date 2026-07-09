@@ -1,6 +1,7 @@
 import { describe, expect, it, vi } from 'vitest'
 import { screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
+import { Route, Routes } from 'react-router-dom'
 import { renderWithProviders } from '../../../test/renderWithProviders'
 import { mockDb } from '../../../mocks/handlers'
 import type { PipeletCatalogEntry } from '../../pipelets/catalogFilter'
@@ -51,12 +52,19 @@ const CATALOG: PipeletCatalogEntry[] = [
 describe('PipelineBuilder.save', () => {
   it('saves three-stage graph via POST pipeline + PUT steps', async () => {
     const user = userEvent.setup()
-    renderWithProviders(<PipelineBuilderPage catalog={CATALOG} />, {
-      initialEntries: ['/pipelines'],
-    })
+    renderWithProviders(
+      <Routes>
+        <Route path="/pipelines/new" element={<PipelineBuilderPage catalog={CATALOG} />} />
+        <Route
+          path="/pipelines/:pipelineId"
+          element={<PipelineBuilderPage catalog={CATALOG} />}
+        />
+      </Routes>,
+      { initialEntries: ['/pipelines/new'] },
+    )
 
     await user.clear(screen.getByLabelText('Pipeline name'))
-    await user.type(screen.getByLabelText('Pipeline name'), 'threeStage')
+    await user.type(screen.getByLabelText('Pipeline name'), 'freshSave')
 
     await user.click(screen.getByRole('button', { name: /REST Source/ }))
     await user.click(screen.getByRole('button', { name: /JSON Transform/ }))
@@ -65,10 +73,8 @@ describe('PipelineBuilder.save', () => {
     await user.click(screen.getByRole('button', { name: 'Save' }))
 
     await waitFor(() => {
-      expect(screen.getByTestId('save-status')).toHaveTextContent(/Saved threeStage/)
+      expect(mockDb.lastStepsPut).not.toBeNull()
     })
-
-    expect(mockDb.lastStepsPut).not.toBeNull()
     expect(mockDb.lastStepsPut?.steps).toHaveLength(3)
     expect(mockDb.lastStepsPut?.steps.map((s) => s.pipelet_id)).toEqual([
       'plet-rest-source',
@@ -76,5 +82,9 @@ describe('PipelineBuilder.save', () => {
       'plet-s3-destination',
     ])
     expect(mockDb.lastStepsPut?.steps.map((s) => s.step_order)).toEqual([1, 2, 3])
+
+    await waitFor(() => {
+      expect(screen.getByTestId('save-status')).toHaveTextContent(/Saved freshSave/)
+    })
   })
 })

@@ -4,6 +4,7 @@ export const NAV_ITEMS = [
   { label: 'Connectors', path: '/connectors' },
   { label: 'Services', path: '/services' },
   { label: 'Observability', path: '/observability' },
+  { label: 'Billing', path: '/billing' },
 ] as const
 
 export type NavPath = (typeof NAV_ITEMS)[number]['path']

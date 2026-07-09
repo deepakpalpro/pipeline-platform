@@ -1,5 +1,9 @@
 package com.pipelineplatform.api.pipeline;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.pipelineplatform.api.common.DualConfigSupport;
 import com.pipelineplatform.api.tenant.TenantContext;
 import com.pipelineplatform.api.tenant.TenantContextRequiredException;
 import com.pipelineplatform.api.tenant.TenantFilters;
@@ -16,14 +20,17 @@ public class PipelineService {
   private final PipelineRepository pipelineRepository;
   private final PipelineStepsService pipelineStepsService;
   private final EntityManager entityManager;
+  private final ObjectMapper objectMapper;
 
   public PipelineService(
       PipelineRepository pipelineRepository,
       PipelineStepsService pipelineStepsService,
-      EntityManager entityManager) {
+      EntityManager entityManager,
+      ObjectMapper objectMapper) {
     this.pipelineRepository = pipelineRepository;
     this.pipelineStepsService = pipelineStepsService;
     this.entityManager = entityManager;
+    this.objectMapper = objectMapper;
   }
 
   @Transactional
@@ -47,8 +54,12 @@ public class PipelineService {
         request.executionMode() == null ? PipelineExecutionMode.ASYNC : request.executionMode());
     pipeline.setVersion(1);
     pipeline.setStatus(PipelineStatus.DRAFT);
+    pipeline.setDeploymentConfig(
+        writeJson(DualConfigSupport.normalize(objectMapper, request.deploymentConfig())));
+    pipeline.setExecutionConfig(
+        writeJson(DualConfigSupport.normalize(objectMapper, request.executionConfig())));
 
-    return PipelineResponse.from(pipelineRepository.save(pipeline));
+    return toResponse(pipelineRepository.save(pipeline), List.of());
   }
 
   @Transactional(readOnly = true)
@@ -59,7 +70,7 @@ public class PipelineService {
         pipelineRepository
             .findFilteredById(id)
             .orElseThrow(() -> new PipelineNotFoundException(id));
-    return PipelineResponse.from(pipeline, pipelineStepsService.loadSteps(id));
+    return toResponse(pipeline, pipelineStepsService.loadSteps(id));
   }
 
   @Transactional(readOnly = true)
@@ -67,7 +78,7 @@ public class PipelineService {
     String tenantId = requireTenantId();
     enableTenantFilter(tenantId);
     return pipelineRepository.findAllFiltered().stream()
-        .map(p -> PipelineResponse.from(p, pipelineStepsService.loadSteps(p.getId())))
+        .map(p -> toResponse(p, pipelineStepsService.loadSteps(p.getId())))
         .toList();
   }
 
@@ -100,9 +111,21 @@ public class PipelineService {
       }
       pipeline.setStatus(request.status());
     }
+    if (request.deploymentConfig() != null) {
+      JsonNode merged =
+          DualConfigSupport.mergePreservingSecrets(
+              objectMapper, readJson(pipeline.getDeploymentConfig()), request.deploymentConfig());
+      pipeline.setDeploymentConfig(writeJson(merged));
+    }
+    if (request.executionConfig() != null) {
+      JsonNode merged =
+          DualConfigSupport.mergePreservingSecrets(
+              objectMapper, readJson(pipeline.getExecutionConfig()), request.executionConfig());
+      pipeline.setExecutionConfig(writeJson(merged));
+    }
     pipeline.setVersion(pipeline.getVersion() + 1);
     Pipeline saved = pipelineRepository.save(pipeline);
-    return PipelineResponse.from(saved, pipelineStepsService.loadSteps(id));
+    return toResponse(saved, pipelineStepsService.loadSteps(id));
   }
 
   @Transactional
@@ -117,7 +140,36 @@ public class PipelineService {
     pipeline.setStatus(PipelineStatus.ARCHIVED);
     pipeline.setVersion(pipeline.getVersion() + 1);
     Pipeline saved = pipelineRepository.save(pipeline);
-    return PipelineResponse.from(saved, pipelineStepsService.loadSteps(id));
+    return toResponse(saved, pipelineStepsService.loadSteps(id));
+  }
+
+  PipelineResponse toResponse(Pipeline pipeline, List<PipelineStepResponse> steps) {
+    return PipelineResponse.from(
+        pipeline,
+        steps,
+        DualConfigSupport.redactForResponse(
+            objectMapper, readJson(pipeline.getDeploymentConfig())),
+        DualConfigSupport.redactForResponse(
+            objectMapper, readJson(pipeline.getExecutionConfig())));
+  }
+
+  private JsonNode readJson(String json) {
+    if (json == null || json.isBlank()) {
+      return DualConfigSupport.empty(objectMapper);
+    }
+    try {
+      return objectMapper.readTree(json);
+    } catch (JsonProcessingException ex) {
+      throw new IllegalStateException("Corrupt pipeline config JSON", ex);
+    }
+  }
+
+  private String writeJson(JsonNode node) {
+    try {
+      return objectMapper.writeValueAsString(DualConfigSupport.normalize(objectMapper, node));
+    } catch (JsonProcessingException ex) {
+      throw new PipelineValidationException("Invalid pipeline config JSON");
+    }
   }
 
   private static String blankToNull(String value) {

@@ -68,7 +68,10 @@ class TenantServiceConfigIT {
             ServiceTypeService.STUB_AUTH_VENDOR,
             "T-Auth-" + suffix,
             config,
-            true);
+            null,
+            null,
+            true
+        );
 
     ResponseEntity<TenantServiceResponse> created =
         restTemplate.exchange(
@@ -113,11 +116,14 @@ class TenantServiceConfigIT {
                 HttpMethod.POST,
                 new HttpEntity<>(
                     new CreateTenantServiceRequest(
-                        ServiceTypeService.AUTH_TYPE_ID,
-                        ServiceTypeService.STUB_AUTH_VENDOR,
-                        "B-Auth-" + suffix,
-                        config,
-                        true),
+            ServiceTypeService.AUTH_TYPE_ID,
+            ServiceTypeService.STUB_AUTH_VENDOR,
+            "B-Auth-" + suffix,
+            config,
+            null,
+            null,
+            true
+        ),
                     jsonTenantHeaders(tenantB.id())),
                 TenantServiceResponse.class)
             .getBody();

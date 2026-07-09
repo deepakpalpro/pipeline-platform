@@ -27,12 +27,13 @@ Vite + React + TypeScript app under `pipeline-ui/` with:
 | Label | Route |
 |-------|--------|
 | Pipelets | `/pipelets` |
-| Pipelines | `/pipelines` |
+| Pipelines | `/pipelines` (list); `/pipelines/new`, `/pipelines/:id` (builder) |
 | Connectors | `/connectors` |
 | Services | `/services` |
+| Billing | `/billing` |
 | Observability | `/observability` |
 
-Default route `/` redirects to `/pipelets`. Feature pages are placeholders until later Wave 6 stories.
+Default route `/` redirects to `/pipelets`.
 
 ### Tenant picker
 

@@ -71,7 +71,7 @@ class PipelineStepsServiceTest {
                 new PipelineStepRequest(
                     "plet-b",
                     2,
-                    null,
+                    null, null, null,
                     List.of(),
                     List.of(),
                     "q.in.2",
@@ -80,7 +80,7 @@ class PipelineStepsServiceTest {
                 new PipelineStepRequest(
                     "plet-a",
                     1,
-                    config,
+                    config, null, null,
                     List.of("conn-1"),
                     List.of("svc-1"),
                     "q.in.1",
@@ -99,6 +99,7 @@ class PipelineStepsServiceTest {
     assertThat(response.steps().get(0).stepOrder()).isEqualTo(1);
     assertThat(response.steps().get(1).stepOrder()).isEqualTo(2);
     assertThat(response.version()).isEqualTo(2);
+    assertThat(response.status()).isEqualTo(PipelineStatus.ACTIVE);
     verify(hibernateFilter).setParameter(anyString(), any());
   }
 
@@ -110,8 +111,8 @@ class PipelineStepsServiceTest {
     ReplacePipelineStepsRequest request =
         new ReplacePipelineStepsRequest(
             List.of(
-                new PipelineStepRequest("a", 1, null, null, null, null, null, null),
-                new PipelineStepRequest("b", 1, null, null, null, null, null, null)));
+                new PipelineStepRequest("a", 1, null, null, null, null, null, null, null, null),
+                new PipelineStepRequest("b", 1, null, null, null, null, null, null, null, null)));
 
     assertThatThrownBy(() -> pipelineStepsService.replace("p1", request))
         .isInstanceOf(PipelineValidationException.class)
@@ -133,7 +134,7 @@ class PipelineStepsServiceTest {
                     new ReplacePipelineStepsRequest(
                         List.of(
                             new PipelineStepRequest(
-                                "plet", 1, null, null, null, null, null, null)))))
+                                "plet", 1, null, null, null, null, null, null, null, null)))))
         .isInstanceOf(PipelineNotFoundException.class);
   }
 

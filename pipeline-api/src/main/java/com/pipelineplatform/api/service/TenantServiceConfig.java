@@ -40,6 +40,14 @@ public class TenantServiceConfig {
   @Column(name = "tenant_config", nullable = false, columnDefinition = "json")
   private String tenantConfig;
 
+  @JdbcTypeCode(SqlTypes.JSON)
+  @Column(name = "deployment_config", columnDefinition = "json")
+  private String deploymentConfig;
+
+  @JdbcTypeCode(SqlTypes.JSON)
+  @Column(name = "execution_config", columnDefinition = "json")
+  private String executionConfig;
+
   @Column(name = "inherits_default", nullable = false)
   private boolean inheritsDefault = true;
 
@@ -96,6 +104,22 @@ public class TenantServiceConfig {
 
   public void setTenantConfig(String tenantConfig) {
     this.tenantConfig = tenantConfig;
+  }
+
+  public String getDeploymentConfig() {
+    return deploymentConfig;
+  }
+
+  public void setDeploymentConfig(String deploymentConfig) {
+    this.deploymentConfig = deploymentConfig;
+  }
+
+  public String getExecutionConfig() {
+    return executionConfig;
+  }
+
+  public void setExecutionConfig(String executionConfig) {
+    this.executionConfig = executionConfig;
   }
 
   public boolean isInheritsDefault() {

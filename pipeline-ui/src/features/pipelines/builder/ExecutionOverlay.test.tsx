@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
+import { Route, Routes } from 'react-router-dom'
 import { vi } from 'vitest'
 import { renderWithProviders } from '../../../test/renderWithProviders'
 import type { PipeletCatalogEntry } from '../../pipelets/catalogFilter'
@@ -55,7 +56,16 @@ const CATALOG: PipeletCatalogEntry[] = [
 describe('ExecutionOverlay', () => {
   it('polls until completed and shows completed overlay states', async () => {
     const user = userEvent.setup()
-    renderWithProviders(<PipelineBuilderPage catalog={CATALOG} />)
+    renderWithProviders(
+      <Routes>
+        <Route path="/pipelines/new" element={<PipelineBuilderPage catalog={CATALOG} />} />
+        <Route
+          path="/pipelines/:pipelineId"
+          element={<PipelineBuilderPage catalog={CATALOG} />}
+        />
+      </Routes>,
+      { initialEntries: ['/pipelines/new'] },
+    )
 
     await user.click(screen.getByRole('button', { name: /REST Source/ }))
     await user.click(screen.getByRole('button', { name: /JSON Transform/ }))

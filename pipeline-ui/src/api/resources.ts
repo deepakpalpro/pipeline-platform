@@ -1,5 +1,6 @@
 import { apiFetch } from './apiClient'
 import type {
+  BillingPeriodsResponse,
   CompletenessResponse,
   ConnectorType,
   CreateConnectorRequest,
@@ -11,12 +12,16 @@ import type {
   PipelineExecutionDetail,
   PipelineResponse,
   PipelineRunResponse,
+  QuotaStatusResponse,
   ReplacePipelineStepsRequest,
   ServiceType,
   TenantConnector,
   TenantService,
   UpdateConnectorRequest,
+  UpdatePipelineRequest,
   UpdateTenantServiceRequest,
+  UsageEventsPageResponse,
+  UsageSummaryResponse,
 } from './types'
 import { ApiError } from './types'
 
@@ -117,6 +122,29 @@ export function createPipeline(tenantId: string, body: CreatePipelineRequest) {
   }).then((r) => readJson<PipelineResponse>(r))
 }
 
+export function getPipeline(tenantId: string, pipelineId: string) {
+  return apiFetch(`/api/v1/pipelines/${pipelineId}`, tenantId).then((r) =>
+    readJson<PipelineResponse>(r),
+  )
+}
+
+export function updatePipeline(
+  tenantId: string,
+  pipelineId: string,
+  body: UpdatePipelineRequest,
+) {
+  return apiFetch(`/api/v1/pipelines/${pipelineId}`, tenantId, {
+    method: 'PUT',
+    body: JSON.stringify(body),
+  }).then((r) => readJson<PipelineResponse>(r))
+}
+
+export function archivePipeline(tenantId: string, pipelineId: string) {
+  return apiFetch(`/api/v1/pipelines/${pipelineId}`, tenantId, {
+    method: 'DELETE',
+  }).then((r) => readJson<PipelineResponse>(r))
+}
+
 export function replacePipelineSteps(
   tenantId: string,
   pipelineId: string,
@@ -176,4 +204,30 @@ export function getHeartbeat(tenantId: string, pipelineId: string) {
     `/api/v1/observability/pipelines/${pipelineId}/heartbeat`,
     tenantId,
   ).then((r) => readJson<HeartbeatResponse>(r))
+}
+
+export function getUsageSummary(tenantId: string, period = 'current') {
+  return apiFetch(
+    `/api/v1/tenants/${tenantId}/usage?period=${encodeURIComponent(period)}`,
+    tenantId,
+  ).then((r) => readJson<UsageSummaryResponse>(r))
+}
+
+export function getUsageEvents(tenantId: string, page = 0, size = 20) {
+  return apiFetch(
+    `/api/v1/tenants/${tenantId}/usage/events?page=${page}&size=${size}`,
+    tenantId,
+  ).then((r) => readJson<UsageEventsPageResponse>(r))
+}
+
+export function getQuotaStatus(tenantId: string) {
+  return apiFetch(`/api/v1/tenants/${tenantId}/quota`, tenantId).then((r) =>
+    readJson<QuotaStatusResponse>(r),
+  )
+}
+
+export function getBillingPeriods(tenantId: string) {
+  return apiFetch(`/api/v1/tenants/${tenantId}/billing/periods`, tenantId).then(
+    (r) => readJson<BillingPeriodsResponse>(r),
+  )
 }
