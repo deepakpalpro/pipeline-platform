@@ -148,8 +148,8 @@ npm test -- catalogFilter PipeletsCatalog
 
 ## 11. Docs & trackers
 
-- [ ] KB: catalog filters, admin tabs, screenshot placeholders
-- [ ] Tracker · TEST_MATRIX · `WAVE_6.md` Done
+- [x] KB: catalog filters, admin tabs, screenshot placeholders
+- [x] Tracker · TEST_MATRIX · `WAVE_6.md` Done
 
 ```text
 merge → tag W6-US03 → W6-US04
