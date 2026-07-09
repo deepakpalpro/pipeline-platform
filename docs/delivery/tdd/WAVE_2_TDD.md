@@ -4,12 +4,15 @@
 |-------|--------|
 | **Wave** | W2 — Pipelines & Ephemeral Execution |
 | **Audience** | Technical stakeholders |
-| **Status** | Draft (planning) |
+| **Status** | In Progress (planning + W2-US01 branch) |
 | **Architecture refs** | §1.4, §2 pipeline tables, §3.1–3.2, §8, §10.3 |
-| **Branch / tags** | `wave-2` (planned) · `W2-US##` |
-| **Last updated** | 2026-07-08 |
+| **Branch / tags** | `wave-2` · `W2-US##` |
+| **Last updated** | 2026-07-09 |
 | **Template** | [`../TDD_WAVE_TEMPLATE.md`](../TDD_WAVE_TEMPLATE.md) |
 | **Catalog** | [`../../DELIVERY_PLAN.md`](../../DELIVERY_PLAN.md) § Wave 2 |
+| **Execution plan** | [`../waves/WAVE_2.md`](../waves/WAVE_2.md) |
+| **Developer story TDD** | [`stories/README.md`](stories/README.md) § Wave 2 |
+| **Coverage** | [`../TEST_MATRIX.md`](../TEST_MATRIX.md) § Wave 2 |
 
 ---
 
@@ -75,7 +78,11 @@ flowchart TB
 
 ## 4. Story TDD backlog
 
+Junior step-by-step guides: [`stories/README.md`](stories/README.md) § Wave 2.
+
 ### W2-US01 — Pipeline CRUD (+ visibility/mode)
+
+**Developer guide:** [`stories/W2-US01-tdd.md`](stories/W2-US01-tdd.md)
 
 | Step | Evidence |
 |------|----------|
@@ -85,6 +92,8 @@ flowchart TB
 
 ### W2-US02 — Pipeline steps config API
 
+**Developer guide:** [`stories/W2-US02-tdd.md`](stories/W2-US02-tdd.md)
+
 | Step | Evidence |
 |------|----------|
 | **Red** | `PipelineStepsServiceTest` fail |
@@ -92,6 +101,8 @@ flowchart TB
 | **Refactor** | Step graph validation helper |
 
 ### W2-US03 — Inter-stage RabbitMQ topology
+
+**Developer guide:** [`stories/W2-US03-tdd.md`](stories/W2-US03-tdd.md)
 
 | Step | Evidence |
 |------|----------|
@@ -101,6 +112,8 @@ flowchart TB
 
 ### W2-US04 — Async run orchestration
 
+**Developer guide:** [`stories/W2-US04-tdd.md`](stories/W2-US04-tdd.md)
+
 | Step | Evidence |
 |------|----------|
 | **Red** | `PipelineRunOrchestratorTest` / run IT fail |
@@ -108,6 +121,8 @@ flowchart TB
 | **Refactor** | Clear separation orchestration vs Job client |
 
 ### W2-US05 — Pipelet Job spawn (Kind/stub)
+
+**Developer guide:** [`stories/W2-US05-tdd.md`](stories/W2-US05-tdd.md)
 
 | Step | Evidence |
 |------|----------|
@@ -117,6 +132,8 @@ flowchart TB
 
 ### W2-US06 — Retries + per-stage DLQ
 
+**Developer guide:** [`stories/W2-US06-tdd.md`](stories/W2-US06-tdd.md)
+
 | Step | Evidence |
 |------|----------|
 | **Red** | `StageDlqIT.poison_landsOnDlq` fail |
@@ -124,6 +141,8 @@ flowchart TB
 | **Refactor** | Shared error headers |
 
 ### W2-US07 — Execution status query API
+
+**Developer guide:** [`stories/W2-US07-tdd.md`](stories/W2-US07-tdd.md)
 
 | Step | Evidence |
 |------|----------|
@@ -169,3 +188,4 @@ flowchart TB
 | Date | Change |
 |------|--------|
 | 2026-07-08 | Initial Draft for technical stakeholders |
+| 2026-07-09 | Linked execution plan + junior story TDD guides; wave-2 started |

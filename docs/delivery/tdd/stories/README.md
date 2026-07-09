@@ -37,6 +37,23 @@ US05 can start after W0-US05 even while US03/US04 are in flight if staffing allo
 Execution plan (full AC): [`../../waves/WAVE_1.md`](../../waves/WAVE_1.md).  
 Stakeholder wave TDD: [`../WAVE_1_TDD.md`](../WAVE_1_TDD.md).
 
-## Later waves (W2+)
+## Wave 2
 
-When pulling a story, copy [`TDD_STORY_TEMPLATE.md`](TDD_STORY_TEMPLATE.md) to `W#-US##-tdd.md` and fill Red/Green/Refactor **before** coding. Link it from the wave execution plan and stakeholder `WAVE_N_TDD.md`. Use Wave 0–1 guides as the pattern.
+| Story | Guide | Status |
+|-------|-------|--------|
+| W2-US01 Pipeline CRUD | [`W2-US01-tdd.md`](W2-US01-tdd.md) | Draft (planning) |
+| W2-US02 Pipeline steps | [`W2-US02-tdd.md`](W2-US02-tdd.md) | Draft (planning) |
+| W2-US03 RabbitMQ topology | [`W2-US03-tdd.md`](W2-US03-tdd.md) | Draft (planning) |
+| W2-US04 Async run | [`W2-US04-tdd.md`](W2-US04-tdd.md) | Draft (planning) |
+| W2-US05 Pipelet Job spawn | [`W2-US05-tdd.md`](W2-US05-tdd.md) | Draft (planning) |
+| W2-US06 Retries + DLQ | [`W2-US06-tdd.md`](W2-US06-tdd.md) | Draft (planning) |
+| W2-US07 Execution status | [`W2-US07-tdd.md`](W2-US07-tdd.md) | Draft (planning) |
+
+**Suggested order:** US01 → US02 → US03 → US04 → US05 → US06 → US07 (US06 can start after US03).
+
+Execution plan (full AC): [`../../waves/WAVE_2.md`](../../waves/WAVE_2.md).  
+Stakeholder wave TDD: [`../WAVE_2_TDD.md`](../WAVE_2_TDD.md).
+
+## Later waves (W3+)
+
+When pulling a story, copy [`TDD_STORY_TEMPLATE.md`](TDD_STORY_TEMPLATE.md) to `W#-US##-tdd.md` and fill Red/Green/Refactor **before** coding. Link it from the wave execution plan and stakeholder `WAVE_N_TDD.md`. Use Wave 0–2 guides as the pattern.

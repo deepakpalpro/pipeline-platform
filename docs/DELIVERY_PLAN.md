@@ -163,7 +163,9 @@ Stories below list **title + intent**. Fill full AC from the story template when
 
 **Exit criteria:** Fixture 3-stage pipeline reaches `completed`; one forced failure reaches DLQ; KB for “pipeline run failed” with dataflow.
 
-**Wave 2 TDD (stakeholders):** [`delivery/tdd/WAVE_2_TDD.md`](delivery/tdd/WAVE_2_TDD.md)
+**Wave 2 execution plan (full AC):** [`delivery/waves/WAVE_2.md`](delivery/waves/WAVE_2.md) · branch `wave-2`  
+**Wave 2 TDD (stakeholders):** [`delivery/tdd/WAVE_2_TDD.md`](delivery/tdd/WAVE_2_TDD.md)  
+**Wave 2 TDD (developers / juniors):** [`delivery/tdd/stories/README.md`](delivery/tdd/stories/README.md) § Wave 2
 
 ---
 
