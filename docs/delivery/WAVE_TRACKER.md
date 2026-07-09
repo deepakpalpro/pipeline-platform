@@ -86,7 +86,7 @@ Abbreviations: **U** = Unit, **I** = Integration, **WM** = WireMock, **LS** = Lo
 | W3-US02 | W3-F1 / W3-F1-E1 | Signature verification + auth service | Done | | U,I,M,KB | HMAC before publish; 401 on bad sig |
 | W3-US03 | W3-F1 / W3-F1-E2 | Idempotency (X-Webhook-Id / hash) | Done | | U,I,M,KB | Same event_id; single publish; V13 store |
 | W3-US04 | W3-F1 / W3-F1-E2 | Rate limit + backpressure 429/503 | Todo | | | |
-| W3-US05 | W3-F2 / W3-F2-E1 | Provision webhook URL API | Todo | | | |
+| W3-US05 | W3-F2 / W3-F2-E1 | Provision webhook URL API | Done | | U,I,M,KB | Stable URL; encrypted secret; event_listener only |
 | W3-US06 | W3-F2 / W3-F2-E1 | On-demand processor trigger (queue depth) | Todo | | | |
 | W3-US07 | W3-F3 / W3-F3-E1 | Meter webhook_events + bytes_in | Todo | | | |
 
