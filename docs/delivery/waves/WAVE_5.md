@@ -116,7 +116,7 @@ flowchart LR
 | **Priority** | Must |
 | **Dependencies** | W5-US01; W2 stub stage / fixture run |
 | **Architecture refs** | §6.2 dimensions |
-| **Status** | Todo |
+| **Status** | Done |
 
 **In scope:** Emit usage from fixture pipelet/stub path (records, compute stub, connector calls as applicable); align with W3 webhook dimensions.  
 **Out of scope:** Real K8s metrics-server billing accuracy.
@@ -125,9 +125,9 @@ flowchart LR
 
 [`../tdd/stories/w5/W5-US02-tdd.md`](../tdd/stories/w5/W5-US02-tdd.md)
 
-#### Support KB (create)
+#### Support KB
 
-`docs/delivery/kb/W5-US02-meter-agent.md`
+[`../kb/W5-US02-meter-agent.md`](../kb/W5-US02-meter-agent.md)
 
 ---
 
@@ -229,6 +229,7 @@ flowchart LR
 - [x] This execution plan + junior TDD guides committed
 - [x] `W5-US01` feature branch created
 - [x] W5-US01 UsageEvent ingest + persist (`PersistingUsageEventCollector` + V14)
+- [x] W5-US02 MeterAgent emit from stub stage worker
 - [ ] WAVE_TRACKER / TEST_MATRIX / WAVE_5_TDD updated as stories complete
 - [ ] Each story: merge → tag `W5-US##` → delete → next from `wave-5`
 

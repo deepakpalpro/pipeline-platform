@@ -8,7 +8,7 @@
 | **Timebox hint** | 1 day |
 | **You will touch** | MeterAgent, stub worker / run path, dimension constants |
 | **Architecture refs** | §6.2 Pricing Dimensions |
-| **KB (create)** | `docs/delivery/kb/W5-US02-meter-agent.md` |
+| **KB** | [`../../../kb/W5-US02-meter-agent.md`](../../../kb/W5-US02-meter-agent.md) |
 | **Stakeholder TDD** | [`../../WAVE_5_TDD.md`](../../WAVE_5_TDD.md) |
 | **AC source** | [`../../../waves/WAVE_5.md`](../../../waves/WAVE_5.md) § W5-US02 |
 
@@ -102,9 +102,9 @@ flowchart LR
 
 ### Checklist
 
-- [ ] Fixture emit dimensions documented
-- [ ] Collector receives events
-- [ ] Tests green
+- [x] Fixture emit dimensions documented
+- [x] Collector receives events
+- [x] Tests green
 
 ---
 
@@ -117,8 +117,8 @@ flowchart LR
 
 ## 11. Docs & trackers
 
-- [ ] KB: which dimensions a stub run emits
-- [ ] Tracker · TEST_MATRIX · `WAVE_5.md` Done
+- [x] KB: which dimensions a stub run emits
+- [x] Tracker · TEST_MATRIX · `WAVE_5.md` Done
 
 ```text
 merge → tag W5-US02 → W5-US03
