@@ -135,7 +135,7 @@ flowchart LR
 | **Priority** | Must |
 | **Dependencies** | W4-US01 |
 | **Architecture refs** | §7.1, §7.5 |
-| **Status** | Todo |
+| **Status** | Done |
 
 **In scope:** `pipelet_heartbeat_timestamp` gauge; `pipelet_errors_total` (critical) counter; document label cardinality.  
 **Out of scope:** Real K8s pod heartbeats (stub/timer OK).
@@ -144,9 +144,9 @@ flowchart LR
 
 [`../tdd/stories/w4/W4-US03-tdd.md`](../tdd/stories/w4/W4-US03-tdd.md)
 
-#### Support KB (create)
+#### Support KB
 
-`docs/delivery/kb/W4-US03-heartbeat-errors.md`
+[`../kb/W4-US03-heartbeat-errors.md`](../kb/W4-US03-heartbeat-errors.md)
 
 ---
 
@@ -226,6 +226,7 @@ flowchart LR
 - [x] `W4-US01` feature branch created
 - [x] W4-US01 Pipelet metrics emit (`PipeletMetricsEmitter` + stub worker)
 - [x] W4-US02 Completeness calculator + gauge + `completeness_pct` on execution
+- [x] W4-US03 Heartbeat gauge + critical error counter (`PipeletErrorType`)
 - [ ] WAVE_TRACKER / TEST_MATRIX / WAVE_4_TDD updated as stories complete
 - [ ] Each story: merge → tag `W4-US##` → delete → next from `wave-4`
 
