@@ -96,7 +96,7 @@ flowchart LR
 | **Priority** | Must |
 | **Dependencies** | Wave 1 |
 | **Architecture refs** | §2 `pipelines`, §3.1 |
-| **Status** | Todo |
+| **Status** | Done |
 
 **As a** tenant admin  
 **I want** to create and manage pipelines with visibility and execution mode  
@@ -287,9 +287,10 @@ flowchart LR
 
 ## Implementation checklist (start of wave)
 
-- [ ] `wave-2` branched from `master` (post Wave 1 merge)
-- [ ] This execution plan + junior TDD guides committed
-- [ ] `W2-US01` feature branch created
+- [x] `wave-2` branched from `master` (post Wave 1 merge)
+- [x] This execution plan + junior TDD guides committed
+- [x] `W2-US01` feature branch created
+- [x] W2-US01 Pipeline CRUD implemented (`V9__pipelines.sql`)
 - [ ] WAVE_TRACKER / TEST_MATRIX / WAVE_2_TDD updated as stories complete
 - [ ] Each story: merge → tag `W2-US##` → delete → next from `wave-2`
 
