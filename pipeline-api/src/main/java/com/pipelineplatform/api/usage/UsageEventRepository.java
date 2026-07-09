@@ -1,5 +1,6 @@
 package com.pipelineplatform.api.usage;
 
+import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -15,4 +16,14 @@ public interface UsageEventRepository extends JpaRepository<UsageEventEntity, St
   List<UsageEventEntity> findByTenantIdOrderByRecordedAtDesc(@Param("tenantId") String tenantId);
 
   long countByTenantId(String tenantId);
+
+  @Query(
+      """
+      select e.tenantId as tenantId, e.dimension as dimension, sum(e.quantity) as totalQuantity
+      from UsageEventEntity e
+      where e.recordedAt >= :periodStart and e.recordedAt < :periodEnd
+      group by e.tenantId, e.dimension
+      """)
+  List<UsageDimensionSum> sumByTenantAndDimensionForPeriod(
+      @Param("periodStart") Instant periodStart, @Param("periodEnd") Instant periodEnd);
 }

@@ -4,7 +4,7 @@
 |-------|--------|
 | **Wave** | W5 — Metering & Pay-as-you-go |
 | **Audience** | Technical stakeholders |
-| **Status** | In Progress (W5-US01–US02 Done) |
+| **Status** | In Progress (W5-US01–US03 Done) |
 | **Architecture refs** | §6.2, §3.5 |
 | **Branch / tags** | `wave-5` · `W5-US##` |
 | **Last updated** | 2026-07-09 |
@@ -109,6 +109,8 @@ flowchart TB
 | **Green** | Rollups for fixture hour |
 | **Refactor** | Re-run safe |
 
+**Status:** Done — `V15__usage_aggregates`, UTC hourly upsert, stub costs, fixed-clock tests.
+
 ### W5-US04 — Soft/hard quota + credit balance
 
 **Developer guide:** [`stories/w5/W5-US04-tdd.md`](stories/w5/W5-US04-tdd.md)
@@ -180,3 +182,4 @@ flowchart TB
 | 2026-07-09 | Linked execution plan + junior story TDD guides; wave-5 started |
 | 2026-07-09 | W5-US01 implemented: usage_events persist + idempotent collector |
 | 2026-07-09 | W5-US02 implemented: MeterAgent stub stage emit |
+| 2026-07-09 | W5-US03 implemented: hourly usage_aggregates job |
