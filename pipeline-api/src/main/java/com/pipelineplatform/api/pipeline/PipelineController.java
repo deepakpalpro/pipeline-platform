@@ -62,6 +62,11 @@ public class PipelineController {
     return ResponseEntity.status(HttpStatus.ACCEPTED).body(pipelineRunService.run(id));
   }
 
+  @GetMapping("/{id}/executions")
+  public List<PipelineExecutionResponse> listExecutions(@PathVariable String id) {
+    return pipelineRunService.listExecutions(id);
+  }
+
   @GetMapping("/{id}/executions/{executionId}")
   public PipelineExecutionResponse getExecution(
       @PathVariable String id, @PathVariable String executionId) {

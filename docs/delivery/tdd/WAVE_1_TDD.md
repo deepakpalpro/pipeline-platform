@@ -81,7 +81,7 @@ Junior step-by-step guides: [`stories/README.md`](stories/README.md) § Wave 1.
 
 ### W1-US01 — Tenant CRUD + JWT tenant context
 
-**Developer guide:** [`stories/W1-US01-tdd.md`](stories/W1-US01-tdd.md)
+**Developer guide:** [`stories/w1/W1-US01-tdd.md`](stories/w1/W1-US01-tdd.md)
 
 | Step | Evidence |
 |------|----------|
@@ -96,7 +96,7 @@ Junior step-by-step guides: [`stories/README.md`](stories/README.md) § Wave 1.
 
 ### W1-US02 — JPA tenant isolation filters
 
-**Developer guide:** [`stories/W1-US02-tdd.md`](stories/W1-US02-tdd.md)
+**Developer guide:** [`stories/w1/W1-US02-tdd.md`](stories/w1/W1-US02-tdd.md)
 
 | Step | Evidence |
 |------|----------|
@@ -110,7 +110,7 @@ Junior step-by-step guides: [`stories/README.md`](stories/README.md) § Wave 1.
 
 ### W1-US03 — Service types + platform defaults
 
-**Developer guide:** [`stories/W1-US03-tdd.md`](stories/W1-US03-tdd.md)
+**Developer guide:** [`stories/w1/W1-US03-tdd.md`](stories/w1/W1-US03-tdd.md)
 
 | Step | Evidence |
 |------|----------|
@@ -120,7 +120,7 @@ Junior step-by-step guides: [`stories/README.md`](stories/README.md) § Wave 1.
 
 ### W1-US04 — Tenant service config (Auth pattern)
 
-**Developer guide:** [`stories/W1-US04-tdd.md`](stories/W1-US04-tdd.md)
+**Developer guide:** [`stories/w1/W1-US04-tdd.md`](stories/w1/W1-US04-tdd.md)
 
 | Step | Evidence |
 |------|----------|
@@ -135,7 +135,7 @@ Junior step-by-step guides: [`stories/README.md`](stories/README.md) § Wave 1.
 
 ### W1-US05 — Connector SPI load + Rest plugin
 
-**Developer guide:** [`stories/W1-US05-tdd.md`](stories/W1-US05-tdd.md)
+**Developer guide:** [`stories/w1/W1-US05-tdd.md`](stories/w1/W1-US05-tdd.md)
 
 | Step | Evidence |
 |------|----------|
@@ -145,7 +145,7 @@ Junior step-by-step guides: [`stories/README.md`](stories/README.md) § Wave 1.
 
 ### W1-US06 — Connector test vs WireMock
 
-**Developer guide:** [`stories/W1-US06-tdd.md`](stories/W1-US06-tdd.md)
+**Developer guide:** [`stories/w1/W1-US06-tdd.md`](stories/w1/W1-US06-tdd.md)
 
 | Step | Evidence |
 |------|----------|
@@ -155,7 +155,7 @@ Junior step-by-step guides: [`stories/README.md`](stories/README.md) § Wave 1.
 
 ### W1-US07 — Storage connector vs LocalStack S3
 
-**Developer guide:** [`stories/W1-US07-tdd.md`](stories/W1-US07-tdd.md)
+**Developer guide:** [`stories/w1/W1-US07-tdd.md`](stories/w1/W1-US07-tdd.md)
 
 | Step | Evidence |
 |------|----------|
@@ -165,7 +165,7 @@ Junior step-by-step guides: [`stories/README.md`](stories/README.md) § Wave 1.
 
 ### W1-US08 — MessageBus connector vs LocalStack SQS (Should)
 
-**Developer guide:** [`stories/W1-US08-tdd.md`](stories/W1-US08-tdd.md)
+**Developer guide:** [`stories/w1/W1-US08-tdd.md`](stories/w1/W1-US08-tdd.md)
 
 | Step | Evidence |
 |------|----------|

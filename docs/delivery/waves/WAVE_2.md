@@ -6,14 +6,35 @@
 **TDD (developers / juniors):** [`../tdd/stories/README.md`](../tdd/stories/README.md) § Wave 2  
 **Trackers:** [`../WAVE_TRACKER.md`](../WAVE_TRACKER.md) · [`../TEST_MATRIX.md`](../TEST_MATRIX.md)  
 **Story AC template:** [`../STORY_TEMPLATE.md`](../STORY_TEMPLATE.md)  
-**Architecture:** [`../../ARCHITECTURE.md`](../../ARCHITECTURE.md) §2 pipelines, §3.1–3.2, §8, §10.3  
+**Architecture:** [`../../ARCHITECTURE.md`](../../ARCHITECTURE.md) §2 pipelines, §3.1–3.2, §5.1 pluggable broker, §8, §10.3  
 **Depends on:** Wave 1 complete (`wave-1-complete`)
 
 ---
 
 ## Wave goal
 
-Configure a Source → Processor → Destination pipeline, run it **async** with RabbitMQ stage handoff, persist execution status, spawn a pipelet Job (Kind or stub), and prove a poison message lands on a stage DLQ.
+Configure a Source → Processor → Destination pipeline, run it **async** with **platform message-broker** stage handoff (Wave 2 default: **RabbitMQ**; broker is pluggable — see architecture §5.1), persist execution status, spawn a pipelet Job (Kind or stub), and prove a poison message lands on a stage DLQ.
+
+### Core model (steps → pipelets → pods)
+
+| Concept | Role |
+|---------|------|
+| **Pipelet** | Reusable unit (image + schema) in the registry — *what can run* |
+| **Pipeline step** (`pipeline_steps`) | Per-pipeline binding: which pipelet, order, config, connectors, queues, resource limits — *how it runs in this pipeline* |
+| **Job / Pod** (§10.3) | Ephemeral runtime for one step of one execution — *the actual run* |
+
+At `POST .../run`, each step drives a Job named `exec-{execution_id}-stage-{step_order}` in namespace `tenant-{tenant_id}`. Wave 2 may stub the Job client; the step row is still the source of truth for what that pod would run.
+
+### Platform message broker (pluggable)
+
+Stage `input_queue` / `output_queue` are **logical destination names**. Wave 2 implements them on **RabbitMQ**. The same contracts should later adapt to Kafka, SQS, Azure Event Hubs, ActiveMQ, etc. without rewriting pipeline/step APIs.
+
+| Concern | Wave 2 | Later |
+|---------|--------|-------|
+| Platform inter-stage bus | RabbitMQ (Compose + Spring AMQP) | Message Broker SPI adapters |
+| Tenant external bus (`message_bus` connector) | SQS/LocalStack | Other connector plugins |
+
+Do **not** confuse the platform broker with the tenant `message_bus` connector — different purposes.
 
 | Exit criterion | How verified |
 |----------------|--------------|
@@ -57,7 +78,7 @@ pipeline-api/
 docs/delivery/
   waves/WAVE_2.md                 # this file
   kb/W2-*.md
-  tdd/stories/W2-US01-…tdd.md
+  tdd/stories/w2/W2-US01-…tdd.md
 ```
 
 ---
@@ -115,7 +136,7 @@ flowchart LR
 
 #### Developer TDD guide
 
-[`../tdd/stories/W2-US01-tdd.md`](../tdd/stories/W2-US01-tdd.md)
+[`../tdd/stories/w2/W2-US01-tdd.md`](../tdd/stories/w2/W2-US01-tdd.md)
 
 #### Support KB (create)
 
@@ -135,14 +156,16 @@ flowchart LR
 
 **As a** tenant admin  
 **I want** to replace the step sequence on a pipeline  
-**so that** Source → Processor → Destination is configured with connector/queue metadata.
+**so that** each stage’s pipelet is configured (order, config, connectors, queues, limits) for the Jobs/Pods that will run on `POST .../run`.
 
-**In scope:** `PUT /api/v1/pipelines/{id}/steps`; `step_order`, `connector_ids`, queue name fields (may be placeholders until US03).  
-**Out of scope:** Declaring RabbitMQ (US03); requiring real pipelet registry rows if stubbed.
+**In scope:** `PUT /api/v1/pipelines/{id}/steps`; `step_order`, `pipelet_id`, `config`, `connector_ids`, queue name fields (may be placeholders until US03).  
+**Out of scope:** Declaring RabbitMQ (US03); requiring real pipelet registry rows if stubbed; spawning Jobs (US05).
+
+**Model reminder:** step = pipelet config for this pipeline; Job/Pod = that step running for an execution (see wave goal § Core model).
 
 #### Developer TDD guide
 
-[`../tdd/stories/W2-US02-tdd.md`](../tdd/stories/W2-US02-tdd.md)
+[`../tdd/stories/w2/W2-US02-tdd.md`](../tdd/stories/w2/W2-US02-tdd.md)
 
 #### Support KB (create)
 
@@ -161,15 +184,15 @@ flowchart LR
 | **Status** | Done |
 
 **As a** platform engineer  
-**I want** tenant-prefixed exchanges/queues declared for pipeline stages  
+**I want** tenant-prefixed stage destinations declared on the platform message broker  
 **so that** stages can publish/consume without colliding across tenants.
 
-**In scope:** Naming builder; declare topology; publish/consume IT against Compose/Testcontainers RabbitMQ.  
-**Out of scope:** Full orchestration (US04); webhook queues (W3).
+**In scope:** Naming builder; declare topology; publish/consume IT against Compose/Testcontainers **RabbitMQ** (Wave 2 default broker).  
+**Out of scope:** Full orchestration (US04); webhook queues (W3); Kafka/SQS/Event Hubs/ActiveMQ adapters (architecture §5.1 — later waves).
 
 #### Developer TDD guide
 
-[`../tdd/stories/W2-US03-tdd.md`](../tdd/stories/W2-US03-tdd.md)
+[`../tdd/stories/w2/W2-US03-tdd.md`](../tdd/stories/w2/W2-US03-tdd.md)
 
 #### Support KB (create)
 
@@ -196,7 +219,7 @@ flowchart LR
 
 #### Developer TDD guide
 
-[`../tdd/stories/W2-US04-tdd.md`](../tdd/stories/W2-US04-tdd.md)
+[`../tdd/stories/w2/W2-US04-tdd.md`](../tdd/stories/w2/W2-US04-tdd.md)
 
 #### Support KB (create)
 
@@ -223,7 +246,7 @@ flowchart LR
 
 #### Developer TDD guide
 
-[`../tdd/stories/W2-US05-tdd.md`](../tdd/stories/W2-US05-tdd.md)
+[`../tdd/stories/w2/W2-US05-tdd.md`](../tdd/stories/w2/W2-US05-tdd.md)
 
 #### Support KB (create)
 
@@ -250,7 +273,7 @@ flowchart LR
 
 #### Developer TDD guide
 
-[`../tdd/stories/W2-US06-tdd.md`](../tdd/stories/W2-US06-tdd.md)
+[`../tdd/stories/w2/W2-US06-tdd.md`](../tdd/stories/w2/W2-US06-tdd.md)
 
 #### Support KB (create)
 
@@ -266,7 +289,7 @@ flowchart LR
 | **Priority** | Must |
 | **Dependencies** | W2-US04 |
 | **Architecture refs** | §3.1 executions endpoints |
-| **Status** | Todo |
+| **Status** | Done |
 
 **As a** tenant operator  
 **I want** to list and get execution detail  
@@ -277,11 +300,11 @@ flowchart LR
 
 #### Developer TDD guide
 
-[`../tdd/stories/W2-US07-tdd.md`](../tdd/stories/W2-US07-tdd.md)
+[`../tdd/stories/w2/W2-US07-tdd.md`](../tdd/stories/w2/W2-US07-tdd.md)
 
-#### Support KB (create)
+#### Support KB
 
-`docs/delivery/kb/W2-US07-execution-status.md`
+[`../kb/W2-US07-execution-status.md`](../kb/W2-US07-execution-status.md)
 
 ---
 
@@ -296,8 +319,9 @@ flowchart LR
 - [x] W2-US04 Async run (`V11__pipeline_executions.sql` + stub stage worker)
 - [x] W2-US05 PipeletJobClient stub wired into run path
 - [x] W2-US06 Retries + per-stage DLQ (`RetryPolicy` + DLX binds)
-- [ ] WAVE_TRACKER / TEST_MATRIX / WAVE_2_TDD updated as stories complete
-- [ ] Each story: merge → tag `W2-US##` → delete → next from `wave-2`
+- [x] W2-US07 Execution status list/detail (`ExecutionStatusIT`)
+- [x] WAVE_TRACKER / TEST_MATRIX / WAVE_2_TDD updated as stories complete
+- [x] Each story: merge → tag `W2-US##` → delete → next from `wave-2`
 
 ---
 

@@ -13,18 +13,20 @@
 
 ## Feature overview
 
+Each **pipeline step** is the config for one pipelet; at run time the orchestrator asks `PipeletJobClient` to spawn that step as a Job/Pod (architecture §10.3). The stub records the create request; a Kind/cluster client would create the real Job from the same request (pipelet id, queues, limits from the step).
+
 | Type | Class | Role |
 |------|-------|------|
 | Interface | `PipeletJobClient` | `create(PipeletJobRequest)` |
 | Default | `StubPipeletJobClient` | Records creates in-memory; no cluster |
-| Request | `PipeletJobRequest` | tenant/pipeline/execution/pipelet + queues + Job name/ns |
+| Request | `PipeletJobRequest` | Built from the **step** + execution: tenant/pipeline/execution/pipelet + queues + Job name/ns |
 
 Naming (architecture §10.3):
 
-- Job name: `exec-{executionId}-stage-{n}`
+- Job name: `exec-{executionId}-stage-{n}` (one Job per step order)
 - Namespace: `tenant-{tenantId}`
 
-**Wiring:** orchestrator creates stage-1 Job; `StubStageWorker` creates Jobs for stages 2..N while advancing RabbitMQ messages.
+**Wiring:** orchestrator creates stage-1 Job from step 1; `StubStageWorker` creates Jobs for steps 2..N while advancing RabbitMQ messages.
 
 ## Kind / cluster (optional)
 
@@ -50,5 +52,5 @@ docker compose up -d mysql rabbitmq
 
 ## Related
 
-- Developer TDD: [`../tdd/stories/W2-US05-tdd.md`](../tdd/stories/W2-US05-tdd.md)
+- Developer TDD: [`../tdd/stories/w2/W2-US05-tdd.md`](../tdd/stories/w2/W2-US05-tdd.md)
 - Next: DLQ (W2-US06) or execution status API (W2-US07)

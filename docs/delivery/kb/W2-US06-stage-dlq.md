@@ -8,12 +8,13 @@
 
 ## Prerequisites
 
-- W2-US03 RabbitMQ topology
+- W2-US03 platform broker topology (Wave 2 default: RabbitMQ)
 - Compose RabbitMQ
+- Architecture §5.1 (broker is pluggable; DLQ semantics are logical)
 
 ## Feature overview
 
-Per-stage dead-letter path (architecture §8.1–§8.2):
+Per-stage dead-letter path (architecture §8.1–§8.2). Logical DLQ name is broker-agnostic; Wave 2 implements it on RabbitMQ via DLX:
 
 | Piece | Name |
 |-------|------|
@@ -47,5 +48,5 @@ docker compose up -d mysql rabbitmq
 
 ## Related
 
-- Developer TDD: [`../tdd/stories/W2-US06-tdd.md`](../tdd/stories/W2-US06-tdd.md)
+- Developer TDD: [`../tdd/stories/w2/W2-US06-tdd.md`](../tdd/stories/w2/W2-US06-tdd.md)
 - Next: execution status API (W2-US07)

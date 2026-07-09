@@ -13,6 +13,8 @@
 
 ## Feature overview
 
+A **pipeline** owns an ordered list of **steps** (W2-US02). Each step configures a **pipelet** that will run as a Job/Pod on `POST .../run` — the pipeline row itself is metadata (`name`, `visibility`, `execution_mode`, `status`); the steps are the runtime graph.
+
 Tenant-scoped pipelines under `/api/v1/pipelines`:
 
 | Method | Path | Notes |
@@ -50,6 +52,6 @@ curl -s -X POST localhost:8080/api/v1/pipelines \
 
 ## Related
 
-- Developer TDD: [`../tdd/stories/W2-US01-tdd.md`](../tdd/stories/W2-US01-tdd.md)
+- Developer TDD: [`../tdd/stories/w2/W2-US01-tdd.md`](../tdd/stories/w2/W2-US01-tdd.md)
 - Execution plan: [`../waves/WAVE_2.md`](../waves/WAVE_2.md)
 - Steps API: [`W2-US02-pipeline-steps.md`](W2-US02-pipeline-steps.md)
