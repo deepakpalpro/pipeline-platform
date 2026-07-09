@@ -20,7 +20,26 @@
 
 **Done means:** Run IT starts execution; status progresses (or completes with stub workers).
 
-**Out of scope:** Real K8s Jobs (US05); status query polish (US07 can deepen).
+**Out of scope:** Real K8s Jobs (US05); status list polish (US07 can deepen).
+
+---
+
+## 0. Before you code
+
+```bash
+git checkout wave-2 && git pull
+git checkout -b W2-US04
+docker compose up -d mysql rabbitmq
+```
+
+APIs:
+
+| Method | Path | Notes |
+|--------|------|-------|
+| `POST` | `/api/v1/pipelines/{id}/run` | **202** + `execution_id` |
+| `GET` | `/api/v1/pipelines/{id}/executions/{executionId}` | Minimal status (US07 expands list) |
+
+Pipeline must be **`active`** with steps configured.
 
 ---
 
@@ -28,22 +47,60 @@
 
 | File | Method | Asserts |
 |------|--------|---------|
-| `PipelineRunOrchestratorTest` | `start_createsExecution` | status `running`/`queued` |
-| `PipelineRunIT` | `run_returnsExecutionId` | 202/200 + id |
+| `PipelineRunOrchestratorTest` | `start_createsExecution` | status `running`/`pending` |
+| `PipelineRunIT` | `run_returnsExecutionId` | 202 + id; eventually terminal |
+
+```bash
+./mvnw -pl pipeline-api test -Dtest=PipelineRunOrchestratorTest,PipelineRunIT
+```
+
+**Stop.** Red.
 
 ---
 
 ## 2. GREEN
 
 1. Flyway `pipeline_executions` if not already added.
-2. Orchestrator publishes to first stage; consumers advance (stub OK).
-3. Bound timeouts (Awaitility).
+2. Orchestrator publishes to first stage; stub consumer advances stages.
+3. Bound timeouts (Awaitility) — no infinite wait.
+
+```bash
+./mvnw -pl pipeline-api test -Dtest=PipelineRunOrchestratorTest,PipelineRunIT
+```
 
 ### Checklist
 
-- [ ] Tenant isolation on run
-- [ ] Inactive/archived pipeline rejected
-- [ ] No infinite wait in IT
+- [ ] Tenant isolation on run → 404
+- [ ] Draft/archived pipeline rejected → 400
+- [ ] Empty steps rejected
+- [ ] Awaitility `atMost` ≤ 15s
+
+---
+
+## 3. REFACTOR
+
+- Separate `PipelineRunOrchestrator` (start/complete) from `StubStageWorker` (handoff)
+- Keep stage payload (`StageMessage`) small and JSON-friendly
+- Defer real Job spawn to US05 behind an interface if you already see the seam
+
+---
+
+## 4. Manual verify
+
+| # | Action | Expected |
+|---|--------|----------|
+| 1 | Create pipeline → PUT steps → PUT `status=active` | 200 |
+| 2 | `POST .../run` | 202 + `execution_id` |
+| 3 | Poll GET execution | reaches `completed` (with stub) |
+| 4 | Run as other tenant | 404 |
+
+---
+
+## 5. Docs & trackers
+
+- [ ] KB: activate-before-run + stub worker note
+- [ ] Tracker · TEST_MATRIX
+- [ ] Link US05 (Jobs) and US07 (list executions)
 
 ---
 
@@ -52,3 +109,13 @@
 ```text
 merge → tag W2-US04 → W2-US05 / W2-US07
 ```
+
+---
+
+## Common pitfalls
+
+| Mistake | Fix |
+|---------|-----|
+| Blocking HTTP until completed | Return 202 immediately |
+| Infinite Awaitility | Bound timeout + fail fast |
+| Allowing draft run | Require `active` |

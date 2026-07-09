@@ -9,7 +9,7 @@
 | **You will touch** | RabbitMQ naming builder, topology declarer, IT |
 | **Stakeholder TDD** | [`../WAVE_2_TDD.md`](../WAVE_2_TDD.md) |
 | **AC source** | [`../../waves/WAVE_2.md`](../../waves/WAVE_2.md) § W2-US03 |
-| **Architecture** | §8 messaging |
+| **Architecture** | §8 messaging; appendix topology |
 | **KB (create)** | `docs/delivery/kb/W2-US03-rabbit-topology.md` |
 
 ---
@@ -27,8 +27,18 @@ Declare **tenant-prefixed** exchanges/queues for pipeline stages and prove publi
 ## 0. Before you code
 
 ```bash
-docker compose up -d rabbitmq
+git checkout wave-2 && git pull
+git checkout -b W2-US03
+docker compose up -d mysql rabbitmq
 # mgmt http://localhost:15672 pipeline/pipeline
+```
+
+Target names (architecture appendix):
+
+```text
+Exchange: tenant.{tenantId}.pipeline.{pipelineId}
+Queue:    ...stage.{n}.in
+DLQ:      ...stage.{n}.dlq   (declare now; DLX wiring in US06)
 ```
 
 ---
@@ -44,20 +54,52 @@ docker compose up -d rabbitmq
 ./mvnw -pl pipeline-api test -Dtest=QueueNamingTest,RabbitTopologyIT
 ```
 
+**Stop.** Red.
+
 ---
 
 ## 2. GREEN
 
-1. Spring AMQP dependency if missing.
-2. `QueueNaming` / topology service from step `input_queue` / `output_queue` or generated names.
+1. Spring AMQP dependency if missing (`spring-boot-starter-amqp`).
+2. `QueueNaming` / `PipelineTopologyService` from step queues or generated names.
 3. Persist resolved queue names onto steps if still placeholders.
 4. IT: `assumeTrue` RabbitMQ port 5672 (same pattern as MySQL).
+
+```bash
+./mvnw -pl pipeline-api test -Dtest=QueueNamingTest,PipelineTopologyServiceTest,RabbitTopologyIT
+```
 
 ### Checklist
 
 - [ ] Names include `tenant_id`
 - [ ] Idempotent declare
-- [ ] Shared builder documented for W3
+- [ ] Shared builder documented for W3 (webhook helpers OK)
+
+---
+
+## 3. REFACTOR
+
+- Keep `QueueNaming` free of Spring (unit-testable)
+- Inject `AmqpAdmin` (Boot auto-config), not a custom `RabbitAdmin` bean unless needed
+- Disable rabbit health indicator if non-messaging ITs fail when broker is down
+
+---
+
+## 4. Manual verify
+
+| # | Action | Expected |
+|---|--------|----------|
+| 1 | `docker compose up -d rabbitmq` | healthy on 5672 / 15672 |
+| 2 | Run `RabbitTopologyIT` | green |
+| 3 | Mgmt UI → Exchanges | `tenant.*.pipeline.*` present after IT |
+
+---
+
+## 5. Docs & trackers
+
+- [ ] KB: naming table + Compose ports
+- [ ] Tracker · TEST_MATRIX
+- [ ] Note W3 reuses `QueueNaming.webhook*`
 
 ---
 
@@ -67,9 +109,12 @@ docker compose up -d rabbitmq
 merge → tag W2-US03 → W2-US04 (and/or US06 in parallel)
 ```
 
+---
+
 ## Common pitfalls
 
 | Mistake | Fix |
 |---------|-----|
 | Global queue names | Always tenant-prefix |
 | Using LocalStack SQS | Wrong broker — RabbitMQ for platform stages |
+| Binding stub worker to every stage exchange | Breaks topology IT receive asserts |

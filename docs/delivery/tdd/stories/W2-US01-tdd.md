@@ -70,6 +70,7 @@ APIs: `GET|POST /api/v1/pipelines`, `GET|PUT|DELETE /api/v1/pipelines/{id}` (DEL
 
 - Align JSON field names with architecture create response
 - Prepare for US02 steps relation (empty list OK)
+- Prefer filtered JPQL (`findFilteredById`) over `findById`
 
 ---
 
@@ -77,8 +78,9 @@ APIs: `GET|POST /api/v1/pipelines`, `GET|PUT|DELETE /api/v1/pipelines/{id}` (DEL
 
 | # | Action | Expected |
 |---|--------|----------|
-| 1 | POST pipeline | 201 with id |
+| 1 | POST pipeline | 201 with id; defaults `draft` / `private` / `async` |
 | 2 | GET as other tenant | 404 |
+| 3 | DELETE pipeline | `status=archived` (not hard-deleted) |
 
 ---
 
@@ -86,6 +88,7 @@ APIs: `GET|POST /api/v1/pipelines`, `GET|PUT|DELETE /api/v1/pipelines/{id}` (DEL
 
 - [ ] KB · Tracker · TEST_MATRIX
 - [ ] Mark Done in `WAVE_2.md`
+- [ ] Note DELETE = archive
 
 ---
 
