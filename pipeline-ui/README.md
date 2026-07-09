@@ -6,9 +6,10 @@ Vite + React + TypeScript frontend for the Pipeline Platform (Wave 6+).
 
 ```bash
 npm install
-npm run dev      # local shell
-npm test         # Vitest (jsdom)
-npm run build    # production bundle
+npm run dev                    # needs live API, or:
+VITE_ENABLE_MSW=true npm run dev
+npm test
+npm run build
 ```
 
 ## Layout
@@ -17,9 +18,10 @@ npm run build    # production bundle
 src/
   app/        # AppShell, routes, nav items
   contexts/   # AuthContext, TenantContext
-  api/        # stub apiClient (X-Tenant-Id)
-  features/   # placeholder pages (later stories)
+  api/        # apiClient, resources, secret helpers
+  features/   # connectors, services, placeholders
+  mocks/      # MSW handlers (W1-shaped fixtures)
   test/       # setup + renderWithProviders
 ```
 
-See [`docs/delivery/kb/W6-US01-nav-shell.md`](../docs/delivery/kb/W6-US01-nav-shell.md).
+KB: [`docs/delivery/kb/W6-US01-nav-shell.md`](../docs/delivery/kb/W6-US01-nav-shell.md), [`W6-US02-connectors-services-ui.md`](../docs/delivery/kb/W6-US02-connectors-services-ui.md).

@@ -134,11 +134,11 @@ npm test -- ConnectorForm ServiceForm ConnectorsList ServiceDetail
 
 ### Checklist
 
-- [ ] MSW handlers for `/api/v1/connectors` and `/api/v1/services`
-- [ ] Connector list + wizard
-- [ ] Service table + create flow
-- [ ] Form validation tests green
-- [ ] Secrets never shown in UI after save
+- [x] MSW handlers for `/api/v1/connectors` and `/api/v1/services`
+- [x] Connector list + wizard
+- [x] Service table + create flow
+- [x] Form validation tests green
+- [x] Secrets never shown in UI after save
 
 ---
 
@@ -152,8 +152,8 @@ npm test -- ConnectorForm ServiceForm ConnectorsList ServiceDetail
 
 ## 11. Docs & trackers
 
-- [ ] KB: create flows, MSW fixtures, screenshot placeholders
-- [ ] Tracker · TEST_MATRIX · `WAVE_6.md` Done
+- [x] KB: create flows, MSW fixtures, screenshot placeholders
+- [x] Tracker · TEST_MATRIX · `WAVE_6.md` Done
 
 ```text
 merge → tag W6-US02 → W6-US03

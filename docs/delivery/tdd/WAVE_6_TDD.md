@@ -4,7 +4,7 @@
 |-------|--------|
 | **Wave** | W6 — No-code UI |
 | **Audience** | Technical stakeholders |
-| **Status** | In Progress (W6-US01 Done; W6-US02 next) |
+| **Status** | In Progress (W6-US02 Done; W6-US03 next) |
 | **Architecture refs** | §4 |
 | **Branch / tags** | `wave-6` · `W6-US##` |
 | **Last updated** | 2026-07-10 |
@@ -176,4 +176,4 @@ Per working agreements: UI stories require unit tests for reducers/hooks and Pla
 |------|--------|
 | 2026-07-08 | Initial Draft for technical stakeholders |
 | 2026-07-10 | Linked execution plan + junior story guides; wave-6 started |
-| 2026-07-10 | W6-US01 Done — `pipeline-ui` shell + Auth/Tenant contexts |
+| 2026-07-10 | W6-US02 Done — connectors/services UI + MSW |

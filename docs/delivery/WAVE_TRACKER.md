@@ -141,7 +141,7 @@ Abbreviations: **U** = Unit, **I** = Integration, **WM** = WireMock, **LS** = Lo
 | Story ID | Feature / Epic | Title | Status | Owner | Test gate | Blockers |
 |----------|----------------|-------|--------|-------|-----------|----------|
 | W6-US01 | W6-F1 / W6-F1-E1 | Level-1 nav shell + auth context | Done | | AuthContext.test + Shell.test | |
-| W6-US02 | W6-F1 / W6-F1-E2 | Connectors / Services list+forms | Todo | | | |
+| W6-US02 | W6-F1 / W6-F1-E2 | Connectors / Services list+forms | Done | | ConnectorForm/ServiceForm + list/detail MSW | |
 | W6-US03 | W6-F1 / W6-F1-E2 | Global Pipelets catalog + admin register | Todo | | | |
 | W6-US04 | W6-F2 / W6-F2-E1 | Drag-drop pipeline builder save | Todo | | | |
 | W6-US05 | W6-F2 / W6-F2-E1 | Run / dry-run / execution overlay | Todo | | | |

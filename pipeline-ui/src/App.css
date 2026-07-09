@@ -138,3 +138,202 @@ body {
   margin: 0;
   color: var(--muted);
 }
+
+.muted {
+  color: var(--muted);
+}
+
+.panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.panel-header h1 {
+  margin: 0;
+  font-size: 1.35rem;
+}
+
+.split-page {
+  display: grid;
+  grid-template-columns: minmax(220px, 280px) 1fr;
+  gap: 1.25rem;
+  min-height: 60vh;
+}
+
+.split-list,
+.split-detail,
+.table-page,
+.detail-panel {
+  background: color-mix(in srgb, var(--surface) 88%, transparent);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 1rem;
+}
+
+.entity-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.list-item {
+  width: 100%;
+  text-align: left;
+  background: transparent;
+  border: 1px solid transparent;
+  color: var(--text);
+  border-radius: 8px;
+  padding: 0.65rem 0.75rem;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.list-item:hover,
+.list-item.active {
+  border-color: var(--border);
+  background: var(--accent-soft);
+}
+
+.list-item-title {
+  font-weight: 600;
+}
+
+.list-item-meta {
+  font-size: 0.75rem;
+  color: var(--muted);
+}
+
+.entity-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+  max-width: 28rem;
+}
+
+.entity-form h2 {
+  margin: 0 0 0.25rem;
+  font-size: 1.15rem;
+}
+
+.entity-form label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+
+.entity-form input,
+.entity-form select,
+.tenant-picker select {
+  background: var(--bg);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 0.45rem 0.55rem;
+  font-size: 0.9rem;
+}
+
+.field-error {
+  color: #f07178;
+  font-size: 0.8rem;
+}
+
+.form-actions {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 0.25rem;
+}
+
+button {
+  background: var(--accent);
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 0.45rem 0.85rem;
+  font-size: 0.875rem;
+  cursor: pointer;
+}
+
+button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+button.secondary {
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--text);
+}
+
+.entity-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+
+.entity-table th,
+.entity-table td {
+  text-align: left;
+  padding: 0.65rem 0.5rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.entity-table th {
+  color: var(--muted);
+  font-weight: 500;
+}
+
+button.linkish {
+  background: none;
+  border: none;
+  color: var(--accent);
+  padding: 0;
+  font: inherit;
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.entity-detail h2 {
+  margin: 0 0 0.75rem;
+  font-size: 1.2rem;
+}
+
+.entity-detail h3 {
+  margin: 1rem 0 0.5rem;
+  font-size: 0.95rem;
+  color: var(--muted);
+}
+
+.entity-detail dl {
+  margin: 0;
+  display: grid;
+  gap: 0.5rem;
+}
+
+.entity-detail dt {
+  font-size: 0.75rem;
+  color: var(--muted);
+}
+
+.entity-detail dd {
+  margin: 0.1rem 0 0;
+}
+
+.detail-panel {
+  margin-top: 1rem;
+}
+
+@media (max-width: 800px) {
+  .split-page {
+    grid-template-columns: 1fr;
+  }
+}
