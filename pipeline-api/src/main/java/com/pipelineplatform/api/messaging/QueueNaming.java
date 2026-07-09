@@ -71,6 +71,12 @@ public final class QueueNaming {
     return webhookExchange(tenantId) + "." + connectorId + ".dlq";
   }
 
+  /** Architecture §11.5: bind `.in` with routing key `{connectorId}`. */
+  public static String webhookRoutingKey(String connectorId) {
+    requireToken(connectorId, "connectorId");
+    return connectorId;
+  }
+
   private static void requireToken(String value, String name) {
     if (value == null || value.isBlank()) {
       throw new IllegalArgumentException(name + " is required");

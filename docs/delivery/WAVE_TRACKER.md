@@ -82,7 +82,7 @@ Abbreviations: **U** = Unit, **I** = Integration, **WM** = WireMock, **LS** = Lo
 
 | Story ID | Feature / Epic | Title | Status | Owner | Test gate | Blockers |
 |----------|----------------|-------|--------|-------|-----------|----------|
-| W3-US01 | W3-F1 / W3-F1-E1 | Ingress accept + queue publish | Todo | | | |
+| W3-US01 | W3-F1 / W3-F1-E1 | Ingress accept + queue publish | Done | | U,I,M,KB | 202 + queue; no Job on accept |
 | W3-US02 | W3-F1 / W3-F1-E1 | Signature verification + auth service | Todo | | | |
 | W3-US03 | W3-F1 / W3-F1-E2 | Idempotency (X-Webhook-Id / hash) | Todo | | | |
 | W3-US04 | W3-F1 / W3-F1-E2 | Rate limit + backpressure 429/503 | Todo | | | |
