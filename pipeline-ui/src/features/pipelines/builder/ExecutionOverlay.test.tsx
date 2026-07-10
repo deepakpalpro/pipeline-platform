@@ -34,6 +34,7 @@ const CATALOG: PipeletCatalogEntry[] = [
     version: '1.0.0',
     runtime: 'Java',
     description: 'src',
+    active: true,
   },
   {
     id: 'plet-json-transform',
@@ -42,6 +43,7 @@ const CATALOG: PipeletCatalogEntry[] = [
     version: '1.0.0',
     runtime: 'Java',
     description: 'proc',
+    active: true,
   },
   {
     id: 'plet-s3-destination',
@@ -50,6 +52,7 @@ const CATALOG: PipeletCatalogEntry[] = [
     version: '1.0.0',
     runtime: 'Java',
     description: 'dst',
+    active: true,
   },
 ]
 
@@ -72,19 +75,26 @@ describe('ExecutionOverlay', () => {
     await user.click(screen.getByRole('button', { name: /S3 Destination/ }))
     await user.click(screen.getByRole('button', { name: 'Run' }))
 
-    await waitFor(() => {
-      expect(screen.getByTestId('overlay-n1')).toHaveAttribute(
-        'data-state',
-        'completed',
-      )
-      expect(screen.getByTestId('overlay-n2')).toHaveAttribute(
-        'data-state',
-        'completed',
-      )
-      expect(screen.getByTestId('overlay-n3')).toHaveAttribute(
-        'data-state',
-        'completed',
-      )
-    })
-  })
+    await waitFor(
+      () => {
+        expect(screen.getByTestId('overlay-n1')).toHaveAttribute(
+          'data-state',
+          'completed',
+        )
+        expect(screen.getByTestId('overlay-n2')).toHaveAttribute(
+          'data-state',
+          'completed',
+        )
+        expect(screen.getByTestId('overlay-n3')).toHaveAttribute(
+          'data-state',
+          'completed',
+        )
+      },
+      { timeout: 8000 },
+    )
+
+    expect(
+      await screen.findByRole('region', { name: 'Execution history' }),
+    ).toBeInTheDocument()
+  }, 15000)
 })

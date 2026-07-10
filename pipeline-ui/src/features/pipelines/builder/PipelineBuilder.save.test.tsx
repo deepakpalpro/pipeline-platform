@@ -30,6 +30,7 @@ const CATALOG: PipeletCatalogEntry[] = [
     version: '1.0.0',
     runtime: 'Java',
     description: 'src',
+    active: true,
   },
   {
     id: 'plet-json-transform',
@@ -38,6 +39,7 @@ const CATALOG: PipeletCatalogEntry[] = [
     version: '1.0.0',
     runtime: 'Java',
     description: 'proc',
+    active: true,
   },
   {
     id: 'plet-s3-destination',
@@ -46,6 +48,7 @@ const CATALOG: PipeletCatalogEntry[] = [
     version: '1.0.0',
     runtime: 'Java',
     description: 'dst',
+    active: true,
   },
 ]
 

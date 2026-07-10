@@ -166,7 +166,10 @@ class PipelineRunIT {
                           assertThat(req.tenantId()).isEqualTo(tenantId);
                           assertThat(req.pipelineId()).isEqualTo(created.id());
                           assertThat(req.executionId()).isEqualTo(executionId);
-                          assertThat(req.namespace()).isEqualTo("tenant-" + tenantId);
+                          assertThat(req.namespace())
+                              .isEqualTo(
+                                  com.pipelineplatform.api.k8s.PipeletK8sProperties
+                                      .namespaceForTenant(tenantId));
                         }));
     assertThat(stubPipeletJobClient.getCreated())
         .extracting(req -> req.stageOrder())
@@ -174,6 +177,86 @@ class PipelineRunIT {
     assertThat(stubPipeletJobClient.getCreated())
         .extracting(req -> req.pipeletId())
         .containsExactly("plet-source", "plet-proc", "plet-dest");
+    assertThat(stubPipeletJobClient.getCreated())
+        .allSatisfy(
+            req -> {
+              assertThat(req.ioMode()).isEqualTo(PipelineIoMode.QUEUE);
+              assertThat(req.amqpUrl()).isNotBlank();
+              assertThat(req.inputQueue()).isNotBlank();
+            });
+  }
+
+  @Test
+  void run_withStdioIoMode_passesModeOnJobRequests() {
+    String suffix = UUID.randomUUID().toString().substring(0, 8);
+    TenantResponse tenant = createTenant("Stdio Run " + suffix, "stdio-" + suffix);
+    String tenantId = tenant.id();
+
+    PipelineResponse created =
+        restTemplate
+            .exchange(
+                "/api/v1/pipelines",
+                HttpMethod.POST,
+                new HttpEntity<>(
+                    new CreatePipelineRequest(
+                        "stdio-run-" + suffix,
+                        null,
+                        null,
+                        null,
+                        null,
+                        objectMapper().createObjectNode().put("ioMode", "stdio")),
+                    jsonTenantHeaders(tenantId)),
+                PipelineResponse.class)
+            .getBody();
+    assertThat(created).isNotNull();
+
+    Map<String, Object> stepsBody =
+        Map.of(
+            "steps",
+            List.of(
+                Map.of(
+                    "pipelet_id",
+                    "plet-a",
+                    "step_order",
+                    1,
+                    "connector_ids",
+                    List.of(),
+                    "service_ids",
+                    List.of())));
+    restTemplate.exchange(
+        "/api/v1/pipelines/" + created.id() + "/steps",
+        HttpMethod.PUT,
+        new HttpEntity<>(stepsBody, jsonTenantHeaders(tenantId)),
+        PipelineResponse.class);
+
+    UpdatePipelineRequest activate =
+        new UpdatePipelineRequest(
+            created.name(), created.description(), null, null, PipelineStatus.ACTIVE, null, null);
+    restTemplate.exchange(
+        "/api/v1/pipelines/" + created.id(),
+        HttpMethod.PUT,
+        new HttpEntity<>(activate, jsonTenantHeaders(tenantId)),
+        PipelineResponse.class);
+
+    ResponseEntity<PipelineRunResponse> run =
+        restTemplate.exchange(
+            "/api/v1/pipelines/" + created.id() + "/run",
+            HttpMethod.POST,
+            new HttpEntity<>(tenantHeaders(tenantId)),
+            PipelineRunResponse.class);
+    assertThat(run.getStatusCode()).isEqualTo(HttpStatus.ACCEPTED);
+
+    await()
+        .atMost(Duration.ofSeconds(10))
+        .untilAsserted(
+            () ->
+                assertThat(stubPipeletJobClient.getCreated())
+                    .isNotEmpty()
+                    .allSatisfy(req -> assertThat(req.ioMode()).isEqualTo(PipelineIoMode.STDIO)));
+  }
+
+  private static com.fasterxml.jackson.databind.ObjectMapper objectMapper() {
+    return new com.fasterxml.jackson.databind.ObjectMapper();
   }
 
   @Test

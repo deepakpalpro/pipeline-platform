@@ -21,21 +21,35 @@ public class PipelineController {
   private final PipelineStepsService pipelineStepsService;
   private final PipelineRunService pipelineRunService;
   private final PipelineDryRunService pipelineDryRunService;
+  private final PipelineBundleService pipelineBundleService;
 
   public PipelineController(
       PipelineService pipelineService,
       PipelineStepsService pipelineStepsService,
       PipelineRunService pipelineRunService,
-      PipelineDryRunService pipelineDryRunService) {
+      PipelineDryRunService pipelineDryRunService,
+      PipelineBundleService pipelineBundleService) {
     this.pipelineService = pipelineService;
     this.pipelineStepsService = pipelineStepsService;
     this.pipelineRunService = pipelineRunService;
     this.pipelineDryRunService = pipelineDryRunService;
+    this.pipelineBundleService = pipelineBundleService;
   }
 
   @PostMapping
   public ResponseEntity<PipelineResponse> create(@Valid @RequestBody CreatePipelineRequest request) {
     return ResponseEntity.status(HttpStatus.CREATED).body(pipelineService.create(request));
+  }
+
+  @PostMapping("/import")
+  public ResponseEntity<PipelineBundleImportRequest.Result> importBundle(
+      @Valid @RequestBody PipelineBundleImportRequest request) {
+    return ResponseEntity.status(HttpStatus.CREATED).body(pipelineBundleService.importBundle(request));
+  }
+
+  @GetMapping("/{id}/export")
+  public PipelineBundle export(@PathVariable String id) {
+    return pipelineBundleService.export(id);
   }
 
   @GetMapping("/{id}")

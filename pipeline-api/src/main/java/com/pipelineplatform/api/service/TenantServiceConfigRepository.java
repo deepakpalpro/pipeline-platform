@@ -16,6 +16,11 @@ public interface TenantServiceConfigRepository extends JpaRepository<TenantServi
 
   boolean existsByTenantIdAndName(String tenantId, String name);
 
+  /** Lookup without relying on Hibernate tenant filter (Job env resolution / pollers). */
+  @Query("select s from TenantServiceConfig s where s.id = :id and s.tenantId = :tenantId")
+  Optional<TenantServiceConfig> findByIdAndTenantId(
+      @Param("id") String id, @Param("tenantId") String tenantId);
+
   /** Public ingress / resolver lookup (no Hibernate tenant filter / no X-Tenant-Id). */
   @Query(
       """

@@ -30,6 +30,7 @@ Vite + React + TypeScript app under `pipeline-ui/` with:
 | Pipelines | `/pipelines` (list); `/pipelines/new`, `/pipelines/:id` (builder) |
 | Connectors | `/connectors` |
 | Services | `/services` |
+| Tenants | `/tenants` (list + register) |
 | Billing | `/billing` |
 | Observability | `/observability` |
 
@@ -37,7 +38,7 @@ Default route `/` redirects to `/pipelets`.
 
 ### Tenant picker
 
-Stub tenants in header:
+Header select loads from `GET /api/v1/tenants` (MSW seeds T001/T002). Register new tenants on **Tenants** → **New tenant** (`POST /api/v1/tenants`); create switches the active context automatically.
 
 - `T001` — Acme Analytics (default)
 - `T002` — Beta Logistics

@@ -21,6 +21,37 @@ logging:
 pipeline:
   ingress:
     base-url: http://localhost:8080
+  observability:
+    # Leave blank to hide portal links (customers without these tools).
+    # Env overrides: PIPELINE_OBSERVABILITY_GRAFANA_BASE_URL, PIPELINE_OBSERVABILITY_ELASTICSEARCH_BASE_URL
+    grafana-base-url: ${PIPELINE_OBSERVABILITY_GRAFANA_BASE_URL:}
+    elasticsearch-base-url: ${PIPELINE_OBSERVABILITY_ELASTICSEARCH_BASE_URL:}
+    grafana-label: Grafana
+    elasticsearch-label: Elasticsearch
+  orchestration:
+    # Wave 2 stub advances stages for platform status/metrics. Set false for real queue-mode I/O.
+    stub-stage-worker: true
+    # Optional override; otherwise derived from spring.rabbitmq.*
+    # For Rancher pods reaching Compose RabbitMQ on the host, use host.docker.internal:
+    # amqp-url: amqp://pipeline:pipeline@host.docker.internal:5672/
+    amqp-url: ""
+  k8s:
+    # Set true to spawn real Jobs via Fabric8 (Rancher Desktop / Kind / kubeconfig).
+    enabled: false
+    image-pull-policy: IfNotPresent
+    default-image-pattern: "pipeline-platform/{pipeletId}:local"
+    create-namespace: true
+    ttl-seconds-after-finished: 600
+    backoff-limit: 2
+    job-status-poll-interval-ms: 2000
+    images:
+      plet-s3-source: pipeline-platform/plet-s3-source:local
+      plet-csv-to-json: pipeline-platform/plet-csv-to-json:local
+      plet-python-filter: pipeline-platform/plet-python-filter:local
+      plet-field-mapper: pipeline-platform/plet-field-mapper:local
+      plet-webhook-destination: pipeline-platform/plet-webhook-destination:local
+      inventory-batch: pipeline-platform/inventory-pipelet:local
+      webhook-processor: pipeline-platform/plet-python-filter:local
   webhook:
     queue-trigger:
       enabled: false

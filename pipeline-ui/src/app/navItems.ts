@@ -3,6 +3,7 @@ export const NAV_ITEMS = [
   { label: 'Pipelines', path: '/pipelines' },
   { label: 'Connectors', path: '/connectors' },
   { label: 'Services', path: '/services' },
+  { label: 'Tenants', path: '/tenants' },
   { label: 'Observability', path: '/observability' },
   { label: 'Billing', path: '/billing' },
 ] as const

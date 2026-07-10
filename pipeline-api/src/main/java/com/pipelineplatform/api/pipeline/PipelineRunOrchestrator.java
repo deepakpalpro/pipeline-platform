@@ -1,7 +1,7 @@
 package com.pipelineplatform.api.pipeline;
 
 import com.pipelineplatform.api.k8s.PipeletJobClient;
-import com.pipelineplatform.api.k8s.PipeletJobRequest;
+import com.pipelineplatform.api.k8s.PipeletJobRequestFactory;
 import com.pipelineplatform.api.messaging.PipelineTopology;
 import com.pipelineplatform.api.messaging.PipelineTopologyService;
 import com.pipelineplatform.api.messaging.QueueNaming;
@@ -20,8 +20,10 @@ import org.springframework.transaction.annotation.Transactional;
 /**
  * Starts async pipeline runs: persist execution, declare topology, publish stage-1 work.
  *
- * <p>Stage advancement is handled by {@link StubStageWorker}, which spawns work via {@link
- * PipeletJobClient}.
+ * <p>Stage advancement is handled by {@link StubStageWorker} when {@code
+ * pipeline.orchestration.stub-stage-worker=true} (default). When the stub is disabled (K8s profile),
+ * {@link com.pipelineplatform.api.k8s.PipeletJobStatusPoller} advances stages on Job success and
+ * marks executions failed on Job backoff.
  */
 @Service
 public class PipelineRunOrchestrator {
@@ -33,18 +35,27 @@ public class PipelineRunOrchestrator {
   private final RabbitTemplate rabbitTemplate;
   private final PipeletJobClient pipeletJobClient;
   private final CompletenessMetricsPublisher completenessMetricsPublisher;
+  private final PipelineOrchestrationProperties orchestrationProperties;
+  private final PipeletAmqpUrlFactory amqpUrlFactory;
+  private final PipeletJobRequestFactory jobRequestFactory;
 
   public PipelineRunOrchestrator(
       PipelineExecutionRepository executionRepository,
       PipelineTopologyService topologyService,
       RabbitTemplate rabbitTemplate,
       PipeletJobClient pipeletJobClient,
-      CompletenessMetricsPublisher completenessMetricsPublisher) {
+      CompletenessMetricsPublisher completenessMetricsPublisher,
+      PipelineOrchestrationProperties orchestrationProperties,
+      PipeletAmqpUrlFactory amqpUrlFactory,
+      PipeletJobRequestFactory jobRequestFactory) {
     this.executionRepository = executionRepository;
     this.topologyService = topologyService;
     this.rabbitTemplate = rabbitTemplate;
     this.pipeletJobClient = pipeletJobClient;
     this.completenessMetricsPublisher = completenessMetricsPublisher;
+    this.orchestrationProperties = orchestrationProperties;
+    this.amqpUrlFactory = amqpUrlFactory;
+    this.jobRequestFactory = jobRequestFactory;
   }
 
   @Transactional
@@ -59,6 +70,9 @@ public class PipelineRunOrchestrator {
     if (pipeline.getStatus() != PipelineStatus.ACTIVE) {
       throw new PipelineValidationException("Activate the pipeline before running (status=active)");
     }
+
+    String ioMode = PipelineIoMode.fromExecutionConfigJson(pipeline.getExecutionConfig());
+    String amqpUrl = amqpUrlFactory.resolve();
 
     PipelineExecution execution = new PipelineExecution();
     execution.setId(UUID.randomUUID().toString());
@@ -77,27 +91,8 @@ public class PipelineRunOrchestrator {
         topologyService.declare(pipeline.getTenantId(), pipeline.getId(), stageCount);
 
     PipelineStep first = steps.get(0);
-    String inputQueue =
-        first.getInputQueue() != null
-            ? first.getInputQueue()
-            : QueueNaming.stageInputQueue(pipeline.getTenantId(), pipeline.getId(), 1);
-    String outputQueue =
-        first.getOutputQueue() != null
-            ? first.getOutputQueue()
-            : (stageCount > 1
-                ? QueueNaming.stageOutputQueue(pipeline.getTenantId(), pipeline.getId(), 1)
-                : null);
-
     pipeletJobClient.create(
-        PipeletJobRequest.of(
-            pipeline.getTenantId(),
-            pipeline.getId(),
-            saved.getId(),
-            first.getPipeletId(),
-            1,
-            stageCount,
-            inputQueue,
-            outputQueue));
+        jobRequestFactory.build(pipeline, first, saved.getId(), stageCount, ioMode, amqpUrl));
 
     StageMessage message =
         new StageMessage(
@@ -107,18 +102,23 @@ public class PipelineRunOrchestrator {
             first.getPipeletId(),
             1,
             stageCount,
-            "run-" + saved.getId());
+            "run-" + saved.getId(),
+            ioMode,
+            amqpUrl);
     rabbitTemplate.convertAndSend(topology.exchange(), QueueNaming.stageRoutingKey(1), message);
-    rabbitTemplate.convertAndSend(RabbitMessagingConfig.STUB_STAGE_WORKER_QUEUE, message);
+    if (orchestrationProperties.isStubStageWorker()) {
+      rabbitTemplate.convertAndSend(RabbitMessagingConfig.STUB_STAGE_WORKER_QUEUE, message);
+    }
 
     saved.setStatus(ExecutionStatus.RUNNING);
     saved = executionRepository.save(saved);
 
     log.info(
-        "Started execution {} for pipeline {} ({} stages)",
+        "Started execution {} for pipeline {} ({} stages, ioMode={})",
         saved.getId(),
         pipeline.getId(),
-        stageCount);
+        stageCount,
+        ioMode);
     return saved;
   }
 
@@ -155,9 +155,21 @@ public class PipelineRunOrchestrator {
               }
               execution.setStatus(ExecutionStatus.FAILED);
               execution.setCompletedAt(Instant.now());
-              execution.setErrorSummary(summary);
+              execution.setErrorSummary(toErrorSummaryJson(summary));
               executionRepository.save(execution);
+              log.warn("Marked execution {} failed: {}", executionId, summary);
             });
+  }
+
+  private static String toErrorSummaryJson(String summary) {
+    String message = summary == null || summary.isBlank() ? "failed" : summary;
+    String escaped =
+        message
+            .replace("\\", "\\\\")
+            .replace("\"", "\\\"")
+            .replace("\n", "\\n")
+            .replace("\r", "\\r");
+    return "{\"message\":\"" + escaped + "\"}";
   }
 
   private static boolean isTerminal(ExecutionStatus status) {

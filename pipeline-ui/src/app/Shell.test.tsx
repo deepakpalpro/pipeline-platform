@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { screen } from '@testing-library/react'
+import { screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { AppShell } from '../app/AppShell'
 import { renderWithProviders } from '../test/renderWithProviders'
@@ -13,6 +13,7 @@ describe('AppShell', () => {
     expect(screen.getByRole('link', { name: 'Pipelines' })).toBeInTheDocument()
     expect(screen.getByRole('link', { name: 'Connectors' })).toBeInTheDocument()
     expect(screen.getByRole('link', { name: 'Services' })).toBeInTheDocument()
+    expect(screen.getByRole('link', { name: 'Tenants' })).toBeInTheDocument()
     expect(screen.getByRole('link', { name: 'Observability' })).toBeInTheDocument()
     expect(screen.getByRole('link', { name: 'Billing' })).toBeInTheDocument()
   })
@@ -28,15 +29,23 @@ describe('AppShell', () => {
     expect(screen.getByRole('heading', { name: 'Pipelines' })).toBeInTheDocument()
     expect(screen.getByRole('link', { name: 'Pipelines' })).toHaveClass('active')
 
+    await user.click(screen.getByRole('link', { name: 'Tenants' }))
+    expect(screen.getByRole('heading', { name: 'Tenants' })).toBeInTheDocument()
+    expect(screen.getByRole('link', { name: 'Tenants' })).toHaveClass('active')
+
     await user.click(screen.getByRole('link', { name: 'Billing' }))
     expect(screen.getByRole('heading', { name: 'Billing' })).toBeInTheDocument()
     expect(screen.getByRole('link', { name: 'Billing' })).toHaveClass('active')
   })
 
-  it('shows tenant picker with stub tenants', () => {
+  it('shows tenant picker with stub tenants', async () => {
     renderWithProviders(<AppShell />, { initialEntries: ['/connectors'] })
     const select = screen.getByRole('combobox', { name: 'Tenant' })
     expect(select).toHaveValue('T001')
-    expect(screen.getByRole('option', { name: /Acme Analytics/ })).toBeInTheDocument()
+    await waitFor(() => {
+      expect(
+        screen.getByRole('option', { name: /Acme Analytics/ }),
+      ).toBeInTheDocument()
+    })
   })
 })

@@ -4,6 +4,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import { archivePipeline, listPipelines } from '../../api/resources'
 import type { PipelineResponse } from '../../api/types'
 import { useTenant } from '../../contexts/TenantContext'
+import { PipelineImportExportControls } from './PipelineImportExportControls'
 import { PipelineStepsDetail } from './PipelineStepsDetail'
 
 function isArchived(status: string) {
@@ -48,12 +49,26 @@ export function PipelinesListPage() {
       <div className="split-list">
         <div className="panel-header">
           <h1>Pipelines</h1>
-          <button
-            type="button"
-            onClick={() => navigate('/pipelines/new')}
-          >
-            New
-          </button>
+          <div className="button-row">
+            <PipelineImportExportControls
+              tenantId={tenantId}
+              onImported={(id, msg) => {
+                setMessage(msg)
+                setSelectedId(id)
+                void queryClient.invalidateQueries({
+                  queryKey: ['pipelines', tenantId],
+                })
+                navigate(`/pipelines/${id}`)
+              }}
+              onError={(msg) => setMessage(msg)}
+            />
+            <button
+              type="button"
+              onClick={() => navigate('/pipelines/new')}
+            >
+              New
+            </button>
+          </div>
         </div>
         {pipelinesQuery.isLoading ? <p className="muted">Loading…</p> : null}
         {pipelinesQuery.isError ? (
@@ -88,6 +103,20 @@ export function PipelinesListPage() {
             <div className="panel-header">
               <h2>{selected.name}</h2>
               <div className="button-row">
+                <PipelineImportExportControls
+                  tenantId={tenantId}
+                  pipelineId={selected.id}
+                  pipelineName={selected.name}
+                  onImported={(id, msg) => {
+                    setMessage(msg)
+                    setSelectedId(id)
+                    void queryClient.invalidateQueries({
+                      queryKey: ['pipelines', tenantId],
+                    })
+                    navigate(`/pipelines/${id}`)
+                  }}
+                  onError={(msg) => setMessage(msg)}
+                />
                 <Link
                   className="button-link"
                   to={`/pipelines/${selected.id}`}

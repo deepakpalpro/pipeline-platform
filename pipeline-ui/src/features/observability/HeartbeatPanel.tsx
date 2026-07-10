@@ -18,7 +18,10 @@ export function HeartbeatPanel({ data, loading }: Props) {
     return (
       <section aria-label="Heartbeat panel" className="obs-panel">
         <h2>Heartbeat</h2>
-        <p className="muted">No heartbeat yet</p>
+        <p className="muted">
+          No heartbeat yet. Heartbeats are recorded when pipelet Jobs complete
+          or fail.
+        </p>
       </section>
     )
   }

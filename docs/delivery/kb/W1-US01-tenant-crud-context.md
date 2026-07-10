@@ -33,6 +33,10 @@ Cross-tenant row filtering for owned resources is **W1-US02**.
 
 Duplicate `slug` → HTTP `409`. Blank slug → `400`.
 
+### UI (Wave 6+)
+
+`pipeline-ui` **Tenants** page (`/tenants`) lists `GET /api/v1/tenants` and registers via the create form. The header tenant picker uses the same list (falls back to T001/T002 if the API is down).
+
 ## How to verify
 
 ### Create + get

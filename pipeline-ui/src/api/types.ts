@@ -153,6 +153,62 @@ export type PipelineResponse = {
   steps?: PipelineStepResponse[]
 }
 
+export type PipelineBundle = {
+  format_version: string
+  exported_at?: string
+  pipeline: {
+    name: string
+    description?: string | null
+    visibility?: string
+    execution_mode?: string
+    deployment_config?: Record<string, unknown> | null
+    execution_config?: Record<string, unknown> | null
+  }
+  steps: Array<{
+    pipelet_id: string
+    step_order: number
+    deployment_config?: Record<string, unknown> | null
+    execution_config?: Record<string, unknown> | null
+    connector_refs?: string[]
+    service_refs?: string[]
+    input_queue?: string | null
+    output_queue?: string | null
+    resource_limits?: Record<string, unknown> | null
+  }>
+  connectors: Array<{
+    export_key: string
+    connectorTypeId: string
+    name: string
+    deployment_config?: Record<string, unknown> | null
+    execution_config?: Record<string, unknown> | null
+  }>
+  services: Array<{
+    export_key: string
+    serviceTypeId: string
+    vendor: string
+    name: string
+    inheritsDefault?: boolean
+    deployment_config?: Record<string, unknown> | null
+    execution_config?: Record<string, unknown> | null
+  }>
+}
+
+export type PipelineBundleImportRequest = {
+  bundle: PipelineBundle
+  name?: string
+  conflict_strategy?: 'create' | 'reuse'
+}
+
+export type PipelineBundleImportResult = {
+  pipeline_id: string
+  name: string
+  created_connectors: string[]
+  reused_connectors: string[]
+  created_services: string[]
+  reused_services: string[]
+  warnings: string[]
+}
+
 export type PipelineRunResponse = {
   execution_id: string
   status: string
@@ -166,13 +222,21 @@ export type ExecutionStepStatusDto = {
   status: 'PENDING' | 'RUNNING' | 'COMPLETED' | 'FAILED'
 }
 
-export type PipelineExecutionDetail = {
+export type PipelineExecutionSummary = {
   id: string
   pipeline_id: string
   tenant_id?: string
+  pipeline_version?: number
   status: string
+  trigger?: string
   started_at?: string
   completed_at?: string | null
+  records_in?: number
+  records_out?: number
+  completeness_pct?: number | null
+}
+
+export type PipelineExecutionDetail = PipelineExecutionSummary & {
   steps?: ExecutionStepStatusDto[]
 }
 
@@ -227,6 +291,27 @@ export type HeartbeatResponse = {
   tenant_id: string
   last_heartbeat_epoch_seconds: number | null
   stale: boolean
+}
+
+export type ErrorTypeCount = {
+  error_type: string
+  count: number
+}
+
+export type ErrorSummaryResponse = {
+  pipeline_id: string
+  tenant_id: string
+  total_errors: number
+  by_type: ErrorTypeCount[]
+}
+
+export type ObservabilityPortalLinks = {
+  grafana_enabled: boolean
+  grafana_url: string | null
+  grafana_label: string
+  elasticsearch_enabled: boolean
+  elasticsearch_url: string | null
+  elasticsearch_label: string
 }
 
 export type TimeRange = '1h' | '24h' | '7d'
@@ -297,4 +382,27 @@ export type BillingPeriodItem = {
 export type BillingPeriodsResponse = {
   tenant_id: string
   periods: BillingPeriodItem[]
+}
+
+export type TenantStatus = 'active' | 'suspended' | 'trial'
+
+export type Tenant = {
+  id: string
+  name: string
+  slug: string
+  status: TenantStatus
+  creditBalance: number | string
+  createdAt: string
+  updatedAt: string
+}
+
+export type CreateTenantRequest = {
+  name: string
+  slug: string
+  status?: TenantStatus
+}
+
+export type UpdateTenantRequest = {
+  name: string
+  status?: TenantStatus
 }

@@ -44,4 +44,20 @@ public record PipelineLogDocument(
         recordsOut,
         durationMs);
   }
+
+  public static PipelineLogDocument error(
+      String tenantId, String pipelineId, String executionId, String pipeletId, String message) {
+    return new PipelineLogDocument(
+        Instant.now(),
+        "ERROR",
+        tenantId,
+        pipelineId,
+        executionId,
+        pipeletId,
+        PipeletMetricsEmitter.STUB_POD_NAME,
+        message,
+        null,
+        null,
+        null);
+  }
 }

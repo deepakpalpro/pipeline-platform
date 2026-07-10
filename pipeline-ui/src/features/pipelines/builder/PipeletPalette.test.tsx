@@ -15,6 +15,7 @@ function makeCatalog(): PipeletCatalogEntry[] {
       version: '1.0.0',
       runtime: 'Java',
       description: `Source pipelet ${i}`,
+      active: true,
     })
   }
   for (let i = 1; i <= 7; i++) {
@@ -25,6 +26,7 @@ function makeCatalog(): PipeletCatalogEntry[] {
       version: '1.0.0',
       runtime: 'Java',
       description: `Processor pipelet ${i}`,
+      active: true,
     })
   }
   for (let i = 1; i <= 6; i++) {
@@ -35,6 +37,7 @@ function makeCatalog(): PipeletCatalogEntry[] {
       version: '1.0.0',
       runtime: 'Java',
       description: `Destination pipelet ${i}`,
+      active: true,
     })
   }
   items.push({
@@ -44,6 +47,16 @@ function makeCatalog(): PipeletCatalogEntry[] {
     version: '1.0.0',
     runtime: 'Java',
     description: 'Consume Kafka topics',
+    active: true,
+  })
+  items.push({
+    id: 'plet-inactive-source',
+    name: 'Inactive Source',
+    category: 'Source',
+    version: '1.0.0',
+    runtime: 'Java',
+    description: 'Should not appear in palette',
+    active: false,
   })
   return items
 }
@@ -93,5 +106,30 @@ describe('PipeletPalette', () => {
 
     await user.type(screen.getByLabelText('Search pipelets'), 'zzzz-none')
     expect(screen.getByText(/No pipelets match/)).toBeInTheDocument()
+  })
+
+  it('hides inactive pipelets from the palette', () => {
+    render(<PipeletPalette items={makeCatalog()} onAdd={vi.fn()} />)
+    expect(screen.queryByText('Inactive Source')).not.toBeInTheDocument()
+  })
+
+  it('shows empty guidance when catalog has no active pipelets', () => {
+    render(
+      <PipeletPalette
+        items={[
+          {
+            id: 'plet-x',
+            name: 'Only Inactive',
+            category: 'Source',
+            version: '1.0.0',
+            runtime: 'Java',
+            description: 'n/a',
+            active: false,
+          },
+        ]}
+        onAdd={vi.fn()}
+      />,
+    )
+    expect(screen.getByText(/No active pipelets/)).toBeInTheDocument()
   })
 })

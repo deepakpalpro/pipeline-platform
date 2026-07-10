@@ -31,7 +31,7 @@ class PipeletJobClientTest {
     PipeletJobHandle handle = client.create(request);
 
     assertThat(handle.jobName()).isEqualTo("exec-exec-1-stage-1");
-    assertThat(handle.namespace()).isEqualTo("tenant-T001");
+    assertThat(handle.namespace()).isEqualTo("tenant-t001");
     assertThat(handle.status()).isEqualTo("stubbed");
     assertThat(client.getCreated()).hasSize(1);
     PipeletJobRequest recorded = client.getCreated().get(0);
@@ -41,6 +41,30 @@ class PipeletJobClientTest {
     assertThat(recorded.pipeletId()).isEqualTo("plet-rest-source");
     assertThat(recorded.stageOrder()).isEqualTo(1);
     assertThat(recorded.inputQueue()).contains("T001").endsWith(".stage.1.in");
+    assertThat(recorded.ioMode()).isEqualTo("queue");
+  }
+
+  @Test
+  void stub_recordsIoModeAndAmqpUrl() {
+    PipeletJobRequest request =
+        PipeletJobRequest.of(
+            "T001",
+            "pipe-abc",
+            "exec-1",
+            "plet-csv-to-json",
+            1,
+            2,
+            "q.in",
+            "q.out",
+            "stdio",
+            "amqp://pipeline:pipeline@localhost:5672/");
+
+    client.create(request);
+
+    PipeletJobRequest recorded = client.getCreated().get(0);
+    assertThat(recorded.ioMode()).isEqualTo("stdio");
+    assertThat(recorded.amqpUrl()).contains("localhost:5672");
+    assertThat(recorded.outputQueue()).isEqualTo("q.out");
   }
 
   @Test

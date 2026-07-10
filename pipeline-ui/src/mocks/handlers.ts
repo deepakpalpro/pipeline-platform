@@ -6,15 +6,18 @@ import type {
   ConnectorType,
   CreateConnectorRequest,
   CreatePipelineRequest,
+  CreateTenantRequest,
   CreateTenantServiceRequest,
   PipelineExecutionDetail,
   PipelineResponse,
   ReplacePipelineStepsRequest,
   ServiceType,
+  Tenant,
   TenantConnector,
   TenantService,
   UpdateConnectorRequest,
   UpdatePipelineRequest,
+  UpdateTenantRequest,
   UpdateTenantServiceRequest,
 } from '../api/types'
 
@@ -157,6 +160,7 @@ export const SERVICE_TYPES: ServiceType[] = [
 
 /** Mutable fixture store — reset between tests via `resetMockDb()`. */
 export const mockDb = {
+  tenants: [] as Tenant[],
   connectors: [] as TenantConnector[],
   services: [] as TenantService[],
   pipelines: [] as PipelineResponse[],
@@ -169,6 +173,26 @@ export const mockDb = {
 }
 
 export function resetMockDb() {
+  mockDb.tenants = [
+    {
+      id: 'T001',
+      name: 'Acme Analytics',
+      slug: 'acme-analytics',
+      status: 'active',
+      creditBalance: 100,
+      createdAt: '2026-07-01T00:00:00Z',
+      updatedAt: '2026-07-01T00:00:00Z',
+    },
+    {
+      id: 'T002',
+      name: 'Beta Logistics',
+      slug: 'beta-logistics',
+      status: 'active',
+      creditBalance: 100,
+      createdAt: '2026-07-01T00:00:00Z',
+      updatedAt: '2026-07-01T00:00:00Z',
+    },
+  ]
   mockDb.pipelines = [
     {
       id: 'pipe-demo',
@@ -502,6 +526,247 @@ export const pipelineHandlers = [
     )
   }),
 
+  http.get('/api/v1/pipelines/:id/export', ({ params, request }) => {
+    const tid = tenantId(request)
+    const pipe = mockDb.pipelines.find(
+      (p) => p.id === params.id && p.tenantId === tid,
+    )
+    if (!pipe) {
+      return HttpResponse.json({ message: 'Not found' }, { status: 404 })
+    }
+    const steps = pipe.steps ?? []
+    const connectorIds = new Set(
+      steps.flatMap((s) => s.connector_ids ?? []),
+    )
+    const serviceIds = new Set(steps.flatMap((s) => s.service_ids ?? []))
+    const connectors = mockDb.connectors
+      .filter((c) => c.tenantId === tid && connectorIds.has(c.id))
+      .map((c) => ({
+        export_key: `${c.connectorTypeId}::${c.name}`,
+        connectorTypeId: c.connectorTypeId,
+        name: c.name,
+        deployment_config: c.deployment_config ?? {},
+        execution_config: c.execution_config ?? c.config ?? {},
+      }))
+    const services = mockDb.services
+      .filter((s) => s.tenantId === tid && serviceIds.has(s.id))
+      .map((s) => ({
+        export_key: `${s.serviceTypeId}::${s.vendor}::${s.name}`,
+        serviceTypeId: s.serviceTypeId,
+        vendor: s.vendor,
+        name: s.name,
+        inheritsDefault: s.inheritsDefault,
+        deployment_config: s.deployment_config ?? {},
+        execution_config: s.execution_config ?? s.config ?? {},
+      }))
+    const connectorKeyById: Record<string, string> = {}
+    for (const c of mockDb.connectors.filter((x) => x.tenantId === tid)) {
+      connectorKeyById[c.id] = `${c.connectorTypeId}::${c.name}`
+    }
+    const serviceKeyById: Record<string, string> = {}
+    for (const s of mockDb.services.filter((x) => x.tenantId === tid)) {
+      serviceKeyById[s.id] = `${s.serviceTypeId}::${s.vendor}::${s.name}`
+    }
+    return HttpResponse.json({
+      format_version: '1',
+      exported_at: nowIso(),
+      pipeline: {
+        name: pipe.name,
+        description: pipe.description ?? null,
+        visibility: pipe.visibility ?? 'private',
+        execution_mode: pipe.execution_mode ?? 'async',
+        deployment_config: pipe.deployment_config ?? {},
+        execution_config: pipe.execution_config ?? {},
+      },
+      steps: steps.map((s) => ({
+        pipelet_id: s.pipelet_id,
+        step_order: s.step_order,
+        deployment_config: s.deployment_config ?? {},
+        execution_config: s.execution_config ?? s.config ?? {},
+        connector_refs: (s.connector_ids ?? [])
+          .map((cid) => connectorKeyById[cid])
+          .filter(Boolean),
+        service_refs: (s.service_ids ?? [])
+          .map((sid) => serviceKeyById[sid])
+          .filter(Boolean),
+        input_queue: s.input_queue ?? null,
+        output_queue: s.output_queue ?? null,
+      })),
+      connectors,
+      services,
+    })
+  }),
+
+  http.post('/api/v1/pipelines/import', async ({ request }) => {
+    const tid = tenantId(request)
+    const body = (await request.json()) as {
+      bundle?: {
+        format_version?: string
+        pipeline?: {
+          name?: string
+          description?: string | null
+          visibility?: string
+          execution_mode?: string
+          deployment_config?: Record<string, unknown>
+          execution_config?: Record<string, unknown>
+        }
+        steps?: Array<{
+          pipelet_id: string
+          step_order: number
+          deployment_config?: Record<string, unknown>
+          execution_config?: Record<string, unknown>
+          connector_refs?: string[]
+          service_refs?: string[]
+          input_queue?: string | null
+          output_queue?: string | null
+        }>
+        connectors?: Array<{
+          export_key: string
+          connectorTypeId: string
+          name: string
+          deployment_config?: Record<string, unknown>
+          execution_config?: Record<string, unknown>
+        }>
+        services?: Array<{
+          export_key: string
+          serviceTypeId: string
+          vendor: string
+          name: string
+          inheritsDefault?: boolean
+          deployment_config?: Record<string, unknown>
+          execution_config?: Record<string, unknown>
+        }>
+      }
+      name?: string
+      conflict_strategy?: string
+    }
+    const bundle = body.bundle
+    if (!bundle?.pipeline?.name) {
+      return HttpResponse.json({ message: 'bundle.pipeline required' }, { status: 400 })
+    }
+    const reuse = body.conflict_strategy === 'reuse'
+    const warnings: string[] = []
+    const createdConnectors: string[] = []
+    const reusedConnectors: string[] = []
+    const createdServices: string[] = []
+    const reusedServices: string[] = []
+    const connectorKeyToId: Record<string, string> = {}
+    const serviceKeyToId: Record<string, string> = {}
+
+    for (const c of bundle.connectors ?? []) {
+      const existing = mockDb.connectors.find(
+        (x) =>
+          x.tenantId === tid &&
+          x.connectorTypeId === c.connectorTypeId &&
+          x.name === c.name,
+      )
+      if (reuse && existing) {
+        connectorKeyToId[c.export_key] = existing.id
+        reusedConnectors.push(c.export_key)
+        continue
+      }
+      const newId = id('conn')
+      mockDb.connectors.push({
+        id: newId,
+        tenantId: tid,
+        connectorTypeId: c.connectorTypeId,
+        name: c.name,
+        config: c.execution_config ?? {},
+        deployment_config: c.deployment_config ?? {},
+        execution_config: c.execution_config ?? {},
+        status: 'ACTIVE',
+        lastTestedAt: null,
+        createdAt: nowIso(),
+      })
+      connectorKeyToId[c.export_key] = newId
+      createdConnectors.push(c.export_key)
+    }
+
+    for (const s of bundle.services ?? []) {
+      const existing = mockDb.services.find(
+        (x) =>
+          x.tenantId === tid &&
+          x.serviceTypeId === s.serviceTypeId &&
+          x.vendor === s.vendor &&
+          x.name === s.name,
+      )
+      if (reuse && existing) {
+        serviceKeyToId[s.export_key] = existing.id
+        reusedServices.push(s.export_key)
+        continue
+      }
+      const newId = id('svc')
+      mockDb.services.push({
+        id: newId,
+        tenantId: tid,
+        serviceTypeId: s.serviceTypeId,
+        vendor: s.vendor,
+        name: s.name,
+        config: s.execution_config ?? {},
+        deployment_config: s.deployment_config ?? {},
+        execution_config: s.execution_config ?? {},
+        inheritsDefault: s.inheritsDefault ?? true,
+        status: 'ACTIVE',
+        createdAt: nowIso(),
+      })
+      serviceKeyToId[s.export_key] = newId
+      createdServices.push(s.export_key)
+    }
+
+    let pipeName = (body.name ?? bundle.pipeline.name).trim()
+    if (mockDb.pipelines.some((p) => p.tenantId === tid && p.name === pipeName)) {
+      pipeName = `${pipeName} (import)`
+      warnings.push(`Pipeline renamed to ${pipeName}`)
+    }
+    const pipeId = id('pipe')
+    const steps = (bundle.steps ?? []).map((s) => {
+      const execution = s.execution_config ?? {}
+      return {
+        pipelet_id: s.pipelet_id,
+        step_order: s.step_order,
+        config: execution,
+        deployment_config: s.deployment_config ?? {},
+        execution_config: execution,
+        connector_ids: (s.connector_refs ?? [])
+          .map((k) => connectorKeyToId[k])
+          .filter(Boolean) as string[],
+        service_ids: (s.service_refs ?? [])
+          .map((k) => serviceKeyToId[k])
+          .filter(Boolean) as string[],
+        input_queue: s.input_queue ?? null,
+        output_queue: s.output_queue ?? null,
+      }
+    })
+    const created: PipelineResponse = {
+      id: pipeId,
+      tenantId: tid,
+      name: pipeName,
+      description: bundle.pipeline.description ?? null,
+      visibility: bundle.pipeline.visibility ?? 'PRIVATE',
+      execution_mode: bundle.pipeline.execution_mode ?? 'ASYNC',
+      version: 1,
+      status: steps.length ? 'ACTIVE' : 'DRAFT',
+      deployment_config: bundle.pipeline.deployment_config ?? {},
+      execution_config: bundle.pipeline.execution_config ?? {},
+      created_at: nowIso(),
+      updated_at: nowIso(),
+      steps,
+    }
+    mockDb.pipelines.push(created)
+    return HttpResponse.json(
+      {
+        pipeline_id: pipeId,
+        name: pipeName,
+        created_connectors: createdConnectors,
+        reused_connectors: reusedConnectors,
+        created_services: createdServices,
+        reused_services: reusedServices,
+        warnings,
+      },
+      { status: 201 },
+    )
+  }),
+
   http.get('/api/v1/pipelines/:id', ({ params, request }) => {
     const tid = tenantId(request)
     const pipe = mockDb.pipelines.find(
@@ -597,6 +862,7 @@ export const pipelineHandlers = [
       name: body.name?.trim() || existing.name,
       description:
         body.description !== undefined ? body.description : existing.description,
+      status: body.status ?? existing.status,
       version: existing.version + 1,
       updated_at: nowIso(),
       deployment_config: mergedDeployment,
@@ -678,9 +944,14 @@ export const pipelineHandlers = [
       id: executionId,
       pipeline_id: pipe.id,
       tenant_id: tid,
+      pipeline_version: pipe.version,
       status: 'RUNNING',
+      trigger: 'manual',
       started_at: nowIso(),
       completed_at: null,
+      records_in: 0,
+      records_out: 0,
+      completeness_pct: null,
       steps: [
         { step_order: 1, status: 'RUNNING' },
         { step_order: 2, status: 'PENDING' },
@@ -699,6 +970,38 @@ export const pipelineHandlers = [
     )
   }),
 
+  http.get('/api/v1/pipelines/:id/executions', ({ params, request }) => {
+    const tid = tenantId(request)
+    const pipelineId = String(params.id)
+    const pipe = mockDb.pipelines.find(
+      (p) => p.id === pipelineId && p.tenantId === tid,
+    )
+    if (!pipe) {
+      return HttpResponse.json({ message: 'Not found' }, { status: 404 })
+    }
+    const rows = Object.values(mockDb.executions)
+      .filter((e) => e.pipeline_id === pipelineId && e.tenant_id === tid)
+      .map((e) => ({
+        id: e.id,
+        pipeline_id: e.pipeline_id,
+        tenant_id: e.tenant_id,
+        pipeline_version: e.pipeline_version ?? pipe.version,
+        status: e.status,
+        trigger: e.trigger ?? 'manual',
+        started_at: e.started_at,
+        completed_at: e.completed_at,
+        records_in: e.records_in ?? 0,
+        records_out: e.records_out ?? 0,
+        completeness_pct: e.completeness_pct ?? null,
+      }))
+      .sort((a, b) => {
+        const ta = a.started_at ? Date.parse(a.started_at) : 0
+        const tb = b.started_at ? Date.parse(b.started_at) : 0
+        return tb - ta
+      })
+    return HttpResponse.json(rows)
+  }),
+
   http.get('/api/v1/pipelines/:id/executions/:executionId', ({ params }) => {
     const executionId = String(params.executionId)
     const current = mockDb.executions[executionId]
@@ -712,6 +1015,9 @@ export const pipelineHandlers = [
         ...current,
         status: 'COMPLETED',
         completed_at: nowIso(),
+        records_in: 10,
+        records_out: 10,
+        completeness_pct: 100,
         steps: [
           { step_order: 1, status: 'COMPLETED' },
           { step_order: 2, status: 'COMPLETED' },
@@ -734,6 +1040,34 @@ export const pipelineHandlers = [
 ]
 
 export const observabilityHandlers = [
+  http.get('/api/v1/observability/links', ({ request }) => {
+    const url = new URL(request.url)
+    const pipelineId = url.searchParams.get('pipelineId')
+    const executionId = url.searchParams.get('executionId')
+    const qs = new URLSearchParams()
+    if (pipelineId) qs.set('pipelineId', pipelineId)
+    if (executionId) qs.set('executionId', executionId)
+    const suffix = qs.toString() ? `?${qs}` : ''
+    return HttpResponse.json({
+      grafana_enabled: true,
+      grafana_url: `http://localhost:3000${suffix}`,
+      grafana_label: 'Grafana',
+      elasticsearch_enabled: true,
+      elasticsearch_url: `http://localhost:5601${suffix}`,
+      elasticsearch_label: 'Elasticsearch',
+    })
+  }),
+
+  http.get('/api/v1/observability/pipelines/:id/errors', ({ params, request }) => {
+    const tid = tenantId(request)
+    return HttpResponse.json({
+      pipeline_id: params.id,
+      tenant_id: tid,
+      total_errors: 0,
+      by_type: [],
+    })
+  }),
+
   http.get('/api/v1/observability/pipelines/:id/completeness', ({ params, request }) => {
     const tid = tenantId(request)
     return HttpResponse.json({
@@ -881,11 +1215,73 @@ export const billingHandlers = [
   }),
 ]
 
+export const tenantHandlers = [
+  http.get('/api/v1/tenants', () => HttpResponse.json(mockDb.tenants)),
+
+  http.get('/api/v1/tenants/_context', ({ request }) =>
+    HttpResponse.json({ tenantId: tenantId(request) }),
+  ),
+
+  http.get('/api/v1/tenants/:id', ({ params }) => {
+    const id = String(params.id)
+    // Let billing/usage routes fall through if somehow matched — they are
+    // registered separately with longer paths.
+    const row = mockDb.tenants.find((t) => t.id === id)
+    if (!row) {
+      return HttpResponse.json({ message: 'Not found' }, { status: 404 })
+    }
+    return HttpResponse.json(row)
+  }),
+
+  http.post('/api/v1/tenants', async ({ request }) => {
+    const body = (await request.json()) as CreateTenantRequest
+    if (!body.name?.trim() || !body.slug?.trim()) {
+      return HttpResponse.json({ message: 'Validation failed' }, { status: 400 })
+    }
+    const slug = body.slug.trim().toLowerCase()
+    if (mockDb.tenants.some((t) => t.slug === slug)) {
+      return HttpResponse.json(
+        { message: `slug already exists: ${slug}` },
+        { status: 409 },
+      )
+    }
+    const created: Tenant = {
+      id: id('tenant'),
+      name: body.name.trim(),
+      slug,
+      status: body.status ?? 'trial',
+      creditBalance: 100,
+      createdAt: nowIso(),
+      updatedAt: nowIso(),
+    }
+    mockDb.tenants.push(created)
+    return HttpResponse.json(created, { status: 201 })
+  }),
+
+  http.put('/api/v1/tenants/:id', async ({ params, request }) => {
+    const idx = mockDb.tenants.findIndex((t) => t.id === params.id)
+    if (idx < 0) {
+      return HttpResponse.json({ message: 'Not found' }, { status: 404 })
+    }
+    const body = (await request.json()) as UpdateTenantRequest
+    const prev = mockDb.tenants[idx]
+    const updated: Tenant = {
+      ...prev,
+      name: body.name?.trim() || prev.name,
+      status: body.status ?? prev.status,
+      updatedAt: nowIso(),
+    }
+    mockDb.tenants[idx] = updated
+    return HttpResponse.json(updated)
+  }),
+]
+
 export const handlers = [
+  ...billingHandlers,
+  ...tenantHandlers,
   ...connectorHandlers,
   ...serviceHandlers,
   ...pipeletHandlers,
   ...pipelineHandlers,
   ...observabilityHandlers,
-  ...billingHandlers,
 ]

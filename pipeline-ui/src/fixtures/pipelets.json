@@ -77,16 +77,24 @@
     "category": "Processor",
     "version": "0.9.0",
     "runtime": "Python",
-    "description": "Filter records with a tenant-supplied Python expression.",
+    "active": true,
+    "imageRef": "pipeline-platform/plet-python-filter:local",
+    "description": "Filter records with a safe Python expression over each record (e.g. quantity > 0 and category in ('food','toys')). Bind connector/service as needed; set deployment.region and execution.expression on the step.",
+    "requiredDeploymentKeys": ["region"],
+    "requiredExecutionKeys": ["expression"],
     "configSchemaPreview": {
       "type": "object",
-      "required": [
-        "expression"
-      ]
+      "required": ["expression"],
+      "properties": {
+        "expression": {
+          "type": "string",
+          "description": "Filter expression; leave blank to use built-in inventory rules in the local image"
+        }
+      }
     },
     "deploymentConfiguration": {
       "cloud": "aws",
-      "region": "us-east-1",
+      "region": "",
       "replicas": "1"
     },
     "executionConfiguration": {
@@ -169,16 +177,29 @@
     "name": "S3 Source",
     "category": "Source",
     "version": "1.0.0",
-    "runtime": "Java",
-    "description": "Ingest objects from S3-compatible buckets.",
+    "runtime": "Python",
+    "active": true,
+    "imageRef": "pipeline-platform/plet-s3-source:local",
+    "description": "Ingest a single object from an S3-compatible bucket. Set deployment.region and execution.objectKey on the pipeline step; bind a storage connector (bucket) and optional auth service for credentials.",
+    "requiredDeploymentKeys": ["region"],
+    "requiredExecutionKeys": ["objectKey"],
+    "configSchemaPreview": {
+      "type": "object",
+      "required": ["objectKey"],
+      "properties": {
+        "objectKey": { "type": "string", "description": "S3 object key to fetch" },
+        "key": { "type": "string", "description": "Alias for objectKey" },
+        "batchSize": { "type": "string" }
+      }
+    },
     "deploymentConfiguration": {
       "cloud": "aws",
-      "region": "us-east-1",
-      "replicas": "1"
+      "region": "",
+      "endpoint": ""
     },
     "executionConfiguration": {
-      "batchSize": "100",
-      "pollIntervalMs": "5000"
+      "objectKey": "",
+      "batchSize": "1"
     }
   },
   {
@@ -662,16 +683,30 @@
     "name": "Field Mapper",
     "category": "Processor",
     "version": "1.0.0",
-    "runtime": "Java",
-    "description": "Rename and project record fields.",
+    "runtime": "Python",
+    "active": true,
+    "imageRef": "pipeline-platform/plet-field-mapper:local",
+    "description": "Rename/project record fields via execution.mapping. Modes: map (records only) or upsert/replace (wrap as {mode, items}). Set deployment.region and execution.mode on the step.",
+    "requiredDeploymentKeys": ["region"],
+    "requiredExecutionKeys": ["mode"],
+    "configSchemaPreview": {
+      "type": "object",
+      "required": ["mode"],
+      "properties": {
+        "mode": { "type": "string", "description": "upsert | replace for Petstore bulk upload" },
+        "mapping": { "type": "string", "description": "Optional field mapping spec" }
+      }
+    },
     "deploymentConfiguration": {
       "cloud": "aws",
-      "region": "us-east-1",
+      "region": "",
       "replicas": "1"
     },
     "executionConfiguration": {
       "parallelism": "1",
-      "failOnError": "true"
+      "failOnError": "true",
+      "mode": "upsert",
+      "mapping": ""
     }
   },
   {
@@ -883,16 +918,30 @@
     "name": "CSV to JSON",
     "category": "Processor",
     "version": "1.0.0",
-    "runtime": "Java",
-    "description": "Convert CSV rows to JSON records.",
+    "runtime": "Python",
+    "active": true,
+    "imageRef": "pipeline-platform/plet-csv-to-json:local",
+    "description": "Convert CSV text (message.csv / content) into JSON records. Set deployment.region and execution.delimiter on the step.",
+    "requiredDeploymentKeys": ["region"],
+    "requiredExecutionKeys": ["delimiter"],
+    "configSchemaPreview": {
+      "type": "object",
+      "required": ["delimiter"],
+      "properties": {
+        "delimiter": { "type": "string" },
+        "hasHeader": { "type": "string" }
+      }
+    },
     "deploymentConfiguration": {
       "cloud": "aws",
-      "region": "us-east-1",
+      "region": "",
       "replicas": "1"
     },
     "executionConfiguration": {
       "parallelism": "1",
-      "failOnError": "true"
+      "failOnError": "true",
+      "delimiter": ",",
+      "hasHeader": "true"
     }
   },
   {
@@ -1393,16 +1442,31 @@
     "name": "Webhook Destination",
     "category": "Destination",
     "version": "1.0.0",
-    "runtime": "Java",
-    "description": "POST records to an HTTP webhook.",
+    "runtime": "Python",
+    "active": true,
+    "imageRef": "pipeline-platform/plet-webhook-destination:local",
+    "description": "POST JSON to connector baseUrl + execution.path. Bind a REST connector; set deployment.region and execution.path on the step.",
+    "requiredDeploymentKeys": ["region"],
+    "requiredExecutionKeys": ["path"],
+    "configSchemaPreview": {
+      "type": "object",
+      "required": ["path"],
+      "properties": {
+        "path": { "type": "string", "description": "Path under connector baseUrl, e.g. /inventory/upload" },
+        "method": { "type": "string" },
+        "baseUrl": { "type": "string", "description": "Optional override of connector baseUrl" }
+      }
+    },
     "deploymentConfiguration": {
       "cloud": "aws",
-      "region": "us-east-1",
+      "region": "",
       "replicas": "1"
     },
     "executionConfiguration": {
       "flushIntervalMs": "1000",
-      "maxBatchRecords": "500"
+      "maxBatchRecords": "500",
+      "path": "",
+      "method": "POST"
     }
   },
   {

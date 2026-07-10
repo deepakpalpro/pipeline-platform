@@ -1,12 +1,14 @@
 import { KeyValueEditor } from '../../forms/KeyValueEditor'
 import { SearchableSelect } from '../../forms/SearchableSelect'
 import type { TenantConnector, TenantService } from '../../../api/types'
+import type { PipeletCatalogEntry } from '../../pipelets/catalogFilter'
 import type { PipelineGraphNode } from './pipelineGraphReducer'
 
 type Props = {
   node: PipelineGraphNode | null
   connectors: TenantConnector[]
   services: TenantService[]
+  catalog?: PipeletCatalogEntry[]
   onChange: (
     nodeId: string,
     patch: Partial<PipelineGraphNode['data']>,
@@ -18,6 +20,7 @@ export function StepPropertiesPanel({
   node,
   connectors,
   services,
+  catalog = [],
   onChange,
   onRemove,
 }: Props) {
@@ -32,6 +35,9 @@ export function StepPropertiesPanel({
 
   const connectorId = node.data.connectorIds[0] ?? ''
   const serviceId = node.data.serviceIds[0] ?? ''
+  const pipeletMeta = catalog.find((p) => p.id === node.data.pipeletId)
+  const requiredDeployment = pipeletMeta?.requiredDeploymentKeys ?? []
+  const requiredExecution = pipeletMeta?.requiredExecutionKeys ?? []
 
   return (
     <aside className="builder-props" aria-label="Step properties">
@@ -76,6 +82,11 @@ export function StepPropertiesPanel({
         entries={node.data.deploymentConfig ?? {}}
         onChange={(deploymentConfig) => onChange(node.id, { deploymentConfig })}
       />
+      {requiredDeployment.length > 0 ? (
+        <p className="muted props-hint" data-testid="required-deployment-keys">
+          Required deployment Keys: {requiredDeployment.join(', ')}
+        </p>
+      ) : null}
       <KeyValueEditor
         title="Execution configuration"
         entries={node.data.executionConfig ?? node.data.config ?? {}}
@@ -83,9 +94,14 @@ export function StepPropertiesPanel({
           onChange(node.id, { executionConfig, config: executionConfig })
         }
       />
+      {requiredExecution.length > 0 ? (
+        <p className="muted props-hint" data-testid="required-execution-keys">
+          Required execution Keys: {requiredExecution.join(', ')}
+        </p>
+      ) : null}
       <p className="muted props-hint">
-        Defaults come from the pipelet; edit to override or add keys for this
-        step.
+        Defaults come from the pipelet; bind a connector/service, then set or
+        override Keys for this step.
       </p>
 
       {onRemove ? (

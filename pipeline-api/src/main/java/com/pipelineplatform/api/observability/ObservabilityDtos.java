@@ -35,7 +35,7 @@ public final class ObservabilityDtos {
       @JsonProperty("pipeline_id") String pipelineId,
       @JsonProperty("tenant_id") String tenantId,
       @JsonProperty("total_errors") double totalErrors,
-      List<ErrorTypeCount> byType) {}
+      @JsonProperty("by_type") List<ErrorTypeCount> byType) {}
 
   public record ErrorTypeCount(
       @JsonProperty("error_type") String errorType, double count) {}
@@ -55,4 +55,13 @@ public final class ObservabilityDtos {
       @JsonProperty("records_in") Long recordsIn,
       @JsonProperty("records_out") Long recordsOut,
       @JsonProperty("duration_ms") Long durationMs) {}
+
+  /** External tool links for the portal (null URLs when not configured for this deployment). */
+  public record PortalLinksResponse(
+      @JsonProperty("grafana_enabled") boolean grafanaEnabled,
+      @JsonProperty("grafana_url") String grafanaUrl,
+      @JsonProperty("grafana_label") String grafanaLabel,
+      @JsonProperty("elasticsearch_enabled") boolean elasticsearchEnabled,
+      @JsonProperty("elasticsearch_url") String elasticsearchUrl,
+      @JsonProperty("elasticsearch_label") String elasticsearchLabel) {}
 }

@@ -110,4 +110,45 @@ describe('StepPropertiesPanel', () => {
       connectorIds: ['conn-plet-webhook-source'],
     })
   })
+
+  it('shows required deployment and execution Keys from catalog', () => {
+    renderWithProviders(
+      <StepPropertiesPanel
+        node={{
+          ...node,
+          data: {
+            ...node.data,
+            pipeletId: 'plet-s3-source',
+            name: 'S3 Source',
+            category: 'Source',
+            deploymentConfig: { cloud: 'aws', region: '' },
+            executionConfig: { objectKey: '' },
+          },
+        }}
+        catalog={[
+          {
+            id: 'plet-s3-source',
+            name: 'S3 Source',
+            category: 'Source',
+            version: '1.0.0',
+            runtime: 'Python',
+            description: 'S3',
+            active: true,
+            requiredDeploymentKeys: ['region'],
+            requiredExecutionKeys: ['objectKey'],
+          },
+        ]}
+        connectors={[]}
+        services={[]}
+        onChange={() => undefined}
+      />,
+    )
+
+    expect(screen.getByTestId('required-deployment-keys')).toHaveTextContent(
+      'region',
+    )
+    expect(screen.getByTestId('required-execution-keys')).toHaveTextContent(
+      'objectKey',
+    )
+  })
 })
