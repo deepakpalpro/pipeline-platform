@@ -1,31 +1,45 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { useEffect, useMemo, useReducer, useState } from 'react'
-import { Link, useLocation, useNavigate, useParams } from 'react-router-dom'
+import {
+  Link,
+  useLocation,
+  useNavigate,
+  useParams,
+  useSearchParams,
+} from 'react-router-dom'
 import {
   createPipeline,
   dryRunPipeline,
   getPipeline,
   listConnectors,
+  listPipelineExecutions,
   listServices,
   replacePipelineSteps,
   runPipeline,
   updatePipeline,
 } from '../../../api/resources'
-import { ApiError, type QuotaBlockedBody } from '../../../api/types'
+import {
+  ApiError,
+  type PipelineExecutionSummary,
+  type QuotaBlockedBody,
+} from '../../../api/types'
 import { useTenant } from '../../../contexts/TenantContext'
 import { KeyValueEditor } from '../../forms/KeyValueEditor'
 import { mergeExtendConfig } from '../../forms/mergeExtendConfig'
 import { PIPELET_FIXTURE } from '../../pipelets/fixture'
 import type { PipeletCatalogEntry } from '../../pipelets/catalogFilter'
+import { ExecutionHistoryPanel } from './ExecutionHistoryPanel'
 import { ExecutionOverlaySummary } from './ExecutionOverlaySummary'
 import { PipeletPalette } from './PipeletPalette'
 import { PipelineCanvas } from './PipelineCanvas'
 import { QuotaBlockedAlert } from './QuotaBlockedAlert'
 import { RunControls } from './RunControls'
 import { StepPropertiesPanel } from './StepPropertiesPanel'
+import { PipelineImportExportControls } from '../PipelineImportExportControls'
 import {
   executionOverlayReducer,
   initialOverlayState,
+  isTerminalExecutionStatus,
 } from './executionOverlayReducer'
 import {
   graphToStepsPayload,
@@ -46,6 +60,7 @@ export function PipelineBuilderPage({ catalog = PIPELET_FIXTURE }: Props) {
   const isNew = !routePipelineId || routePipelineId === 'new'
   const navigate = useNavigate()
   const location = useLocation()
+  const [searchParams, setSearchParams] = useSearchParams()
   const { tenantId } = useTenant()
   const queryClient = useQueryClient()
   const [state, dispatch] = useReducer(pipelineGraphReducer, initialPipelineGraph)
@@ -61,14 +76,34 @@ export function PipelineBuilderPage({ catalog = PIPELET_FIXTURE }: Props) {
   const [pipelineId, setPipelineId] = useState<string | null>(
     isNew ? null : routePipelineId,
   )
-  const [executionId, setExecutionId] = useState<string | null>(null)
+  const [executionId, setExecutionId] = useState<string | null>(
+    () => searchParams.get('executionId'),
+  )
   const [quotaInfo, setQuotaInfo] = useState<{
     code: string
     message: string
   } | null>(null)
   const [nodeSeq, setNodeSeq] = useState(1)
   const [running, setRunning] = useState(false)
+  const [deploying, setDeploying] = useState(false)
+  const [pipelineStatus, setPipelineStatus] = useState<string>('DRAFT')
   const [hydratedId, setHydratedId] = useState<string | null>(null)
+
+  function selectExecution(id: string | null, opts?: { resume?: boolean }) {
+    setExecutionId(id)
+    const next = new URLSearchParams(searchParams)
+    if (id) {
+      next.set('executionId', id)
+    } else {
+      next.delete('executionId')
+    }
+    setSearchParams(next, { replace: true })
+    if (opts?.resume) {
+      setRunning(true)
+    } else if (id === null) {
+      setRunning(false)
+    }
+  }
 
   const catalogById = useMemo(() => {
     const map = new Map(catalog.map((c) => [c.id, c]))
@@ -96,7 +131,9 @@ export function PipelineBuilderPage({ catalog = PIPELET_FIXTURE }: Props) {
         setPipelineId(null)
         setHydratedId(null)
         setNodeSeq(1)
+        setPipelineStatus('DRAFT')
         setSaveMessage(null)
+        setExecutionId(null)
         overlayDispatch({ type: 'RESET' })
       }
       return
@@ -122,6 +159,7 @@ export function PipelineBuilderPage({ catalog = PIPELET_FIXTURE }: Props) {
     )
     dispatch({ type: 'RESET', state: graph })
     setPipelineId(pipeline.id)
+    setPipelineStatus(pipeline.status ?? 'DRAFT')
     setNodeSeq((pipeline.steps?.length ?? 0) + 1)
     setHydratedId(pipeline.id)
     overlayDispatch({ type: 'RESET' })
@@ -136,6 +174,61 @@ export function PipelineBuilderPage({ catalog = PIPELET_FIXTURE }: Props) {
     queryFn: () => listServices(tenantId),
   })
 
+  const executionsQuery = useQuery({
+    queryKey: ['pipeline-executions', tenantId, pipelineId],
+    queryFn: () => listPipelineExecutions(tenantId, pipelineId!),
+    enabled: Boolean(pipelineId),
+    refetchInterval: (query) => {
+      const rows = query.state.data
+      if (!rows?.length) {
+        return false
+      }
+      return rows.some((r) => !isTerminalExecutionStatus(r.status))
+        ? 2000
+        : false
+    },
+  })
+
+  useEffect(() => {
+    if (!pipelineId || !executionsQuery.isSuccess) {
+      return
+    }
+    const rows = executionsQuery.data ?? []
+    const fromUrl = searchParams.get('executionId')
+
+    if (fromUrl) {
+      const row = rows.find((r) => r.id === fromUrl)
+      if (executionId !== fromUrl) {
+        selectExecution(fromUrl, {
+          resume: row ? !isTerminalExecutionStatus(row.status) : true,
+        })
+      } else if (row && !isTerminalExecutionStatus(row.status)) {
+        setRunning(true)
+      }
+      return
+    }
+
+    if (executionId || rows.length === 0) {
+      return
+    }
+
+    const pick =
+      rows.find((r) => !isTerminalExecutionStatus(r.status)) ?? rows[0]
+    if (pick) {
+      selectExecution(pick.id, {
+        resume: !isTerminalExecutionStatus(pick.status),
+      })
+    }
+    // selectExecution updates URL; only auto-pick when none selected.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [
+    pipelineId,
+    executionsQuery.isSuccess,
+    executionsQuery.data,
+    searchParams,
+    executionId,
+  ])
+
   const selected = useMemo(
     () => state.nodes.find((n) => n.id === state.selectedNodeId) ?? null,
     [state.nodes, state.selectedNodeId],
@@ -148,8 +241,8 @@ export function PipelineBuilderPage({ catalog = PIPELET_FIXTURE }: Props) {
     pipelineId,
     executionId,
     enabled: Boolean(executionId),
-    intervalMs: 50,
-    maxAttempts: 10,
+    intervalMs: 500,
+    maxAttempts: 240,
   })
 
   useEffect(() => {
@@ -170,13 +263,13 @@ export function PipelineBuilderPage({ catalog = PIPELET_FIXTURE }: Props) {
         executionStatus: execution.status,
       })
     }
-    const terminal = ['COMPLETED', 'SUCCEEDED', 'FAILED', 'CANCELLED'].includes(
-      execution.status.toUpperCase(),
-    )
-    if (terminal) {
+    if (isTerminalExecutionStatus(execution.status)) {
       setRunning(false)
+      void queryClient.invalidateQueries({
+        queryKey: ['pipeline-executions', tenantId, pipelineId],
+      })
     }
-  }, [execution, nodeIdsInOrder])
+  }, [execution, nodeIdsInOrder, queryClient, tenantId, pipelineId])
 
   const saveMutation = useMutation({
     mutationFn: async () => {
@@ -203,6 +296,7 @@ export function PipelineBuilderPage({ catalog = PIPELET_FIXTURE }: Props) {
       const msg = `Saved ${pipeline.name} (${pipeline.id}) v${pipeline.version}`
       setPipelineId(pipeline.id)
       setHydratedId(pipeline.id)
+      setPipelineStatus(pipeline.status ?? 'DRAFT')
       setSaveMessage(msg)
       void queryClient.invalidateQueries({ queryKey: ['pipelines', tenantId] })
       void queryClient.invalidateQueries({
@@ -243,6 +337,38 @@ export function PipelineBuilderPage({ catalog = PIPELET_FIXTURE }: Props) {
     }
   }
 
+  async function handleDeploy() {
+    setQuotaInfo(null)
+    setDryRunMessage(null)
+    setDeploying(true)
+    try {
+      const id = await ensureSaved()
+      const updated = await updatePipeline(tenantId, id, {
+        name: state.pipelineName,
+        status: 'ACTIVE',
+        deployment_config: state.deploymentConfig,
+        execution_config: state.executionConfig,
+      })
+      setPipelineId(id)
+      setPipelineStatus(updated.status ?? 'ACTIVE')
+      setSaveMessage(`Deployed ${updated.name} (${updated.id}) — status ACTIVE`)
+      void queryClient.invalidateQueries({ queryKey: ['pipelines', tenantId] })
+      void queryClient.invalidateQueries({
+        queryKey: ['pipeline', tenantId, id],
+      })
+      if (isNew || routePipelineId !== id) {
+        navigate(`/pipelines/${id}`, {
+          replace: true,
+          state: { saveMessage: `Deployed ${updated.name}` },
+        })
+      }
+    } catch (err) {
+      setSaveMessage(err instanceof Error ? err.message : 'Deploy failed')
+    } finally {
+      setDeploying(false)
+    }
+  }
+
   async function handleRun() {
     setQuotaInfo(null)
     setDryRunMessage(null)
@@ -252,8 +378,16 @@ export function PipelineBuilderPage({ catalog = PIPELET_FIXTURE }: Props) {
       const id = await ensureSaved()
       const run = await runPipeline(tenantId, id)
       setPipelineId(id)
-      setExecutionId(run.execution_id)
-    } catch (err) {
+      selectExecution(run.execution_id, { resume: true })
+      void queryClient.invalidateQueries({
+        queryKey: ['pipeline-executions', tenantId, id],
+      })
+      if (isNew || routePipelineId !== id) {
+        navigate(
+          `/pipelines/${id}?executionId=${encodeURIComponent(run.execution_id)}`,
+          { replace: true },
+        )
+      }    } catch (err) {
       setRunning(false)
       if (err instanceof ApiError && err.status === 402) {
         const body = err.body as QuotaBlockedBody
@@ -267,6 +401,13 @@ export function PipelineBuilderPage({ catalog = PIPELET_FIXTURE }: Props) {
       }
       setSaveMessage(err instanceof Error ? err.message : 'Run failed')
     }
+  }
+
+  function handleSelectExecution(ex: PipelineExecutionSummary) {
+    overlayDispatch({ type: 'RESET' })
+    selectExecution(ex.id, {
+      resume: !isTerminalExecutionStatus(ex.status),
+    })
   }
 
   function addFromPalette(item: PipeletCatalogEntry) {
@@ -346,18 +487,40 @@ export function PipelineBuilderPage({ catalog = PIPELET_FIXTURE }: Props) {
             />
           </label>
         </div>
-        <RunControls
-          canRun={state.nodes.length > 0}
-          saving={saveMutation.isPending}
-          running={running}
-          onDryRun={() => {
-            void handleDryRun()
-          }}
-          onSave={() => saveMutation.mutate()}
-          onRun={() => {
-            void handleRun()
-          }}
-        />
+        <div className="builder-toolbar-actions">
+          <RunControls
+            canRun={state.nodes.length > 0}
+            saving={saveMutation.isPending}
+            deploying={deploying}
+            running={running}
+            status={pipelineStatus}
+            onDryRun={() => {
+              void handleDryRun()
+            }}
+            onSave={() => saveMutation.mutate()}
+            onDeploy={() => {
+              void handleDeploy()
+            }}
+            onRun={() => {
+              void handleRun()
+            }}
+          />
+          {pipelineId ? (
+            <PipelineImportExportControls
+              tenantId={tenantId}
+              pipelineId={pipelineId}
+              pipelineName={state.pipelineName}
+              onImported={(id, msg) => {
+                setSaveMessage(msg)
+                void queryClient.invalidateQueries({
+                  queryKey: ['pipelines', tenantId],
+                })
+                navigate(`/pipelines/${id}`)
+              }}
+              onError={(msg) => setSaveMessage(msg)}
+            />
+          ) : null}
+        </div>
       </div>
 
       <QuotaBlockedAlert
@@ -377,6 +540,58 @@ export function PipelineBuilderPage({ catalog = PIPELET_FIXTURE }: Props) {
       ) : null}
 
       <div className="builder-deployment" aria-label="Pipeline configuration">
+        <div className="builder-io-mode" aria-label="Data plane">
+          <h3>Data plane</h3>
+          <div
+            className="status-slider"
+            role="radiogroup"
+            aria-label="Pipelet I/O mode"
+          >
+            {(
+              [
+                { value: 'queue', label: 'Queue' },
+                { value: 'stdio', label: 'Stdio' },
+              ] as const
+            ).map((opt) => {
+              const current =
+                String(state.executionConfig.ioMode ?? 'queue').toLowerCase() ===
+                'stdio'
+                  ? 'stdio'
+                  : 'queue'
+              return (
+                <label
+                  key={opt.value}
+                  className={
+                    current === opt.value
+                      ? 'status-slider-option selected'
+                      : 'status-slider-option'
+                  }
+                >
+                  <input
+                    type="radio"
+                    name="pipeline-io-mode"
+                    value={opt.value}
+                    checked={current === opt.value}
+                    onChange={() =>
+                      dispatch({
+                        type: 'SET_EXECUTION_CONFIG',
+                        executionConfig: {
+                          ...state.executionConfig,
+                          ioMode: opt.value,
+                        },
+                      })
+                    }
+                  />
+                  <span>{opt.label}</span>
+                </label>
+              )
+            })}
+          </div>
+          <p className="muted props-hint">
+            Queue = RabbitMQ between steps (platform). Stdio = local pipe
+            chaining.
+          </p>
+        </div>
         <KeyValueEditor
           title="Deployment configuration"
           entries={state.deploymentConfig}
@@ -394,7 +609,8 @@ export function PipelineBuilderPage({ catalog = PIPELET_FIXTURE }: Props) {
         <p className="muted props-hint">
           Pipeline-level defaults. Steps inherit pipelet defaults and can
           override or extend both maps. Examples: cloud, region, accessKey /
-          batchSize, parallelism.
+          batchSize, parallelism. Data plane is also stored as{' '}
+          <code>execution_config.ioMode</code>.
         </p>
       </div>
 
@@ -402,6 +618,23 @@ export function PipelineBuilderPage({ catalog = PIPELET_FIXTURE }: Props) {
         byNodeId={overlay.byNodeId}
         nodeIds={nodeIdsInOrder}
       />
+
+      {pipelineId ? (
+        <ExecutionHistoryPanel
+          pipelineId={pipelineId}
+          executions={executionsQuery.data ?? []}
+          loading={executionsQuery.isLoading}
+          error={
+            executionsQuery.isError
+              ? executionsQuery.error instanceof Error
+                ? executionsQuery.error.message
+                : 'Failed to load run history'
+              : null
+          }
+          selectedId={executionId}
+          onSelect={handleSelectExecution}
+        />
+      ) : null}
 
       <div className="builder-layout">
         <PipeletPalette items={catalog} onAdd={addFromPalette} />
@@ -418,6 +651,7 @@ export function PipelineBuilderPage({ catalog = PIPELET_FIXTURE }: Props) {
         />
         <StepPropertiesPanel
           node={selected}
+          catalog={catalog}
           connectors={connectorsQuery.data ?? []}
           services={servicesQuery.data ?? []}
           onChange={(nodeId, patch) =>

@@ -20,6 +20,7 @@ const CATALOG: PipeletCatalogEntry[] = [
     version: '1.0.0',
     runtime: 'Java',
     description: 'src',
+    active: true,
   },
 ]
 

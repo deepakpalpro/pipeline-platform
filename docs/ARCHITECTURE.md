@@ -1382,6 +1382,10 @@ spec:
               value: "tenant.{tenant_id}.pipeline.{pipeline_id}.stage.{n}.in"
             - name: OUTPUT_QUEUE
               value: "tenant.{tenant_id}.pipeline.{pipeline_id}.stage.{n+1}.in"
+            - name: IO_MODE
+              value: "{pipeline.execution_config.ioMode}"  # stdio | queue (default queue)
+            - name: AMQP_URL
+              value: "amqp://…"
             - name: CONNECTOR_CONFIG
               valueFrom:
                 secretKeyRef:

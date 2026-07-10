@@ -5,6 +5,12 @@ package com.pipelineplatform.api.k8s;
  *
  * @param jobName suggested Job metadata name {@code exec-{executionId}-stage-{stageOrder}}
  * @param namespace suggested namespace {@code tenant-{tenantId}}
+ * @param ioMode {@code stdio} or {@code queue} — injected as {@code IO_MODE}
+ * @param amqpUrl broker URL for queue mode — injected as {@code AMQP_URL}
+ * @param connectorConfig JSON for {@code CONNECTOR_CONFIG}
+ * @param serviceConfig JSON for {@code SERVICE_CONFIG}
+ * @param deploymentConfig JSON for {@code DEPLOYMENT_CONFIG}
+ * @param executionConfig JSON for {@code EXECUTION_CONFIG}
  */
 public record PipeletJobRequest(
     String tenantId,
@@ -16,7 +22,34 @@ public record PipeletJobRequest(
     String inputQueue,
     String outputQueue,
     String jobName,
-    String namespace) {
+    String namespace,
+    String ioMode,
+    String amqpUrl,
+    String connectorConfig,
+    String serviceConfig,
+    String deploymentConfig,
+    String executionConfig) {
+
+  public PipeletJobRequest withEnv(PipeletJobEnv env) {
+    PipeletJobEnv resolved = env == null ? PipeletJobEnv.empty() : env;
+    return new PipeletJobRequest(
+        tenantId,
+        pipelineId,
+        executionId,
+        pipeletId,
+        stageOrder,
+        stageCount,
+        inputQueue,
+        outputQueue,
+        jobName,
+        namespace,
+        ioMode,
+        amqpUrl,
+        resolved.connectorConfig(),
+        resolved.serviceConfig(),
+        resolved.deploymentConfig(),
+        resolved.executionConfig());
+  }
 
   public static PipeletJobRequest of(
       String tenantId,
@@ -27,8 +60,35 @@ public record PipeletJobRequest(
       int stageCount,
       String inputQueue,
       String outputQueue) {
+    return of(
+        tenantId,
+        pipelineId,
+        executionId,
+        pipeletId,
+        stageOrder,
+        stageCount,
+        inputQueue,
+        outputQueue,
+        "queue",
+        null);
+  }
+
+  public static PipeletJobRequest of(
+      String tenantId,
+      String pipelineId,
+      String executionId,
+      String pipeletId,
+      int stageOrder,
+      int stageCount,
+      String inputQueue,
+      String outputQueue,
+      String ioMode,
+      String amqpUrl) {
     String safeExecution = executionId == null ? "unknown" : executionId;
     String safeTenant = tenantId == null ? "unknown" : tenantId;
+    String jobName =
+        PipeletK8sProperties.sanitizeJobName("exec-" + safeExecution + "-stage-" + stageOrder);
+    String namespace = PipeletK8sProperties.namespaceForTenant(safeTenant);
     return new PipeletJobRequest(
         tenantId,
         pipelineId,
@@ -38,7 +98,13 @@ public record PipeletJobRequest(
         stageCount,
         inputQueue,
         outputQueue,
-        "exec-" + safeExecution + "-stage-" + stageOrder,
-        "tenant-" + safeTenant);
+        jobName,
+        namespace,
+        ioMode == null || ioMode.isBlank() ? "queue" : ioMode,
+        amqpUrl,
+        null,
+        null,
+        null,
+        null);
   }
 }

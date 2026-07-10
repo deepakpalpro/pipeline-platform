@@ -5,20 +5,29 @@ import type {
   ConnectorType,
   CreateConnectorRequest,
   CreatePipelineRequest,
+  CreateTenantRequest,
   CreateTenantServiceRequest,
   DryRunResponse,
+  ErrorSummaryResponse,
   HeartbeatResponse,
   LatencyResponse,
+  ObservabilityPortalLinks,
   PipelineExecutionDetail,
+  PipelineExecutionSummary,
+  PipelineBundle,
+  PipelineBundleImportRequest,
+  PipelineBundleImportResult,
   PipelineResponse,
   PipelineRunResponse,
   QuotaStatusResponse,
   ReplacePipelineStepsRequest,
   ServiceType,
+  Tenant,
   TenantConnector,
   TenantService,
   UpdateConnectorRequest,
   UpdatePipelineRequest,
+  UpdateTenantRequest,
   UpdateTenantServiceRequest,
   UsageEventsPageResponse,
   UsageSummaryResponse,
@@ -162,6 +171,22 @@ export function listPipelines(tenantId: string) {
   )
 }
 
+export function exportPipeline(tenantId: string, pipelineId: string) {
+  return apiFetch(`/api/v1/pipelines/${pipelineId}/export`, tenantId).then((r) =>
+    readJson<PipelineBundle>(r),
+  )
+}
+
+export function importPipeline(
+  tenantId: string,
+  body: PipelineBundleImportRequest,
+) {
+  return apiFetch('/api/v1/pipelines/import', tenantId, {
+    method: 'POST',
+    body: JSON.stringify(body),
+  }).then((r) => readJson<PipelineBundleImportResult>(r))
+}
+
 export function runPipeline(tenantId: string, pipelineId: string) {
   return apiFetch(`/api/v1/pipelines/${pipelineId}/run`, tenantId, {
     method: 'POST',
@@ -172,6 +197,13 @@ export function dryRunPipeline(tenantId: string, pipelineId: string) {
   return apiFetch(`/api/v1/pipelines/${pipelineId}/dry-run`, tenantId, {
     method: 'POST',
   }).then((r) => readJson<DryRunResponse>(r))
+}
+
+export function listPipelineExecutions(tenantId: string, pipelineId: string) {
+  return apiFetch(
+    `/api/v1/pipelines/${pipelineId}/executions`,
+    tenantId,
+  ).then((r) => readJson<PipelineExecutionSummary[]>(r))
 }
 
 export function getPipelineExecution(
@@ -206,6 +238,31 @@ export function getHeartbeat(tenantId: string, pipelineId: string) {
   ).then((r) => readJson<HeartbeatResponse>(r))
 }
 
+export function getPipelineErrors(tenantId: string, pipelineId: string) {
+  return apiFetch(
+    `/api/v1/observability/pipelines/${pipelineId}/errors`,
+    tenantId,
+  ).then((r) => readJson<ErrorSummaryResponse>(r))
+}
+
+export function getObservabilityLinks(
+  tenantId: string,
+  opts?: { pipelineId?: string; executionId?: string },
+) {
+  const params = new URLSearchParams()
+  if (opts?.pipelineId) {
+    params.set('pipelineId', opts.pipelineId)
+  }
+  if (opts?.executionId) {
+    params.set('executionId', opts.executionId)
+  }
+  const qs = params.toString()
+  return apiFetch(
+    `/api/v1/observability/links${qs ? `?${qs}` : ''}`,
+    tenantId,
+  ).then((r) => readJson<ObservabilityPortalLinks>(r))
+}
+
 export function getUsageSummary(tenantId: string, period = 'current') {
   return apiFetch(
     `/api/v1/tenants/${tenantId}/usage?period=${encodeURIComponent(period)}`,
@@ -230,4 +287,38 @@ export function getBillingPeriods(tenantId: string) {
   return apiFetch(`/api/v1/tenants/${tenantId}/billing/periods`, tenantId).then(
     (r) => readJson<BillingPeriodsResponse>(r),
   )
+}
+
+/** Platform tenant catalog — header tenant is only for stub auth context. */
+export function listTenants(headerTenantId: string) {
+  return apiFetch('/api/v1/tenants', headerTenantId).then((r) =>
+    readJson<Tenant[]>(r),
+  )
+}
+
+export function getTenant(headerTenantId: string, id: string) {
+  return apiFetch(`/api/v1/tenants/${id}`, headerTenantId).then((r) =>
+    readJson<Tenant>(r),
+  )
+}
+
+export function createTenant(
+  headerTenantId: string,
+  body: CreateTenantRequest,
+) {
+  return apiFetch('/api/v1/tenants', headerTenantId, {
+    method: 'POST',
+    body: JSON.stringify(body),
+  }).then((r) => readJson<Tenant>(r))
+}
+
+export function updateTenant(
+  headerTenantId: string,
+  id: string,
+  body: UpdateTenantRequest,
+) {
+  return apiFetch(`/api/v1/tenants/${id}`, headerTenantId, {
+    method: 'PUT',
+    body: JSON.stringify(body),
+  }).then((r) => readJson<Tenant>(r))
 }

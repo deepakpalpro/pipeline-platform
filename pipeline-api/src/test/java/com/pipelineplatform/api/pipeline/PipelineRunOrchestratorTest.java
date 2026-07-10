@@ -11,8 +11,10 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import com.pipelineplatform.api.k8s.PipeletJobClient;
+import com.pipelineplatform.api.k8s.PipeletJobEnv;
 import com.pipelineplatform.api.k8s.PipeletJobHandle;
 import com.pipelineplatform.api.k8s.PipeletJobRequest;
+import com.pipelineplatform.api.k8s.PipeletJobRequestFactory;
 import com.pipelineplatform.api.messaging.PipelineStageTopology;
 import com.pipelineplatform.api.messaging.PipelineTopology;
 import com.pipelineplatform.api.messaging.PipelineTopologyService;
@@ -39,18 +41,49 @@ class PipelineRunOrchestratorTest {
   @Mock private RabbitTemplate rabbitTemplate;
   @Mock private PipeletJobClient pipeletJobClient;
   @Mock private CompletenessMetricsPublisher completenessMetricsPublisher;
+  @Mock private PipeletAmqpUrlFactory amqpUrlFactory;
+  @Mock private PipeletJobRequestFactory jobRequestFactory;
 
+  private PipelineOrchestrationProperties orchestrationProperties;
   private PipelineRunOrchestrator orchestrator;
 
   @BeforeEach
   void setUp() {
+    orchestrationProperties = new PipelineOrchestrationProperties();
+    orchestrationProperties.setStubStageWorker(true);
+    when(amqpUrlFactory.resolve()).thenReturn("amqp://pipeline:pipeline@localhost:5672/");
+    when(jobRequestFactory.build(any(), any(), anyString(), anyInt(), anyString(), anyString()))
+        .thenAnswer(
+            inv -> {
+              Pipeline pipeline = inv.getArgument(0);
+              PipelineStep step = inv.getArgument(1);
+              String executionId = inv.getArgument(2);
+              int stageCount = inv.getArgument(3);
+              String ioMode = inv.getArgument(4);
+              String amqpUrl = inv.getArgument(5);
+              return PipeletJobRequest.of(
+                      pipeline.getTenantId(),
+                      pipeline.getId(),
+                      executionId,
+                      step.getPipeletId(),
+                      step.getStepOrder(),
+                      stageCount,
+                      "q-in",
+                      stageCount > step.getStepOrder() ? "q-out" : null,
+                      ioMode,
+                      amqpUrl)
+                  .withEnv(PipeletJobEnv.empty());
+            });
     orchestrator =
         new PipelineRunOrchestrator(
             executionRepository,
             topologyService,
             rabbitTemplate,
             pipeletJobClient,
-            completenessMetricsPublisher);
+            completenessMetricsPublisher,
+            orchestrationProperties,
+            amqpUrlFactory,
+            jobRequestFactory);
     when(executionRepository.save(any(PipelineExecution.class)))
         .thenAnswer(inv -> inv.getArgument(0));
     when(topologyService.declare(anyString(), anyString(), anyInt()))
@@ -96,6 +129,35 @@ class PipelineRunOrchestratorTest {
     assertThat(job.stageOrder()).isEqualTo(1);
     assertThat(job.jobName()).isEqualTo("exec-" + execution.getId() + "-stage-1");
     assertThat(job.namespace()).isEqualTo("tenant-tenant-a");
+    assertThat(job.ioMode()).isEqualTo(PipelineIoMode.QUEUE);
+    assertThat(job.amqpUrl()).isEqualTo("amqp://pipeline:pipeline@localhost:5672/");
+    verify(jobRequestFactory)
+        .build(eq(pipeline), eq(steps.get(0)), eq(execution.getId()), eq(2), anyString(), anyString());
+  }
+
+  @Test
+  void start_passesStdioIoModeFromExecutionConfig() {
+    Pipeline pipeline = activePipeline();
+    pipeline.setExecutionConfig("{\"ioMode\":\"stdio\",\"batchSize\":\"10\"}");
+    List<PipelineStep> steps = List.of(step(1, "plet-a"));
+
+    orchestrator.start(pipeline, steps, ExecutionTrigger.MANUAL);
+
+    ArgumentCaptor<PipeletJobRequest> jobCaptor = ArgumentCaptor.forClass(PipeletJobRequest.class);
+    verify(pipeletJobClient).create(jobCaptor.capture());
+    assertThat(jobCaptor.getValue().ioMode()).isEqualTo(PipelineIoMode.STDIO);
+  }
+
+  @Test
+  void start_skipsStubWorkerWhenDisabled() {
+    orchestrationProperties.setStubStageWorker(false);
+    Pipeline pipeline = activePipeline();
+    List<PipelineStep> steps = List.of(step(1, "plet-a"));
+
+    orchestrator.start(pipeline, steps, ExecutionTrigger.MANUAL);
+
+    verify(rabbitTemplate, never())
+        .convertAndSend(eq(RabbitMessagingConfig.STUB_STAGE_WORKER_QUEUE), any(StageMessage.class));
   }
 
   @Test

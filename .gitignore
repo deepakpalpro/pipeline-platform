@@ -10,3 +10,11 @@ target/
 node_modules/
 pipeline-ui/dist/
 pipeline-ui/node_modules/
+pipelets/**/.venv/
+pipelets/**/__pycache__/
+**/__pycache__/
+*.py[cod]
+.inventory-pipeline-id
+.petstore-e2e.pid
+.petstore-e2e.log
+.m2-repo/

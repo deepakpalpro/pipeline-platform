@@ -1,21 +1,28 @@
 import { useQuery } from '@tanstack/react-query'
 import { useMemo, useState } from 'react'
-import { useSearchParams } from 'react-router-dom'
+import { Link, useSearchParams } from 'react-router-dom'
 import {
   getCompleteness,
   getHeartbeat,
   getLatency,
+  getObservabilityLinks,
+  getPipelineErrors,
+  listPipelineExecutions,
   listPipelines,
 } from '../../api/resources'
 import { useTenant } from '../../contexts/TenantContext'
+import { ExecutionHistoryPanel } from '../pipelines/builder/ExecutionHistoryPanel'
 import { CompletenessPanel } from './CompletenessPanel'
+import { ErrorsPanel } from './ErrorsPanel'
 import { HeartbeatPanel } from './HeartbeatPanel'
 import { LatencyPanel } from './LatencyPanel'
+import { ObservabilityExternalLinks } from './ObservabilityExternalLinks'
 import type { TimeRange } from './types'
 
-type Tab = 'completeness' | 'latency' | 'heartbeat' | 'errors'
+type Tab = 'runs' | 'completeness' | 'latency' | 'heartbeat' | 'errors'
 
 const TABS: { id: Tab; label: string }[] = [
+  { id: 'runs', label: 'Run history' },
   { id: 'completeness', label: 'Completeness' },
   { id: 'latency', label: 'Latency' },
   { id: 'heartbeat', label: 'Heartbeat' },
@@ -25,7 +32,7 @@ const TABS: { id: Tab; label: string }[] = [
 export function ObservabilityPage() {
   const { tenantId } = useTenant()
   const [searchParams, setSearchParams] = useSearchParams()
-  const [tab, setTab] = useState<Tab>('completeness')
+  const [tab, setTab] = useState<Tab>('runs')
   const [range, setRange] = useState<TimeRange>('24h')
 
   const pipelinesQuery = useQuery({
@@ -40,10 +47,35 @@ export function ObservabilityPage() {
   const selectedId = pipelines.some((p) => p.id === pipelineIdFromUrl)
     ? pipelineIdFromUrl
     : (pipelines[0]?.id ?? '')
+  const selectedExecutionId = searchParams.get('executionId')
 
   function selectPipeline(id: string) {
-    setSearchParams(id ? { pipelineId: id } : {}, { replace: true })
+    const next: Record<string, string> = {}
+    if (id) {
+      next.pipelineId = id
+    }
+    setSearchParams(next, { replace: true })
   }
+
+  const linksQuery = useQuery({
+    queryKey: [
+      'obs-links',
+      tenantId,
+      selectedId,
+      selectedExecutionId,
+    ],
+    queryFn: () =>
+      getObservabilityLinks(tenantId, {
+        pipelineId: selectedId || undefined,
+        executionId: selectedExecutionId || undefined,
+      }),
+  })
+
+  const executionsQuery = useQuery({
+    queryKey: ['pipeline-executions', tenantId, selectedId],
+    queryFn: () => listPipelineExecutions(tenantId, selectedId),
+    enabled: Boolean(selectedId) && tab === 'runs',
+  })
 
   const completenessQuery = useQuery({
     queryKey: ['obs-completeness', tenantId, selectedId, range],
@@ -59,6 +91,11 @@ export function ObservabilityPage() {
     queryKey: ['obs-heartbeat', tenantId, selectedId, range],
     queryFn: () => getHeartbeat(tenantId, selectedId),
     enabled: Boolean(selectedId) && tab === 'heartbeat',
+  })
+  const errorsQuery = useQuery({
+    queryKey: ['obs-errors', tenantId, selectedId, range],
+    queryFn: () => getPipelineErrors(tenantId, selectedId),
+    enabled: Boolean(selectedId) && tab === 'errors',
   })
 
   const selector = useMemo(
@@ -81,27 +118,33 @@ export function ObservabilityPage() {
             ))}
           </select>
         </label>
-        <label>
-          Time range
-          <select
-            aria-label="Time range"
-            value={range}
-            onChange={(e) => setRange(e.target.value as TimeRange)}
-          >
-            <option value="1h">Last 1 hour</option>
-            <option value="24h">Last 24 hours</option>
-            <option value="7d">Last 7 days</option>
-          </select>
-        </label>
+        {tab !== 'runs' ? (
+          <label>
+            Time range
+            <select
+              aria-label="Time range"
+              value={range}
+              onChange={(e) => setRange(e.target.value as TimeRange)}
+            >
+              <option value="1h">Last 1 hour</option>
+              <option value="24h">Last 24 hours</option>
+              <option value="7d">Last 7 days</option>
+            </select>
+          </label>
+        ) : null}
       </div>
     ),
-    [pipelines, range, selectedId],
+    [pipelines, range, selectedId, tab],
   )
 
   return (
     <section className="obs-page" aria-label="Observability">
-      <div className="panel-header">
+      <div className="panel-header obs-header">
         <h1>Observability</h1>
+        <ObservabilityExternalLinks
+          links={linksQuery.data}
+          loading={linksQuery.isLoading}
+        />
       </div>
 
       <div className="tab-row" role="tablist" aria-label="Observability panels">
@@ -120,6 +163,51 @@ export function ObservabilityPage() {
       </div>
 
       {selector}
+
+      {tab === 'runs' ? (
+        <section className="obs-panel" aria-label="Run history panel">
+          {selectedId ? (
+            <>
+              <ExecutionHistoryPanel
+                compact
+                pipelineId={selectedId}
+                executions={executionsQuery.data ?? []}
+                loading={executionsQuery.isLoading}
+                error={
+                  executionsQuery.isError
+                    ? executionsQuery.error instanceof Error
+                      ? executionsQuery.error.message
+                      : 'Failed to load run history'
+                    : null
+                }
+                selectedId={selectedExecutionId}
+                onSelect={(ex) => {
+                  setSearchParams(
+                    {
+                      pipelineId: selectedId,
+                      executionId: ex.id,
+                    },
+                    { replace: true },
+                  )
+                }}
+              />
+              {selectedExecutionId ? (
+                <p className="muted">
+                  Selected run{' '}
+                  <code>{selectedExecutionId}</code>.{' '}
+                  <Link
+                    to={`/pipelines/${selectedId}?executionId=${encodeURIComponent(selectedExecutionId)}`}
+                  >
+                    Open in builder
+                  </Link>
+                </p>
+              ) : null}
+            </>
+          ) : (
+            <p className="muted">Select a pipeline to view run history.</p>
+          )}
+        </section>
+      ) : null}
 
       {tab === 'completeness' ? (
         <CompletenessPanel
@@ -140,10 +228,10 @@ export function ObservabilityPage() {
         />
       ) : null}
       {tab === 'errors' ? (
-        <section className="obs-panel" aria-label="Critical errors panel">
-          <h2>Critical Errors</h2>
-          <p className="muted">Stub — link to W4 errors API in a later polish.</p>
-        </section>
+        <ErrorsPanel
+          data={errorsQuery.data ?? null}
+          loading={errorsQuery.isLoading}
+        />
       ) : null}
     </section>
   )

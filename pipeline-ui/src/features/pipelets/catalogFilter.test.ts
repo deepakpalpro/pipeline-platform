@@ -1,5 +1,9 @@
 import { describe, expect, it } from 'vitest'
-import { catalogFilter, type PipeletCatalogEntry } from './catalogFilter'
+import {
+  activePipelets,
+  catalogFilter,
+  type PipeletCatalogEntry,
+} from './catalogFilter'
 
 const SAMPLE: PipeletCatalogEntry[] = [
   {
@@ -9,6 +13,7 @@ const SAMPLE: PipeletCatalogEntry[] = [
     version: '1.0.0',
     runtime: 'Java',
     description: 'HTTP ingress',
+    active: false,
   },
   {
     id: 'plet-b',
@@ -17,6 +22,7 @@ const SAMPLE: PipeletCatalogEntry[] = [
     version: '1.0.0',
     runtime: 'Java',
     description: 'Map fields',
+    active: true,
   },
   {
     id: 'plet-c',
@@ -48,5 +54,12 @@ describe('catalogFilter', () => {
     })
     expect(result).toHaveLength(1)
     expect(result[0]?.id).toBe('plet-c')
+  })
+
+  it('filters by active / inactive status', () => {
+    expect(catalogFilter(SAMPLE, { status: 'Active' })).toHaveLength(1)
+    expect(catalogFilter(SAMPLE, { status: 'Active' })[0]?.id).toBe('plet-b')
+    expect(catalogFilter(SAMPLE, { status: 'Inactive' })).toHaveLength(2)
+    expect(activePipelets(SAMPLE).map((p) => p.id)).toEqual(['plet-b'])
   })
 })

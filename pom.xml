@@ -27,6 +27,7 @@
     <testcontainers.version>1.21.3</testcontainers.version>
     <wiremock.version>3.13.2</wiremock.version>
     <aws.sdk.version>2.31.50</aws.sdk.version>
+    <fabric8.kubernetes.version>7.3.1</fabric8.kubernetes.version>
   </properties>
 
   <dependencyManagement>
@@ -49,6 +50,13 @@
         <groupId>org.wiremock</groupId>
         <artifactId>wiremock-jetty12</artifactId>
         <version>${wiremock.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.fabric8</groupId>
+        <artifactId>kubernetes-client-bom</artifactId>
+        <version>${fabric8.kubernetes.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
       </dependency>
     </dependencies>
   </dependencyManagement>

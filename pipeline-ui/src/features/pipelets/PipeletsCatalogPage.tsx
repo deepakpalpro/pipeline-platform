@@ -4,9 +4,11 @@ import {
   catalogFilter,
   type PipeletCatalogEntry,
   type PipeletCategory,
+  type PipeletStatusFilter,
 } from './catalogFilter'
 import { PIPELET_FIXTURE } from './fixture'
 import { PipeletCard } from './PipeletCard'
+import { PipeletDetailModal } from './PipeletDetailModal'
 import {
   RegisterPipeletModal,
   type RegisterPipeletInput,
@@ -17,6 +19,11 @@ const CATEGORIES: Array<PipeletCategory | 'All'> = [
   'Source',
   'Processor',
   'Destination',
+]
+
+const STATUS_FILTERS: Array<Exclude<PipeletStatusFilter, 'All'>> = [
+  'Active',
+  'Inactive',
 ]
 
 type Props = {
@@ -30,14 +37,15 @@ export function PipeletsCatalogPage({
 }: Props) {
   const { isAdmin } = useAuth()
   const [category, setCategory] = useState<PipeletCategory | 'All'>('All')
+  const [status, setStatus] = useState<PipeletStatusFilter>('Active')
   const [search, setSearch] = useState('')
   const [registerOpen, setRegisterOpen] = useState(false)
   const [selected, setSelected] = useState<PipeletCatalogEntry | null>(null)
   const [items, setItems] = useState(catalog)
 
   const filtered = useMemo(
-    () => catalogFilter(items, { category, search }),
-    [items, category, search],
+    () => catalogFilter(items, { category, search, status }),
+    [items, category, search, status],
   )
 
   async function handleRegister(input: RegisterPipeletInput) {
@@ -58,6 +66,8 @@ export function PipeletsCatalogPage({
         version: '0.1.0',
         runtime: input.mode === 'runtimeBinary' ? 'Binary' : 'Java',
         description: `Registered via ${input.mode}: ${input.imageRef}`,
+        // Newly registered pipelets include an image/binary ref → active for palette.
+        active: true,
       },
       ...prev,
     ])
@@ -89,6 +99,31 @@ export function PipeletsCatalogPage({
             </button>
           ))}
         </div>
+        <div
+          className="status-slider"
+          role="radiogroup"
+          aria-label="Pipelet status"
+        >
+          {STATUS_FILTERS.map((s) => (
+            <label
+              key={s}
+              className={
+                status === s
+                  ? 'status-slider-option selected'
+                  : 'status-slider-option'
+              }
+            >
+              <input
+                type="radio"
+                name="pipelet-status"
+                value={s}
+                checked={status === s}
+                onChange={() => setStatus(s)}
+              />
+              <span>{s}</span>
+            </label>
+          ))}
+        </div>
         <label className="search-field">
           <span className="sr-only">Search pipelets</span>
           <input
@@ -110,18 +145,10 @@ export function PipeletsCatalogPage({
         ))}
       </div>
 
-      {selected ? (
-        <aside className="detail-panel" aria-label="Pipelet detail">
-          <h2>{selected.name}</h2>
-          <p>{selected.description}</p>
-          <pre className="schema-preview">
-            {JSON.stringify(selected.configSchemaPreview ?? {}, null, 2)}
-          </pre>
-          <button type="button" className="secondary" onClick={() => setSelected(null)}>
-            Close
-          </button>
-        </aside>
-      ) : null}
+      <PipeletDetailModal
+        pipelet={selected}
+        onClose={() => setSelected(null)}
+      />
 
       <RegisterPipeletModal
         open={registerOpen}

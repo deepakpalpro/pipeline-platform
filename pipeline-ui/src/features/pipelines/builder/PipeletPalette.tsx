@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react'
 import {
+  activePipelets,
   catalogFilter,
   type PipeletCatalogEntry,
   type PipeletCategory,
@@ -31,9 +32,11 @@ export function PipeletPalette({
     Destination: false,
   })
 
+  const paletteItems = useMemo(() => activePipelets(items), [items])
+
   const filtered = useMemo(
-    () => catalogFilter(items, { search }),
-    [items, search],
+    () => catalogFilter(paletteItems, { search, status: 'Active' }),
+    [paletteItems, search],
   )
 
   const byCategory = useMemo(() => {
@@ -64,8 +67,15 @@ export function PipeletPalette({
         />
       </label>
 
-      {filtered.length === 0 ? (
-        <p className="muted palette-empty">No pipelets match “{search.trim()}”.</p>
+      {paletteItems.length === 0 ? (
+        <p className="muted palette-empty">
+          No active pipelets. Register a pipelet with an image, or mark catalog
+          entries active when a runtime is available.
+        </p>
+      ) : filtered.length === 0 ? (
+        <p className="muted palette-empty">
+          No pipelets match “{search.trim()}”.
+        </p>
       ) : null}
 
       <div className="palette-categories">
@@ -116,9 +126,7 @@ export function PipeletPalette({
                     }))
                   }
                 >
-                  {isExpanded
-                    ? `Show less`
-                    : `Show ${hiddenCount} more`}
+                  {isExpanded ? `Show less` : `Show ${hiddenCount} more`}
                 </button>
               ) : null}
             </section>

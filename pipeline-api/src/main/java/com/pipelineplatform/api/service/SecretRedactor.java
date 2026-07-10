@@ -21,7 +21,11 @@ public class SecretRedactor {
           "password",
           "secret",
           "private_key",
-          "access_token");
+          "access_token",
+          "secretaccesskey",
+          "accesskeyid",
+          "secret_access_key",
+          "access_key_id");
 
   private final ObjectMapper objectMapper;
 

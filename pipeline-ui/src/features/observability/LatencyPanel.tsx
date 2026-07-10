@@ -22,6 +22,17 @@ export function LatencyPanel({ data, loading }: Props) {
       </section>
     )
   }
+  if (!data.sample_count) {
+    return (
+      <section aria-label="Latency panel" className="obs-panel">
+        <h2>Latency</h2>
+        <p className="muted">
+          No latency samples yet. Run the pipeline (K8s Jobs emit samples as
+          stages complete).
+        </p>
+      </section>
+    )
+  }
 
   return (
     <section aria-label="Latency panel" className="obs-panel">

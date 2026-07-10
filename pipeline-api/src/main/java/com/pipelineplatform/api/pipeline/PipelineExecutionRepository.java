@@ -14,4 +14,8 @@ public interface PipelineExecutionRepository extends JpaRepository<PipelineExecu
   @Query(
       "select e from PipelineExecution e where e.pipelineId = :pipelineId order by e.startedAt desc")
   List<PipelineExecution> findFilteredByPipelineId(@Param("pipelineId") String pipelineId);
+
+  /** Background pollers (no tenant filter required — status scoped). */
+  @Query("select e from PipelineExecution e where e.status = :status order by e.startedAt asc")
+  List<PipelineExecution> findByStatus(@Param("status") ExecutionStatus status);
 }
