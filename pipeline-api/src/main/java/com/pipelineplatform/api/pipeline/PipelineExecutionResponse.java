@@ -15,7 +15,8 @@ public record PipelineExecutionResponse(
     @JsonProperty("completed_at") Instant completedAt,
     @JsonProperty("records_in") long recordsIn,
     @JsonProperty("records_out") long recordsOut,
-    @JsonProperty("completeness_pct") BigDecimal completenessPct) {
+    @JsonProperty("completeness_pct") BigDecimal completenessPct,
+    @JsonProperty("error_summary") String errorSummary) {
 
   static PipelineExecutionResponse from(PipelineExecution entity) {
     return new PipelineExecutionResponse(
@@ -29,6 +30,7 @@ public record PipelineExecutionResponse(
         entity.getCompletedAt(),
         entity.getRecordsIn(),
         entity.getRecordsOut(),
-        entity.getCompletenessPct());
+        entity.getCompletenessPct(),
+        entity.getErrorSummary());
   }
 }

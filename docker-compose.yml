@@ -1,6 +1,7 @@
 # Wave 0 local foundation stack (W0-US01)
 # Usage: docker compose up -d && ./scripts/smoke-localstack.sh
 # Optional Wave 4 ELK (W4-US04): docker compose --profile elk up -d
+# Optional Prometheus + Grafana: docker compose --profile metrics up -d
 
 name: pipeline-platform
 
@@ -144,8 +145,68 @@ services:
     environment:
       XPACK_MONITORING_ENABLED: "false"
 
+  # Optional metrics stack (W0-US04 scrape + W4 Grafana). API must listen on host :8080.
+  prometheus:
+    profiles: ["metrics"]
+    image: prom/prometheus:v2.55.1
+    container_name: pp-prometheus
+    ports:
+      - "9090:9090"
+    command:
+      - --config.file=/etc/prometheus/prometheus.yml
+      - --storage.tsdb.path=/prometheus
+      - --web.enable-lifecycle
+    volumes:
+      - ./deploy/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - pp-prometheus-data:/prometheus
+    # Do not pin host.docker.internal to host-gateway (172.17.0.1): on Rancher Desktop
+    # that address cannot reach host-published ports. RD/Docker Desktop already inject
+    # host.docker.internal (e.g. 192.168.5.2). On Linux Docker Engine only, add:
+    #   extra_hosts: ["host.docker.internal:host-gateway"]
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "wget -qO- http://127.0.0.1:9090/-/healthy >/dev/null || exit 1",
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 15s
+
+  grafana:
+    profiles: ["metrics"]
+    image: grafana/grafana:11.3.1
+    container_name: pp-grafana
+    ports:
+      - "3000:3000"
+    environment:
+      GF_SECURITY_ADMIN_USER: admin
+      GF_SECURITY_ADMIN_PASSWORD: admin
+      GF_USERS_ALLOW_SIGN_UP: "false"
+      GF_AUTH_ANONYMOUS_ENABLED: "false"
+    volumes:
+      - ./deploy/grafana/provisioning:/etc/grafana/provisioning:ro
+      - ./deploy/grafana/dashboards:/var/lib/grafana/dashboards:ro
+      - pp-grafana-data:/var/lib/grafana
+    depends_on:
+      prometheus:
+        condition: service_healthy
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "wget -qO- http://127.0.0.1:3000/api/health >/dev/null || exit 1",
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 20s
+
 volumes:
   pp-mysql-data:
   pp-rabbitmq-data:
   pp-localstack-data:
   pp-es-data:
+  pp-prometheus-data:
+  pp-grafana-data:

@@ -28,6 +28,8 @@ import { KeyValueEditor } from '../../forms/KeyValueEditor'
 import { mergeExtendConfig } from '../../forms/mergeExtendConfig'
 import { PIPELET_FIXTURE } from '../../pipelets/fixture'
 import type { PipeletCatalogEntry } from '../../pipelets/catalogFilter'
+import { ExecutionDebugPanel } from './ExecutionDebugPanel'
+import { BuilderCollapsible } from './BuilderCollapsible'
 import { ExecutionHistoryPanel } from './ExecutionHistoryPanel'
 import { ExecutionOverlaySummary } from './ExecutionOverlaySummary'
 import { PipeletPalette } from './PipeletPalette'
@@ -88,6 +90,7 @@ export function PipelineBuilderPage({ catalog = PIPELET_FIXTURE }: Props) {
   const [deploying, setDeploying] = useState(false)
   const [pipelineStatus, setPipelineStatus] = useState<string>('DRAFT')
   const [hydratedId, setHydratedId] = useState<string | null>(null)
+  const [debugOpen, setDebugOpen] = useState(() => Boolean(searchParams.get('executionId')))
 
   function selectExecution(id: string | null, opts?: { resume?: boolean }) {
     setExecutionId(id)
@@ -374,6 +377,7 @@ export function PipelineBuilderPage({ catalog = PIPELET_FIXTURE }: Props) {
     setDryRunMessage(null)
     overlayDispatch({ type: 'RESET' })
     setRunning(true)
+    setDebugOpen(true)
     try {
       const id = await ensureSaved()
       const run = await runPipeline(tenantId, id)
@@ -387,7 +391,8 @@ export function PipelineBuilderPage({ catalog = PIPELET_FIXTURE }: Props) {
           `/pipelines/${id}?executionId=${encodeURIComponent(run.execution_id)}`,
           { replace: true },
         )
-      }    } catch (err) {
+      }
+    } catch (err) {
       setRunning(false)
       if (err instanceof ApiError && err.status === 402) {
         const body = err.body as QuotaBlockedBody
@@ -405,6 +410,7 @@ export function PipelineBuilderPage({ catalog = PIPELET_FIXTURE }: Props) {
 
   function handleSelectExecution(ex: PipelineExecutionSummary) {
     overlayDispatch({ type: 'RESET' })
+    setDebugOpen(true)
     selectExecution(ex.id, {
       resume: !isTerminalExecutionStatus(ex.status),
     })
@@ -539,7 +545,18 @@ export function PipelineBuilderPage({ catalog = PIPELET_FIXTURE }: Props) {
         </p>
       ) : null}
 
-      <div className="builder-deployment" aria-label="Pipeline configuration">
+      <BuilderCollapsible
+        title="Data plane & pipeline config"
+        summary={
+          String(state.executionConfig.ioMode ?? 'queue').toLowerCase() ===
+          'stdio'
+            ? 'Stdio'
+            : 'Queue'
+        }
+        defaultOpen={false}
+        className="builder-deployment"
+        aria-label="Pipeline configuration"
+      >
         <div className="builder-io-mode" aria-label="Data plane">
           <h3>Data plane</h3>
           <div
@@ -612,7 +629,7 @@ export function PipelineBuilderPage({ catalog = PIPELET_FIXTURE }: Props) {
           batchSize, parallelism. Data plane is also stored as{' '}
           <code>execution_config.ioMode</code>.
         </p>
-      </div>
+      </BuilderCollapsible>
 
       <ExecutionOverlaySummary
         byNodeId={overlay.byNodeId}
@@ -620,46 +637,86 @@ export function PipelineBuilderPage({ catalog = PIPELET_FIXTURE }: Props) {
       />
 
       {pipelineId ? (
-        <ExecutionHistoryPanel
-          pipelineId={pipelineId}
-          executions={executionsQuery.data ?? []}
-          loading={executionsQuery.isLoading}
-          error={
-            executionsQuery.isError
-              ? executionsQuery.error instanceof Error
-                ? executionsQuery.error.message
-                : 'Failed to load run history'
-              : null
+        <BuilderCollapsible
+          title="Run history"
+          summary={
+            executionsQuery.data?.length
+              ? `${executionsQuery.data.length} run${executionsQuery.data.length === 1 ? '' : 's'}`
+              : undefined
           }
-          selectedId={executionId}
-          onSelect={handleSelectExecution}
-        />
+          defaultOpen
+          className="builder-history-card"
+        >
+          <ExecutionHistoryPanel
+            pipelineId={pipelineId}
+            executions={executionsQuery.data ?? []}
+            loading={executionsQuery.isLoading}
+            hideHeader
+            error={
+              executionsQuery.isError
+                ? executionsQuery.error instanceof Error
+                  ? executionsQuery.error.message
+                  : 'Failed to load run history'
+                : null
+            }
+            selectedId={executionId}
+            onSelect={handleSelectExecution}
+          />
+        </BuilderCollapsible>
       ) : null}
 
-      <div className="builder-layout">
-        <PipeletPalette items={catalog} onAdd={addFromPalette} />
-        <PipelineCanvas
-          nodes={state.nodes}
-          edges={state.edges}
-          overlayByNodeId={overlay.byNodeId}
-          selectedNodeId={state.selectedNodeId}
-          onSelect={(nodeId) => dispatch({ type: 'SELECT_NODE', nodeId })}
-          onConnect={(source, target) =>
-            dispatch({ type: 'CONNECT', source, target })
+      <BuilderCollapsible
+        title="Debug / logs"
+        summary={executionId ? executionId.slice(0, 8) + '…' : 'No run selected'}
+        open={debugOpen}
+        onOpenChange={setDebugOpen}
+        className="builder-debug-card"
+      >
+        <ExecutionDebugPanel
+          key={executionId ?? 'none'}
+          executionId={executionId}
+          execution={execution}
+          summary={
+            (executionsQuery.data ?? []).find((e) => e.id === executionId) ??
+            null
           }
-          onRemove={(nodeId) => dispatch({ type: 'REMOVE_NODE', nodeId })}
+          pipelineId={pipelineId}
+          hideHeader
         />
-        <StepPropertiesPanel
-          node={selected}
-          catalog={catalog}
-          connectors={connectorsQuery.data ?? []}
-          services={servicesQuery.data ?? []}
-          onChange={(nodeId, patch) =>
-            dispatch({ type: 'UPDATE_STEP', nodeId, patch })
-          }
-          onRemove={(nodeId) => dispatch({ type: 'REMOVE_NODE', nodeId })}
-        />
-      </div>
+      </BuilderCollapsible>
+
+      <BuilderCollapsible
+        title="Pipeline builder"
+        summary={`${state.nodes.length} step${state.nodes.length === 1 ? '' : 's'}`}
+        defaultOpen
+        className="builder-canvas-card"
+        aria-label="Pipeline builder"
+      >
+        <div className="builder-layout">
+          <PipeletPalette items={catalog} onAdd={addFromPalette} />
+          <PipelineCanvas
+            nodes={state.nodes}
+            edges={state.edges}
+            overlayByNodeId={overlay.byNodeId}
+            selectedNodeId={state.selectedNodeId}
+            onSelect={(nodeId) => dispatch({ type: 'SELECT_NODE', nodeId })}
+            onConnect={(source, target) =>
+              dispatch({ type: 'CONNECT', source, target })
+            }
+            onRemove={(nodeId) => dispatch({ type: 'REMOVE_NODE', nodeId })}
+          />
+          <StepPropertiesPanel
+            node={selected}
+            catalog={catalog}
+            connectors={connectorsQuery.data ?? []}
+            services={servicesQuery.data ?? []}
+            onChange={(nodeId, patch) =>
+              dispatch({ type: 'UPDATE_STEP', nodeId, patch })
+            }
+            onRemove={(nodeId) => dispatch({ type: 'REMOVE_NODE', nodeId })}
+          />
+        </div>
+      </BuilderCollapsible>
     </section>
   )
 }

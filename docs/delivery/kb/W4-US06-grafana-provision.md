@@ -54,6 +54,30 @@ Wave 4 ships a **stub** provision path (no live Grafana required in CI):
 
 **Stub vs real:** Replace `StubGrafanaClient` with an HTTP client against the **shared** Grafana Admin API when ops Grafana is available. Tokens stay in env/config — never commit secrets.
 
+### Local Compose Grafana + Prometheus
+
+CI still uses the stub. For a real local stack (optional):
+
+```bash
+docker compose --profile metrics up -d
+./scripts/smoke-metrics.sh
+```
+
+| Service | URL | Notes |
+|---------|-----|-------|
+| Prometheus | http://localhost:9090 | Scrapes `host.docker.internal:8080/actuator/prometheus` |
+| Grafana | http://localhost:3000 | `admin` / `admin`; Prometheus datasource + **Pipeline Overview (local)** dashboard provisioned |
+
+Point the UI “open Grafana” button at the local instance:
+
+```bash
+export PIPELINE_OBSERVABILITY_GRAFANA_BASE_URL=http://localhost:3000
+# optional ES: PIPELINE_OBSERVABILITY_ELASTICSEARCH_BASE_URL=http://localhost:9200
+./mvnw -pl pipeline-api spring-boot:run -Dspring-boot.run.profiles=local
+```
+
+Provisioning files live under `deploy/prometheus/` and `deploy/grafana/`. Tenant **org** provision via `POST /api/v1/tenants/{id}/grafana` still hits the stub unless a live `GrafanaClient` is wired.
+
 ## How to verify
 
 ```bash
@@ -74,8 +98,9 @@ Expect a provision result with `orgId` / `orgName` / `dashboardUid` — that is 
 |---------|-------|------------|
 | 404 on provision | Unknown tenant id | Create tenant first |
 | Missing template | Classpath resource | Confirm `grafana/tenant-pipeline-overview.json` |
-| Expecting live Grafana | Stub only in Wave 4 | Wire real client later |
+| Expecting live Grafana | Stub only in Wave 4 CI | Use Compose `metrics` profile for local UI; wire real client later |
 | Expecting N Grafana servers | Misread “provision” | One instance; N orgs |
+| Prometheus target down | API not on host `:8080`, or bad `host.docker.internal` | Start API on `:8080`; on Rancher Desktop do **not** pin `host.docker.internal` to `host-gateway` (see `docker-compose.yml`); recreate Prometheus; check http://localhost:9090/targets |
 
 ## Related
 

@@ -27,20 +27,24 @@ export function useExecutionPoller({
   const attempts = useRef(0)
 
   useEffect(() => {
+    // Drop previous run immediately so UI does not show mismatched status/logs.
+    setExecution(null)
+    setError(null)
+    attempts.current = 0
+
     if (!enabled || !pipelineId || !executionId) {
       return
     }
-    attempts.current = 0
-    setError(null)
     let cancelled = false
     let timer: ReturnType<typeof setTimeout> | undefined
+    const selectedId = executionId
 
     async function tick() {
       try {
         const result = await getPipelineExecution(
           tenantId,
           pipelineId!,
-          executionId!,
+          selectedId,
         )
         if (cancelled) {
           return

@@ -34,6 +34,15 @@ Expect text exposition format including `jvm_memory_used_bytes`.
 
 Local scrape URL: `http://localhost:8080/actuator/prometheus`
 
+Optional local Prometheus + Grafana (Compose profile `metrics`):
+
+```bash
+docker compose --profile metrics up -d
+./scripts/smoke-metrics.sh
+```
+
+Prometheus scrapes the host API; Grafana is at http://localhost:3000 (`admin` / `admin`). See [`W0-US01-local-compose-stack.md`](W0-US01-local-compose-stack.md) and [`W4-US06-grafana-provision.md`](W4-US06-grafana-provision.md).
+
 ### Logs
 
 Console lines should be JSON (Logstash) including fields such as `@timestamp`, `level`, `logger_name`, `message`, and often `spring.application.name` / service fields — not free-form noise with credentials.

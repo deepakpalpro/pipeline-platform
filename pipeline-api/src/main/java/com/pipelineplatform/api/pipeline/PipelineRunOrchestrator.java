@@ -89,6 +89,8 @@ public class PipelineRunOrchestrator {
     int stageCount = steps.size();
     PipelineTopology topology =
         topologyService.declare(pipeline.getTenantId(), pipeline.getId(), stageCount);
+    // Prior runs (and unused source kickoffs) leave messages that the next Job would consume first.
+    topologyService.purgeStageQueues(topology);
 
     PipelineStep first = steps.get(0);
     pipeletJobClient.create(
@@ -105,9 +107,14 @@ public class PipelineRunOrchestrator {
             "run-" + saved.getId(),
             ioMode,
             amqpUrl);
-    rabbitTemplate.convertAndSend(topology.exchange(), QueueNaming.stageRoutingKey(1), message);
+    // Queue-mode sources use SOURCE_TRIGGER=once and do not consume stage-1 kickoff. Publishing a
+    // StageMessage with payload "run-…" onto stage queues confuses CSV parsers if it leaks or is
+    // left over — only notify the stub worker path (if enabled).
     if (orchestrationProperties.isStubStageWorker()) {
+      rabbitTemplate.convertAndSend(topology.exchange(), QueueNaming.stageRoutingKey(1), message);
       rabbitTemplate.convertAndSend(RabbitMessagingConfig.STUB_STAGE_WORKER_QUEUE, message);
+    } else if (!PipelineIoMode.QUEUE.equals(PipelineIoMode.normalize(ioMode))) {
+      rabbitTemplate.convertAndSend(topology.exchange(), QueueNaming.stageRoutingKey(1), message);
     }
 
     saved.setStatus(ExecutionStatus.RUNNING);

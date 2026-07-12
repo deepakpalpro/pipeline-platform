@@ -64,4 +64,29 @@ public class PipelineTopologyService {
 
     return new PipelineTopology(tenantId, pipelineId, exchangeName, List.copyOf(stages));
   }
+
+  /**
+   * Drop pending messages from stage input queues (and DLQs) so a new run cannot consume a stale
+   * kickoff / prior-stage payload. Safe after {@link #declare}.
+   */
+  public void purgeStageQueues(PipelineTopology topology) {
+    if (topology == null || topology.stages() == null) {
+      return;
+    }
+    for (PipelineStageTopology stage : topology.stages()) {
+      purgeQuietly(stage.inputQueue());
+      purgeQuietly(stage.dlq());
+    }
+  }
+
+  private void purgeQuietly(String queueName) {
+    if (queueName == null || queueName.isBlank()) {
+      return;
+    }
+    try {
+      amqpAdmin.purgeQueue(queueName, false);
+    } catch (Exception ignored) {
+      // Queue may not exist yet on first declare race; declare already created it.
+    }
+  }
 }

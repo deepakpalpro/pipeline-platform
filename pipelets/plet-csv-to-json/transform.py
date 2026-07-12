@@ -38,14 +38,28 @@ def parse_csv_text(
     return rows
 
 
+def _looks_like_csv(text: str) -> bool:
+    """Reject orchestrator kickoffs like payload=\"run-<executionId>\"."""
+    stripped = text.strip()
+    if not stripped or stripped.startswith("run-"):
+        return False
+    return ("\n" in stripped) or ("," in stripped)
+
+
 def extract_csv_text(message: dict[str, Any]) -> str:
-    for key in ("csv", "content", "payload", "text"):
+    # Prefer explicit S3 / CSV fields before generic "payload" (stage kickoffs use payload=run-…).
+    for key in ("csv", "content", "text"):
         value = message.get(key)
-        if isinstance(value, str) and value.strip():
+        if isinstance(value, str) and value.strip() and _looks_like_csv(value):
             return value
+    payload = message.get("payload")
+    if isinstance(payload, str) and payload.strip() and _looks_like_csv(payload):
+        return payload
     records = message.get("records")
     if isinstance(records, list) and records and isinstance(records[0], str):
-        return "\n".join(records)
+        joined = "\n".join(records)
+        if _looks_like_csv(joined):
+            return joined
     return ""
 
 
@@ -54,7 +68,17 @@ def run(message: dict[str, Any], execution: dict[str, Any]) -> dict[str, Any]:
     has_header_raw = str(execution.get("hasHeader", "true")).strip().lower()
     has_header = has_header_raw in ("1", "true", "yes", "y")
     csv_text = extract_csv_text(message)
+    if not csv_text:
+        keys = sorted(message.keys()) if isinstance(message, dict) else []
+        raise SystemExit(
+            "No CSV text found on message (expected content/csv). "
+            f"keys={keys}. Stale kickoff payloads (payload=run-…) are ignored."
+        )
     records = parse_csv_text(csv_text, delimiter=delimiter, has_header=has_header)
+    if not records:
+        raise SystemExit(
+            "CSV parsed to 0 records — check delimiter/hasHeader and source content"
+        )
     return {
         **message,
         "records": records,

@@ -9,6 +9,7 @@ import type {
   CreateTenantServiceRequest,
   DryRunResponse,
   ErrorSummaryResponse,
+  ExecutionLogsResponse,
   HeartbeatResponse,
   LatencyResponse,
   ObservabilityPortalLinks,
@@ -215,6 +216,13 @@ export function getPipelineExecution(
     `/api/v1/pipelines/${pipelineId}/executions/${executionId}`,
     tenantId,
   ).then((r) => readJson<PipelineExecutionDetail>(r))
+}
+
+export function getExecutionLogs(tenantId: string, executionId: string) {
+  return apiFetch(
+    `/api/v1/observability/executions/${executionId}/logs`,
+    tenantId,
+  ).then((r) => readJson<ExecutionLogsResponse>(r))
 }
 
 export function getCompleteness(tenantId: string, pipelineId: string) {

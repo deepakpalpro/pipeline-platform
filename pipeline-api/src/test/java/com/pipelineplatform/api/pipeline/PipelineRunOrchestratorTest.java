@@ -115,6 +115,7 @@ class PipelineRunOrchestratorTest {
     assertThat(execution.getTrigger()).isEqualTo(ExecutionTrigger.MANUAL);
 
     verify(topologyService).declare("tenant-a", "p1", 2);
+    verify(topologyService).purgeStageQueues(any(PipelineTopology.class));
     verify(rabbitTemplate)
         .convertAndSend(eq(RabbitMessagingConfig.STUB_STAGE_WORKER_QUEUE), any(StageMessage.class));
     verify(executionRepository, org.mockito.Mockito.atLeast(2)).save(any(PipelineExecution.class));
@@ -156,8 +157,12 @@ class PipelineRunOrchestratorTest {
 
     orchestrator.start(pipeline, steps, ExecutionTrigger.MANUAL);
 
+    verify(topologyService).purgeStageQueues(any(PipelineTopology.class));
     verify(rabbitTemplate, never())
         .convertAndSend(eq(RabbitMessagingConfig.STUB_STAGE_WORKER_QUEUE), any(StageMessage.class));
+    // Queue-mode K8s runs do not publish stage-1 kickoff (sources use SOURCE_TRIGGER=once).
+    verify(rabbitTemplate, never())
+        .convertAndSend(anyString(), anyString(), any(StageMessage.class));
   }
 
   @Test

@@ -28,16 +28,56 @@ def resolve_url(connector: dict[str, Any], execution: dict[str, Any]) -> str:
     return base_s + path_s
 
 
+def _is_kickoff_payload(value: Any) -> bool:
+    return isinstance(value, str) and value.strip().startswith("run-")
+
+
+def _as_upload_body(value: Any) -> Any:
+    """Normalize to a Petstore-friendly {mode, items} object when possible."""
+    if isinstance(value, list):
+        return {"mode": "upsert", "items": value}
+    if isinstance(value, dict):
+        if isinstance(value.get("items"), list):
+            return value
+        if isinstance(value.get("records"), list):
+            return {
+                "mode": str(value.get("mode") or "upsert"),
+                "items": value["records"],
+            }
+    return value
+
+
 def extract_body(message: dict[str, Any], execution: dict[str, Any]) -> Any:
     body_key = str(execution.get("bodyKey") or "").strip()
     if body_key and body_key in message:
-        return message[body_key]
-    for key in ("petstorePayload", "payload", "body"):
-        if key in message and message[key] is not None:
-            return message[key]
-    if "records" in message:
-        return {"items": message["records"]}
-    return message
+        return _as_upload_body(message[body_key])
+
+    for key in ("petstorePayload", "body"):
+        if key in message and message[key] is not None and not _is_kickoff_payload(message[key]):
+            return _as_upload_body(message[key])
+
+    payload = message.get("payload")
+    if payload is not None and not _is_kickoff_payload(payload):
+        # Prefer structured wrap from field-mapper; skip orchestrator kickoff strings.
+        if isinstance(payload, (dict, list)):
+            return _as_upload_body(payload)
+
+    if isinstance(message.get("records"), list):
+        return {
+            "mode": str(execution.get("mode") or "upsert"),
+            "items": message["records"],
+        }
+
+    if isinstance(message.get("items"), list):
+        return {
+            "mode": str(execution.get("mode") or message.get("mode") or "upsert"),
+            "items": message["items"],
+        }
+
+    raise SystemExit(
+        "Webhook body missing: expected petstorePayload/payload.items/records "
+        f"(message keys={sorted(message.keys())})"
+    )
 
 
 def resolve_timeout(execution: dict[str, Any]) -> float:
@@ -51,7 +91,9 @@ def resolve_timeout(execution: dict[str, Any]) -> float:
 def post_json(
     url: str, body: Any, *, method: str = "POST", timeout: float = 30.0
 ) -> dict[str, Any]:
-    data = json.dumps(body).encode("utf-8")
+    if isinstance(body, dict) and isinstance(body.get("items"), list) and not body["items"]:
+        raise SystemExit("Refusing to POST empty items array to destination")
+    data = json.dumps(body, default=str).encode("utf-8")
     req = urllib.request.Request(
         url,
         data=data,

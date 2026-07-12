@@ -30,6 +30,20 @@ class CsvToJsonTest(unittest.TestCase):
         self.assertEqual(out["recordCount"], 2)
         self.assertEqual(out["records"][0], {"a": "1", "b": "2"})
 
+    def test_parses_s3_content_field(self) -> None:
+        out = csv_run(
+            {"content": "sku,qty\nA,1\n", "pipeletId": "plet-s3-source"},
+            {"delimiter": ",", "hasHeader": "true"},
+        )
+        self.assertEqual(out["recordCount"], 1)
+
+    def test_ignores_run_kickoff_payload(self) -> None:
+        with self.assertRaises(SystemExit):
+            csv_run(
+                {"payload": "run-abc-123", "execution_id": "abc"},
+                {"delimiter": ",", "hasHeader": "true"},
+            )
+
     def test_requires_delimiter_via_layers(self) -> None:
         with self.assertRaises(SystemExit):
             resolve_layers(
@@ -79,6 +93,24 @@ class WebhookTest(unittest.TestCase):
             {"path": "inventory/upload"},
         )
         self.assertEqual(url, "http://petstore:4010/api/v3/inventory/upload")
+
+    def test_extract_prefers_petstore_payload(self) -> None:
+        from webhook import extract_body
+
+        body = extract_body(
+            {
+                "payload": "run-xyz",
+                "petstorePayload": {"mode": "upsert", "items": [{"sku": "A"}]},
+            },
+            {},
+        )
+        self.assertEqual(body["items"][0]["sku"], "A")
+
+    def test_extract_from_records(self) -> None:
+        from webhook import extract_body
+
+        body = extract_body({"records": [{"sku": "B"}]}, {})
+        self.assertEqual(body["items"][0]["sku"], "B")
 
 
 if __name__ == "__main__":

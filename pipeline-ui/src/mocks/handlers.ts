@@ -1104,6 +1104,39 @@ export const observabilityHandlers = [
       stale: false,
     })
   }),
+
+  http.get('/api/v1/observability/executions/:execId/logs', ({ params, request }) => {
+    const tid = tenantId(request)
+    const execId = String(params.execId)
+    const exec = mockDb.executions[execId]
+    return HttpResponse.json({
+      execution_id: execId,
+      tenant_id: tid,
+      pipeline_id: exec?.pipeline_id ?? 'pipe-unknown',
+      logs: [
+        {
+          '@timestamp': nowIso(),
+          level: 'INFO',
+          pipelet_id: 'plet-s3-source',
+          pod_name: `exec-${execId.slice(0, 8)}-stage-1`,
+          message: 'stage started (MSW fixture)',
+          records_in: 0,
+          records_out: 12,
+          duration_ms: 120,
+        },
+        {
+          '@timestamp': nowIso(),
+          level: 'INFO',
+          pipelet_id: 'plet-webhook-destination',
+          pod_name: `exec-${execId.slice(0, 8)}-stage-5`,
+          message: 'uploaded inventory batch',
+          records_in: 12,
+          records_out: 12,
+          duration_ms: 80,
+        },
+      ],
+    })
+  }),
 ]
 
 function requireMatchingTenant(request: Request, pathId: string) {

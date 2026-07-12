@@ -238,6 +238,25 @@ export type PipelineExecutionSummary = {
 
 export type PipelineExecutionDetail = PipelineExecutionSummary & {
   steps?: ExecutionStepStatusDto[]
+  error_summary?: string | null
+}
+
+export type ExecutionLogEntry = {
+  '@timestamp'?: string
+  level?: string
+  pipelet_id?: string
+  pod_name?: string
+  message?: string
+  records_in?: number | null
+  records_out?: number | null
+  duration_ms?: number | null
+}
+
+export type ExecutionLogsResponse = {
+  execution_id: string
+  tenant_id: string
+  pipeline_id: string
+  logs: ExecutionLogEntry[]
 }
 
 export type DryRunResponse = {

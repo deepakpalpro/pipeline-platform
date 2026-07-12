@@ -14,6 +14,21 @@
 
 **Default ports:** MySQL `3306`, RabbitMQ `5672` / mgmt `15672`, LocalStack **host `4567`** (maps to container `4566`). If `4566` is free on your machine, run `LOCALSTACK_HOST_PORT=4566 docker compose up -d` and set `LOCALSTACK_ENDPOINT=http://localhost:4566`.
 
+**Optional profiles:**
+
+| Profile | Services | Ports |
+|---------|----------|-------|
+| `elk` | Elasticsearch, Kibana, Logstash | `9200`, `5601`, `5044` |
+| `metrics` | Prometheus, Grafana | `9090`, `3000` (`admin` / `admin`) |
+| `petstore` | Petstore mock API | `4010` |
+
+```bash
+docker compose --profile metrics up -d
+./scripts/smoke-metrics.sh
+# With API on :8080, Prometheus scrapes http://host.docker.internal:8080/actuator/prometheus
+# Grafana: http://localhost:3000 — set PIPELINE_OBSERVABILITY_GRAFANA_BASE_URL=http://localhost:3000 for UI links
+```
+
 ## Feature overview
 
 Local development depends on MySQL (metadata), RabbitMQ (messaging), and LocalStack (S3/SQS cloud emulation). This article describes how to start the stack and verify LocalStack.
